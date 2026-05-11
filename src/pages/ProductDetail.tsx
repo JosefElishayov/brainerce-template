@@ -202,10 +202,13 @@ const ProductDetail = () => {
                 const uniqueValues = [...new Set(allOptions.flatMap(o => o.filter(x => x.name === attrName).map(x => x.value)))];
                 const currentValue = selectedVariant ? getVariantOptions(selectedVariant).find(o => o.name === attrName)?.value : undefined;
                 const swatchGroup = swatchByAttr.get(attrName);
-                const displayType = swatchGroup?.displayType?.toLowerCase();
-                const isColor = displayType === "color";
-                const isImage = displayType === "image";
+                const displayType = swatchGroup?.displayType?.toUpperCase() ?? "";
                 const findSwatch = (value: string) => swatchGroup?.options.find(o => o.name === value || o.value === value);
+                const hasAnyColor = swatchGroup?.options.some(o => o.swatchColor);
+                const hasAnyImage = swatchGroup?.options.some(o => o.swatchImageUrl);
+                const isColor = displayType.includes("COLOR") || (displayType === "MIXED_SWATCH" && hasAnyColor && !hasAnyImage);
+                const isImage = displayType.includes("IMAGE") || (displayType === "MIXED_SWATCH" && hasAnyImage && !hasAnyColor);
+                const isMixed = displayType === "MIXED_SWATCH" && hasAnyColor && hasAnyImage;
 
                 return (
                   <div key={attrName} className="mb-6">
