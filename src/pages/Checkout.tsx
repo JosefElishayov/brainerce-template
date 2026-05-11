@@ -414,22 +414,6 @@ const Checkout = () => {
                     </div>
                   </>
                 )}
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Subtotal</span>
-                      <span>{formatPrice(String(totals.subtotal), { currency })}</span>
-                    </div>
-                    {totals.discount > 0 && (
-                      <div className="flex justify-between text-sm text-primary">
-                        <span>Discount</span>
-                        <span>-{formatPrice(String(totals.discount), { currency })}</span>
-                      </div>
-                    )}
-                    <div className="flex justify-between font-serif text-xl border-t border-border pt-4">
-                      <span>Total</span>
-                      <span>{formatPrice(String(totals.total), { currency })}</span>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
