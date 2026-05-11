@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { client, setCustomerToken } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
+import type { CustomerOAuthProvider } from "brainerce";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [providers, setProviders] = useState<{ provider: string; displayName?: string }[]>([]);
+  const [providers, setProviders] = useState<CustomerOAuthProvider[]>([]);
 
   useEffect(() => {
     client
@@ -47,7 +48,7 @@ const Login = () => {
     }
   }
 
-  async function handleOAuth(provider: string) {
+  async function handleOAuth(provider: CustomerOAuthProvider) {
     try {
       const { authorizationUrl } = await client.getOAuthAuthorizeUrl(provider, {
         redirectUrl: window.location.origin + "/auth/callback",
@@ -121,13 +122,13 @@ const Login = () => {
                 <div className="space-y-3">
                   {providers.map((p) => (
                     <Button
-                      key={p.provider}
+                      key={p}
                       type="button"
                       variant="outline"
-                      onClick={() => handleOAuth(p.provider)}
+                      onClick={() => handleOAuth(p)}
                       className="w-full rounded-none py-6 text-sm tracking-[0.15em] uppercase"
                     >
-                      Continue with {p.displayName || p.provider}
+                      Continue with {p.charAt(0) + p.slice(1).toLowerCase()}
                     </Button>
                   ))}
                 </div>

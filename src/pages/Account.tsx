@@ -39,11 +39,6 @@ const Account = () => {
   }, [loggedIn, navigate]);
 
   async function handleLogout() {
-    try {
-      await client.logoutCustomer();
-    } catch {
-      // ignore
-    }
     setCustomerToken(null);
     setLoggedIn(false);
     await refreshCart();
