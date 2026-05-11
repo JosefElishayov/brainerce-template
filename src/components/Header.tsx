@@ -161,6 +161,7 @@ export const Header = () => {
                   {[
                     { to: "/products", label: "Shop All" },
                     { to: "/about", label: "About" },
+                    { to: "/contact", label: "Contact" },
                     { to: "/cart", label: "Shopping Bag" },
                     { to: loggedIn ? "/account" : "/login", label: loggedIn ? "My Account" : "Sign In" },
                   ].map((link) => (
