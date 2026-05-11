@@ -121,7 +121,7 @@ export const ProductCard = ({ product, index = 0, variant = "default" }: Product
             {priceInfo.isOnSale ? (
               <>
                 <p className="text-base font-medium text-primary">
-                  {formatPrice(String(priceInfo.price), { currency })}
+                  {showFrom ? "From " : ""}{formatPrice(String(showFrom ? minVariantPrice : priceInfo.price), { currency })}
                 </p>
                 <p className="text-sm text-muted-foreground line-through">
                   {formatPrice(String(priceInfo.originalPrice), { currency })}
@@ -129,7 +129,7 @@ export const ProductCard = ({ product, index = 0, variant = "default" }: Product
               </>
             ) : (
               <p className="text-base font-medium text-foreground">
-                {formatPrice(String(priceInfo.price), { currency })}
+                {showFrom ? "From " : ""}{formatPrice(String(showFrom ? minVariantPrice : priceInfo.price), { currency })}
               </p>
             )}
           </div>
