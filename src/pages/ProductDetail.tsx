@@ -224,27 +224,30 @@ const ProductDetail = () => {
                           if (match) setSelectedVariant(match);
                         };
 
-                        if (isColor && swatch?.swatchColor) {
+                        const showColor = (isColor || isMixed) && swatch?.swatchColor;
+                        const showImage = (isImage || isMixed) && swatch?.swatchImageUrl;
+
+                        if (showColor) {
                           return (
                             <button key={value} onClick={onSelect} title={value} aria-label={value}
                               className={cn(
                                 "w-10 h-10 rounded-full border transition-all relative",
                                 selected ? "border-foreground ring-2 ring-foreground ring-offset-2" : "border-border hover:border-foreground"
                               )}
-                              style={swatch.swatchColor2
-                                ? { background: `linear-gradient(135deg, ${swatch.swatchColor} 50%, ${swatch.swatchColor2} 50%)` }
-                                : { backgroundColor: swatch.swatchColor }} />
+                              style={swatch!.swatchColor2
+                                ? { background: `linear-gradient(135deg, ${swatch!.swatchColor} 50%, ${swatch!.swatchColor2} 50%)` }
+                                : { backgroundColor: swatch!.swatchColor! }} />
                           );
                         }
 
-                        if (isImage && swatch?.swatchImageUrl) {
+                        if (showImage) {
                           return (
                             <button key={value} onClick={onSelect} title={value} aria-label={value}
                               className={cn(
                                 "w-14 h-14 overflow-hidden border transition-all",
                                 selected ? "border-foreground ring-2 ring-foreground ring-offset-2" : "border-border hover:border-foreground"
                               )}>
-                              <img src={swatch.swatchImageUrl} alt={value} className="w-full h-full object-cover" />
+                              <img src={swatch!.swatchImageUrl!} alt={value} className="w-full h-full object-cover" />
                             </button>
                           );
                         }
