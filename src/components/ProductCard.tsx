@@ -24,6 +24,14 @@ export const ProductCard = ({ product, index = 0, variant = "default" }: Product
   const secondary = images[1]?.url;
   const priceInfo = getProductPriceInfo(product);
   const collectionName = product.categories?.[0]?.name;
+  const isVariable = product.type === "VARIABLE";
+  const variantPrices = isVariable
+    ? (product.variants || [])
+        .map((v) => Number(v.price ?? product.basePrice))
+        .filter((n) => !isNaN(n) && n > 0)
+    : [];
+  const minVariantPrice = variantPrices.length ? Math.min(...variantPrices) : null;
+  const showFrom = isVariable && minVariantPrice !== null && variantPrices.some((p) => p !== minVariantPrice);
 
   const handleQuickAdd = async (e: React.MouseEvent) => {
     e.preventDefault();
