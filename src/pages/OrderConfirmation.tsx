@@ -24,7 +24,7 @@ const OrderConfirmation = () => {
       try {
         const checkout = await client.getCheckout(checkoutId);
         if (cancelled) return;
-        if (checkout.status === "completed") {
+        if (checkout.status === "COMPLETED") {
           setStatus("ok");
           refreshCart();
           return;
