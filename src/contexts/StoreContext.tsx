@@ -45,16 +45,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const addToCart: StoreContextValue["addToCart"] = useCallback(
     async (product, opts = {}) => {
-      const variant = opts.variant ?? (product.variants?.[0] || null);
-      const price =
-        variant?.salePrice || variant?.price || product.salePrice || product.basePrice;
+      const variant = opts.variant ?? null;
       await client.smartAddToCart({
         productId: product.id,
         variantId: variant?.id,
         quantity: opts.quantity ?? 1,
-        name: product.name,
-        price,
-        image: product.images?.[0]?.url,
         metadata: opts.metadata,
       });
       await refreshCart();
