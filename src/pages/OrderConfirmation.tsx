@@ -56,12 +56,7 @@ const OrderConfirmation = () => {
           <>
             <CheckCircle2 className="w-14 h-14 mx-auto mb-6 text-primary" />
             <h1 className="font-serif text-4xl mb-3">Thank you</h1>
-            <p className="text-muted-foreground mb-2">Your order has been placed.</p>
-            {orderId && (
-              <p className="text-xs tracking-[0.15em] uppercase text-muted-foreground/70 mb-8">
-                Order ID: {orderId}
-              </p>
-            )}
+            <p className="text-muted-foreground mb-8">Your order has been placed.</p>
             <Button asChild size="lg" className="rounded-none px-10 py-6 text-sm tracking-[0.15em] uppercase btn-premium">
               <Link to="/products">Continue Shopping</Link>
             </Button>
