@@ -1,6 +1,6 @@
 import { BrainerceClient } from "brainerce";
 
-export const SALES_CHANNEL_ID = "vc_7ZPigJbqSn7VUtQlPS10K";
+export const SALES_CHANNEL_ID = "vc_QLZzLkJhqa1wsjPwy93VO";
 
 export const client = new BrainerceClient({
   salesChannelId: SALES_CHANNEL_ID,
