@@ -1,32 +1,47 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { collections } from "@/data/products";
+import { useStore } from "@/contexts/StoreContext";
+import { client } from "@/lib/brainerce";
+
+interface CategoryItem {
+  id: string;
+  name: string;
+  slug: string;
+}
 
 export const Footer = () => {
+  const { storeInfo } = useStore();
+  const brandName = storeInfo?.name || "Lumeno";
+  const [categories, setCategories] = useState<CategoryItem[]>([]);
+
+  useEffect(() => {
+    client
+      .getCategories()
+      .then((res) => {
+        setCategories(((res?.categories || []) as CategoryItem[]).slice(0, 6));
+      })
+      .catch(() => setCategories([]));
+  }, []);
+
   return (
     <footer className="bg-foreground text-background">
-      {/* Top bar */}
       <div className="border-b border-background/10">
         <div className="container-full py-12 md:py-16">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div>
-              <Link
-                to="/"
-                className="font-serif text-3xl md:text-4xl tracking-tight text-background"
-              >
-                Maison
+              <Link to="/" className="font-serif text-3xl md:text-4xl tracking-tight text-background">
+                {brandName}
               </Link>
               <p className="mt-3 text-sm text-background/50 leading-relaxed max-w-xs">
                 Curated home objects and lifestyle pieces for considered living.
               </p>
             </div>
-
-            {/* Newsletter in footer */}
             <div className="max-w-sm w-full">
               <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-background/40 mb-3">
                 Stay Connected
               </p>
-              <form className="flex gap-0">
+              <form className="flex gap-0" onSubmit={(e) => e.preventDefault()}>
                 <input
                   type="email"
                   placeholder="Your email"
@@ -44,143 +59,93 @@ export const Footer = () => {
         </div>
       </div>
 
-      {/* Main footer content */}
       <div className="container-full py-12 md:py-16">
         <div className="grid gap-10 md:grid-cols-4">
-          {/* Collections */}
           <div>
             <h4 className="text-[11px] font-semibold tracking-[0.25em] uppercase text-background/40 mb-5">
               Collections
             </h4>
             <ul className="space-y-3">
-              {collections.slice(0, 6).map((collection) => (
-                <li key={collection.id}>
-                  <Link
-                    to={`/products?collection=${collection.slug}`}
-                    className="text-sm text-background/60 hover:text-background transition-colors duration-300"
-                  >
-                    {collection.name}
-                  </Link>
-                </li>
-              ))}
+              {categories.length === 0 ? (
+                <li className="text-sm text-background/40">No collections yet</li>
+              ) : (
+                categories.map((c) => (
+                  <li key={c.id}>
+                    <Link
+                      to={`/products?category=${c.slug}`}
+                      className="text-sm text-background/60 hover:text-background transition-colors"
+                    >
+                      {c.name}
+                    </Link>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
-
-          {/* Explore */}
           <div>
             <h4 className="text-[11px] font-semibold tracking-[0.25em] uppercase text-background/40 mb-5">
               Explore
             </h4>
             <ul className="space-y-3">
               <li>
-                <Link
-                  to="/products"
-                  className="text-sm text-background/60 hover:text-background transition-colors duration-300"
-                >
+                <Link to="/products" className="text-sm text-background/60 hover:text-background transition-colors">
                   Shop All
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/about"
-                  className="text-sm text-background/60 hover:text-background transition-colors duration-300"
-                >
+                <Link to="/about" className="text-sm text-background/60 hover:text-background transition-colors">
                   Our Story
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/cart"
-                  className="text-sm text-background/60 hover:text-background transition-colors duration-300"
-                >
+                <Link to="/cart" className="text-sm text-background/60 hover:text-background transition-colors">
                   Shopping Bag
                 </Link>
               </li>
             </ul>
           </div>
-
-          {/* Support */}
           <div>
             <h4 className="text-[11px] font-semibold tracking-[0.25em] uppercase text-background/40 mb-5">
-              Support
+              Account
             </h4>
             <ul className="space-y-3">
               <li>
-                <a
-                  href="#"
-                  className="text-sm text-background/60 hover:text-background transition-colors duration-300"
-                >
-                  Shipping & Returns
-                </a>
+                <Link to="/login" className="text-sm text-background/60 hover:text-background transition-colors">
+                  Sign In
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="text-sm text-background/60 hover:text-background transition-colors duration-300"
-                >
-                  Care Guide
-                </a>
+                <Link to="/register" className="text-sm text-background/60 hover:text-background transition-colors">
+                  Create Account
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="text-sm text-background/60 hover:text-background transition-colors duration-300"
-                >
-                  FAQ
-                </a>
+                <Link to="/account" className="text-sm text-background/60 hover:text-background transition-colors">
+                  My Orders
+                </Link>
               </li>
             </ul>
           </div>
-
-          {/* Contact */}
           <div>
             <h4 className="text-[11px] font-semibold tracking-[0.25em] uppercase text-background/40 mb-5">
-              Contact
+              Help
             </h4>
             <ul className="space-y-3">
-              <li>
-                <a
-                  href="mailto:hello@maison.com"
-                  className="text-sm text-background/60 hover:text-background transition-colors duration-300"
-                >
-                  hello@maison.com
-                </a>
-              </li>
-              <li>
-                <p className="text-sm text-background/40 leading-relaxed">
-                  Mon–Fri, 9am–6pm CET
-                </p>
-              </li>
+              <li className="text-sm text-background/60">Shipping & Returns</li>
+              <li className="text-sm text-background/60">Care Guide</li>
+              <li className="text-sm text-background/60">FAQ</li>
             </ul>
           </div>
         </div>
       </div>
 
-      {/* Bottom bar */}
       <div className="border-t border-background/10">
         <div className="container-full py-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-background/30">
-            © {new Date().getFullYear()} Maison. All rights reserved.
+            © {new Date().getFullYear()} {brandName}. All rights reserved.
           </p>
           <div className="flex gap-8">
-            <a
-              href="#"
-              className="text-xs text-background/30 hover:text-background/60 transition-colors duration-300"
-            >
-              Privacy Policy
-            </a>
-            <a
-              href="#"
-              className="text-xs text-background/30 hover:text-background/60 transition-colors duration-300"
-            >
-              Terms of Service
-            </a>
-            <a
-              href="#"
-              className="text-xs text-background/30 hover:text-background/60 transition-colors duration-300"
-            >
-              Cookie Policy
-            </a>
+            <span className="text-xs text-background/30">Powered by Brainerce</span>
           </div>
         </div>
       </div>
