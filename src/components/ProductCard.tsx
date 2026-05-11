@@ -125,10 +125,30 @@ export const ProductCard = ({ product, index = 0, variant = "default" }: Product
             {product.name}
           </h3>
           <div className="flex items-center gap-3 pt-1">
-            {priceInfo.isOnSale ? (
+            {isVariable && minVariantPrice !== null ? (
+              (() => {
+                const regularPrices = (product.variants || [])
+                  .map((v) => (v.price ? Number(v.price) : NaN))
+                  .filter((n) => !isNaN(n) && n > 0);
+                const minRegular = regularPrices.length ? Math.min(...regularPrices) : minVariantPrice;
+                const onSale = minRegular > minVariantPrice;
+                return (
+                  <>
+                    <p className={cn("text-base font-medium", onSale ? "text-primary" : "text-foreground")}>
+                      {variantPriceVaries ? "From " : ""}{formatPrice(String(minVariantPrice), { currency })}
+                    </p>
+                    {onSale && (
+                      <p className="text-sm text-muted-foreground line-through">
+                        {formatPrice(String(minRegular), { currency })}
+                      </p>
+                    )}
+                  </>
+                );
+              })()
+            ) : priceInfo.isOnSale ? (
               <>
                 <p className="text-base font-medium text-primary">
-                  {showFrom ? "From " : ""}{formatPrice(String(showFrom ? minVariantPrice : priceInfo.price), { currency })}
+                  {formatPrice(String(priceInfo.price), { currency })}
                 </p>
                 <p className="text-sm text-muted-foreground line-through">
                   {formatPrice(String(priceInfo.originalPrice), { currency })}
@@ -136,7 +156,7 @@ export const ProductCard = ({ product, index = 0, variant = "default" }: Product
               </>
             ) : (
               <p className="text-base font-medium text-foreground">
-                {showFrom ? "From " : ""}{formatPrice(String(showFrom ? minVariantPrice : priceInfo.price), { currency })}
+                {formatPrice(String(priceInfo.price), { currency })}
               </p>
             )}
           </div>
