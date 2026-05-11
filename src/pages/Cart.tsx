@@ -53,12 +53,12 @@ const Cart = () => {
                     initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: index * 0.05 }}
                     className="flex gap-6 py-8 border-b border-border">
-                    <Link to={`/product/${item.product.slug}`} className="w-28 h-32 md:w-36 md:h-44 flex-shrink-0 overflow-hidden bg-muted/30">
+                    <Link to={`/product/${item.product.id}`} className="w-28 h-32 md:w-36 md:h-44 flex-shrink-0 overflow-hidden bg-muted/30">
                       {image ? <img src={image} alt={name} className="w-full h-full object-cover" /> : null}
                     </Link>
                     <div className="flex-1 flex flex-col">
                       <div className="flex-1">
-                        <Link to={`/product/${item.product.slug}`} className="font-serif text-lg md:text-xl hover:text-primary transition-colors">
+                        <Link to={`/product/${item.product.id}`} className="font-serif text-lg md:text-xl hover:text-primary transition-colors">
                           {name}
                         </Link>
                         {item.variant && <p className="text-xs text-muted-foreground mt-1">{item.variant.name}</p>}
