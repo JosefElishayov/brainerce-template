@@ -7,7 +7,6 @@ import { client } from "@/lib/brainerce";
 interface CategoryItem {
   id: string;
   name: string;
-  slug: string;
 }
 
 export const Footer = () => {
@@ -72,7 +71,7 @@ export const Footer = () => {
                 categories.map((c) => (
                   <li key={c.id}>
                     <Link
-                      to={`/products?category=${c.slug}`}
+                      to={`/products?category=${c.id}`}
                       className="text-sm text-background/60 hover:text-background transition-colors"
                     >
                       {c.name}

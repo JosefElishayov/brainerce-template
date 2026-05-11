@@ -18,8 +18,6 @@ import { cn } from "@/lib/utils";
 interface CategoryItem {
   id: string;
   name: string;
-  slug: string;
-  description?: string | null;
 }
 
 export const Header = () => {
