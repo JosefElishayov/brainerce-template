@@ -103,6 +103,12 @@ export const Header = () => {
             >
               About
             </Link>
+            <Link
+              to="/contact"
+              className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline"
+            >
+              Contact
+            </Link>
           </div>
 
           <div className="flex items-center gap-2">
