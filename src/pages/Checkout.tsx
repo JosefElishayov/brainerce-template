@@ -23,6 +23,71 @@ import { useStore } from "@/contexts/StoreContext";
 import { client } from "@/lib/brainerce";
 import { useToast } from "@/hooks/use-toast";
 
+function CouponInput() {
+  const { cart, refreshCart } = useStore();
+  const [code, setCode] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const applied = cart && "couponCode" in cart ? (cart as { couponCode?: string }).couponCode : null;
+
+  async function apply(e: React.FormEvent) {
+    e.preventDefault();
+    if (!cart || !("id" in cart) || !code.trim()) return;
+    setBusy(true);
+    setErr(null);
+    try {
+      await client.applyCoupon(cart.id, code.trim());
+      await refreshCart();
+      setCode("");
+    } catch (e2) {
+      setErr(e2 instanceof Error ? e2.message : "Invalid code");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function remove() {
+    if (!cart || !("id" in cart)) return;
+    setBusy(true);
+    try {
+      await client.removeCoupon(cart.id);
+      await refreshCart();
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (applied) {
+    return (
+      <div className="flex items-center justify-between text-sm border border-border p-3">
+        <span>
+          Coupon <strong>{applied}</strong> applied
+        </span>
+        <button onClick={remove} disabled={busy} className="text-xs underline text-muted-foreground hover:text-foreground">
+          Remove
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={apply} className="space-y-2">
+      <div className="flex gap-2">
+        <Input
+          placeholder="Promo code"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          className="rounded-none h-11"
+        />
+        <Button type="submit" variant="outline" disabled={busy || !code.trim()} className="rounded-none px-5 text-xs tracking-widest uppercase">
+          Apply
+        </Button>
+      </div>
+      {err && <p className="text-xs text-destructive">{err}</p>}
+    </form>
+  );
+}
+
 interface PaymentData {
   clientSecret: string;
   provider: string;
@@ -327,22 +392,27 @@ const Checkout = () => {
                 </div>
 
                 {totals && (
-                  <div className="border-t border-border pt-4 space-y-3">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Subtotal</span>
-                      <span>{formatPrice(String(totals.subtotal), { currency })}</span>
+                  <>
+                    <div className="border-t border-border pt-4 mb-4">
+                      <CouponInput />
                     </div>
-                    {totals.discount > 0 && (
-                      <div className="flex justify-between text-sm text-primary">
-                        <span>Discount</span>
-                        <span>-{formatPrice(String(totals.discount), { currency })}</span>
+                    <div className="border-t border-border pt-4 space-y-3">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Subtotal</span>
+                        <span>{formatPrice(String(totals.subtotal), { currency })}</span>
                       </div>
-                    )}
-                    <div className="flex justify-between font-serif text-xl border-t border-border pt-4">
-                      <span>Total</span>
-                      <span>{formatPrice(String(totals.total), { currency })}</span>
+                      {totals.discount > 0 && (
+                        <div className="flex justify-between text-sm text-primary">
+                          <span>Discount</span>
+                          <span>-{formatPrice(String(totals.discount), { currency })}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between font-serif text-xl border-t border-border pt-4">
+                        <span>Total</span>
+                        <span>{formatPrice(String(totals.total), { currency })}</span>
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )}
               </div>
             </div>
