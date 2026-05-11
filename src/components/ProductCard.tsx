@@ -25,13 +25,20 @@ export const ProductCard = ({ product, index = 0, variant = "default" }: Product
   const priceInfo = getProductPriceInfo(product);
   const collectionName = product.categories?.[0]?.name;
   const isVariable = product.type === "VARIABLE";
-  const variantPrices = isVariable
+  const variantEffectivePrices = isVariable
     ? (product.variants || [])
-        .map((v) => Number(v.price ?? product.basePrice))
+        .map((v) => {
+          const sale = v.salePrice ? Number(v.salePrice) : NaN;
+          const base = v.price ? Number(v.price) : NaN;
+          if (!isNaN(sale) && sale > 0) return sale;
+          if (!isNaN(base) && base > 0) return base;
+          return NaN;
+        })
         .filter((n) => !isNaN(n) && n > 0)
     : [];
-  const minVariantPrice = variantPrices.length ? Math.min(...variantPrices) : null;
-  const showFrom = isVariable && minVariantPrice !== null && variantPrices.some((p) => p !== minVariantPrice);
+  const minVariantPrice = variantEffectivePrices.length ? Math.min(...variantEffectivePrices) : null;
+  const maxVariantPrice = variantEffectivePrices.length ? Math.max(...variantEffectivePrices) : null;
+  const variantPriceVaries = minVariantPrice !== null && maxVariantPrice !== null && minVariantPrice !== maxVariantPrice;
 
   const handleQuickAdd = async (e: React.MouseEvent) => {
     e.preventDefault();
