@@ -76,15 +76,10 @@ export const Header = () => {
                           <li key={c.id}>
                             <NavigationMenuLink asChild>
                               <Link
-                                to={`/products?category=${c.slug}`}
+                                to={`/products?category=${c.id}`}
                                 className="block select-none space-y-1 rounded-sm p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
                               >
                                 <div className="text-sm font-medium leading-none">{c.name}</div>
-                                {c.description && (
-                                  <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                    {c.description}
-                                  </p>
-                                )}
                               </Link>
                             </NavigationMenuLink>
                           </li>
