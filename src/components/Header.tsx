@@ -142,7 +142,7 @@ export const Header = () => {
                     {categories.slice(0, 6).map((c) => (
                       <Link
                         key={c.id}
-                        to={`/products?category=${c.slug}`}
+                        to={`/products?category=${c.id}`}
                         className="block px-2 py-2.5 text-sm hover:bg-accent transition-colors duration-300"
                         onClick={() => setMobileMenuOpen(false)}
                       >
