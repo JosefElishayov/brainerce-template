@@ -11,7 +11,6 @@ const OrderConfirmation = () => {
   const checkoutId = params.get("checkout_id");
   const { refreshCart } = useStore();
   const [status, setStatus] = useState<"loading" | "ok" | "error">("loading");
-  const [orderId, setOrderId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!checkoutId) {
@@ -25,8 +24,7 @@ const OrderConfirmation = () => {
       try {
         const checkout = await client.getCheckout(checkoutId);
         if (cancelled) return;
-        if (checkout.orderId) {
-          setOrderId(checkout.orderId);
+        if (checkout.status === "completed") {
           setStatus("ok");
           refreshCart();
           return;
