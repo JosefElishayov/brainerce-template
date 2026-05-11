@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
 import type { Product, ProductVariant } from "brainerce";
 import {
   formatPrice, getProductPriceInfo, getVariantOptions, getVariantPrice,
-  getDescriptionContent, getStockStatus,
+  getDescriptionContent, getStockStatus, getProductSwatches,
 } from "brainerce";
 import { Layout } from "@/components/Layout";
 import { ProductCard } from "@/components/ProductCard";
@@ -96,9 +96,11 @@ const ProductDetail = () => {
   const stockStatus = getStockStatus(product.inventory);
   const canPurchase = product.inventory?.canPurchase ?? true;
 
-  // Variant attribute names
+  // Variant attribute names + swatch metadata (color/image)
   const allOptions = product.variants?.map(v => getVariantOptions(v)) || [];
   const attrNames = [...new Set(allOptions.flatMap(opts => opts.map(o => o.name)))];
+  const swatches = getProductSwatches(product);
+  const swatchByAttr = new Map(swatches.map(s => [s.attributeName, s]));
 
   const handleAdd = async () => {
     try {
@@ -199,25 +201,61 @@ const ProductDetail = () => {
               {product.type === "VARIABLE" && attrNames.map(attrName => {
                 const uniqueValues = [...new Set(allOptions.flatMap(o => o.filter(x => x.name === attrName).map(x => x.value)))];
                 const currentValue = selectedVariant ? getVariantOptions(selectedVariant).find(o => o.name === attrName)?.value : undefined;
+                const swatchGroup = swatchByAttr.get(attrName);
+                const displayType = swatchGroup?.displayType?.toLowerCase();
+                const isColor = displayType === "color";
+                const isImage = displayType === "image";
+                const findSwatch = (value: string) => swatchGroup?.options.find(o => o.name === value || o.value === value);
+
                 return (
                   <div key={attrName} className="mb-6">
                     <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground block mb-3">
                       {attrName}: {currentValue}
                     </span>
                     <div className="flex flex-wrap gap-2">
-                      {uniqueValues.map(value => (
-                        <button key={value}
-                          onClick={() => {
-                            const match = product.variants?.find(v => getVariantOptions(v).some(o => o.name === attrName && o.value === value));
-                            if (match) setSelectedVariant(match);
-                          }}
-                          className={cn(
-                            "px-4 py-2 text-sm border transition-colors",
-                            currentValue === value ? "bg-foreground text-background border-foreground" : "border-border hover:border-foreground"
-                          )}>
-                          {value}
-                        </button>
-                      ))}
+                      {uniqueValues.map(value => {
+                        const swatch = findSwatch(value);
+                        const selected = currentValue === value;
+                        const onSelect = () => {
+                          const match = product.variants?.find(v => getVariantOptions(v).some(o => o.name === attrName && o.value === value));
+                          if (match) setSelectedVariant(match);
+                        };
+
+                        if (isColor && swatch?.swatchColor) {
+                          return (
+                            <button key={value} onClick={onSelect} title={value} aria-label={value}
+                              className={cn(
+                                "w-10 h-10 rounded-full border transition-all relative",
+                                selected ? "border-foreground ring-2 ring-foreground ring-offset-2" : "border-border hover:border-foreground"
+                              )}
+                              style={swatch.swatchColor2
+                                ? { background: `linear-gradient(135deg, ${swatch.swatchColor} 50%, ${swatch.swatchColor2} 50%)` }
+                                : { backgroundColor: swatch.swatchColor }} />
+                          );
+                        }
+
+                        if (isImage && swatch?.swatchImageUrl) {
+                          return (
+                            <button key={value} onClick={onSelect} title={value} aria-label={value}
+                              className={cn(
+                                "w-14 h-14 overflow-hidden border transition-all",
+                                selected ? "border-foreground ring-2 ring-foreground ring-offset-2" : "border-border hover:border-foreground"
+                              )}>
+                              <img src={swatch.swatchImageUrl} alt={value} className="w-full h-full object-cover" />
+                            </button>
+                          );
+                        }
+
+                        return (
+                          <button key={value} onClick={onSelect}
+                            className={cn(
+                              "px-4 py-2 text-sm border transition-colors",
+                              selected ? "bg-foreground text-background border-foreground" : "border-border hover:border-foreground"
+                            )}>
+                            {value}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 );
