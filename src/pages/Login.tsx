@@ -30,7 +30,7 @@ const Login = () => {
     setLoading(true);
     setError(null);
     try {
-      const auth = await client.loginCustomer({ email, password });
+      const auth = await client.loginCustomer(email, password);
       if (auth.requiresVerification) {
         localStorage.setItem("verificationToken", auth.token);
         localStorage.setItem("verificationEmail", email);
