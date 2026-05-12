@@ -234,13 +234,8 @@ const Checkout = () => {
       const rateList = shippingRates ?? [];
       setRates(rateList);
 
-      // 4. Pick a shipping method (first one by default)
-      let rateId = selectedRateId;
-      if (rateList.length > 0) {
-        rateId = rateList[0].id;
-        setSelectedRateId(rateId);
-        await client.selectShippingMethod(checkoutId, rateId);
-      }
+      // 4. Do not auto-select shipping — buyer picks below.
+      setSelectedRateId(null);
 
       // 5. Check for custom checkout fields
       let fields: CheckoutCustomFieldDefinition[] = [];
