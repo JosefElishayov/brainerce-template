@@ -98,6 +98,12 @@ export const Header = () => {
               Shop All
             </Link>
             <Link
+              to="/products?sale=true"
+              className="text-xs font-medium tracking-[0.15em] uppercase text-primary hover:text-primary/80 transition-colors duration-300 link-underline"
+            >
+              Sale
+            </Link>
+            <Link
               to="/about"
               className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline"
             >
@@ -160,6 +166,7 @@ export const Header = () => {
                 <div className="pt-6 border-t border-border space-y-1">
                   {[
                     { to: "/products", label: "Shop All" },
+                    { to: "/products?sale=true", label: "Sale" },
                     { to: "/about", label: "About" },
                     { to: "/contact", label: "Contact" },
                     { to: "/cart", label: "Shopping Bag" },
