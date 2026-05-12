@@ -124,6 +124,30 @@ const Checkout = () => {
   const [payment, setPayment] = useState<PaymentData | null>(null);
   const [stripePromise, setStripePromise] =
     useState<ReturnType<typeof loadStripe> | null>(null);
+  const [bumps, setBumps] = useState<Array<Parameters<typeof OrderBumpCard>[0]["bump"]>>([]);
+  const [addedBumpIds, setAddedBumpIds] = useState<Set<string>>(new Set());
+
+  // Fetch order bumps once we have a checkoutId
+  useEffect(() => {
+    if (!showBumps || !payment?.checkoutId) return;
+    client.getCheckoutBumps(payment.checkoutId)
+      .then((res) => {
+        const list = (res?.bumps ?? []) as Array<Parameters<typeof OrderBumpCard>[0]["bump"]>;
+        setBumps(list);
+      })
+      .catch(() => setBumps([]));
+  }, [showBumps, payment?.checkoutId]);
+
+  // Track which bumps are already in cart
+  useEffect(() => {
+    if (!cart) return;
+    const ids = new Set<string>();
+    for (const item of cart.items) {
+      const meta = (item as unknown as { metadata?: { isOrderBump?: boolean; bumpId?: string } }).metadata;
+      if (meta?.isOrderBump && meta.bumpId) ids.add(meta.bumpId);
+    }
+    setAddedBumpIds(ids);
+  }, [cart]);
 
   const totals = useMemo(() => {
     if (!cart || !("id" in cart)) return null;
