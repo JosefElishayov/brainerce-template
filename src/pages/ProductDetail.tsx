@@ -31,6 +31,7 @@ const ProductDetail = () => {
   const [qty, setQty] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [adding, setAdding] = useState(false);
+  const [customValues, setCustomValues] = useState<CustomizationValues>({});
 
   useEffect(() => {
     if (!slug) return;
