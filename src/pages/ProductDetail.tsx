@@ -313,6 +313,14 @@ const ProductDetail = () => {
                 );
               })}
 
+              <ProductCustomizationFields
+                fields={customFields}
+                values={customValues}
+                onChange={(key, value) =>
+                  setCustomValues((prev) => ({ ...prev, [key]: value }))
+                }
+              />
+
               <div className="mb-6">
                 <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground block mb-3">Quantity</span>
                 <QuantitySelector quantity={qty} onQuantityChange={setQty} />
