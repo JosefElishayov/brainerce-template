@@ -529,9 +529,20 @@ const Checkout = () => {
                           <span>-{formatPrice(String(totals.discount), { currency })}</span>
                         </div>
                       )}
+                      {appliedSurcharges.map((s) => (
+                        <div key={s.key} className="flex justify-between text-sm text-muted-foreground">
+                          <span>{s.name}</span>
+                          <span>{formatPrice(String(s.amount), { currency })}</span>
+                        </div>
+                      ))}
                       <div className="flex justify-between font-serif text-xl border-t border-border pt-4">
                         <span>Total</span>
-                        <span>{formatPrice(String(totals.total), { currency })}</span>
+                        <span>
+                          {formatPrice(
+                            String((totals.total ?? 0) + (surchargeAmount || 0)),
+                            { currency },
+                          )}
+                        </span>
                       </div>
                     </div>
                   </>
