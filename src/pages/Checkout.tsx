@@ -15,6 +15,7 @@ import {
   getCartItemName,
   getCartItemImage,
   type ShippingRate,
+  type CheckoutCustomFieldDefinition,
 } from "brainerce";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,13 @@ import { useStore } from "@/contexts/StoreContext";
 import { client } from "@/lib/brainerce";
 import { useToast } from "@/hooks/use-toast";
 import { OrderBumpCard } from "@/components/upsell/OrderBumpCard";
+import { CustomFieldsStep } from "@/components/CustomFieldsStep";
+
+interface AppliedSurcharge {
+  key: string;
+  name: string;
+  amount: string | number;
+}
 
 function CouponInput() {
   const { cart, refreshCart } = useStore();
