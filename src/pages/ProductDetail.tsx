@@ -10,6 +10,7 @@ import {
 import { Layout } from "@/components/Layout";
 import { QuantitySelector } from "@/components/QuantitySelector";
 import { RecommendationSection } from "@/components/upsell/RecommendationSection";
+import { ProductReviews } from "@/components/ProductReviews";
 import {
   ProductCustomizationFields,
   type CustomizationValues,
@@ -19,6 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import { client } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
 import { cn } from "@/lib/utils";
+import { Star } from "lucide-react";
 
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -219,7 +221,32 @@ const ProductDetail = () => {
                   {collection.name}
                 </Link>
               )}
-              <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground mb-5 leading-[1.05]">{product.name}</h1>
+              <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground mb-3 leading-[1.05]">{product.name}</h1>
+
+              {(product.reviewCount ?? 0) > 0 && (
+                <a
+                  href="#reviews"
+                  className="inline-flex items-center gap-2 mb-5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <span className="flex items-center gap-0.5">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <Star
+                        key={n}
+                        className={cn(
+                          "w-3.5 h-3.5",
+                          n <= Math.round(product.avgRating ?? 0)
+                            ? "fill-primary text-primary"
+                            : "text-muted-foreground/40",
+                        )}
+                      />
+                    ))}
+                  </span>
+                  <span>
+                    {(product.avgRating ?? 0).toFixed(1)} · {product.reviewCount} review
+                    {product.reviewCount === 1 ? "" : "s"}
+                  </span>
+                </a>
+              )}
 
               <div className="flex items-baseline gap-3 mb-8">
                 <p className="text-2xl font-serif text-foreground">{formatPrice(displayPrice, { currency })}</p>
@@ -359,6 +386,10 @@ const ProductDetail = () => {
           items={recs.related}
         />
       ) : null}
+
+      <div id="reviews">
+        <ProductReviews productId={product.id} />
+      </div>
     </Layout>
   );
 };
