@@ -530,21 +530,37 @@ const Checkout = () => {
                           <span>-{formatPrice(String(totals.discount), { currency })}</span>
                         </div>
                       )}
-                      {appliedSurcharges.map((s) => (
-                        <div key={s.key} className="flex justify-between text-sm text-muted-foreground">
-                          <span>{s.name}</span>
-                          <span>{formatPrice(String(s.amount), { currency })}</span>
-                        </div>
-                      ))}
-                      <div className="flex justify-between font-serif text-xl border-t border-border pt-4">
-                        <span>Total</span>
-                        <span>
-                          {formatPrice(
-                            String((totals.total ?? 0) + (surchargeAmount || 0)),
-                            { currency },
-                          )}
-                        </span>
-                      </div>
+                      {(() => {
+                        const selectedRate = rates.find((r) => r.id === selectedRateId);
+                        const shippingPrice = selectedRate ? parseFloat(String(selectedRate.price)) || 0 : 0;
+                        return (
+                          <>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-muted-foreground">Shipping</span>
+                              <span>
+                                {selectedRate
+                                  ? formatPrice(String(shippingPrice), { currency })
+                                  : <span className="text-muted-foreground">Select method</span>}
+                              </span>
+                            </div>
+                            {appliedSurcharges.map((s) => (
+                              <div key={s.key} className="flex justify-between text-sm text-muted-foreground">
+                                <span>{s.name}</span>
+                                <span>{formatPrice(String(s.amount), { currency })}</span>
+                              </div>
+                            ))}
+                            <div className="flex justify-between font-serif text-xl border-t border-border pt-4">
+                              <span>Total</span>
+                              <span>
+                                {formatPrice(
+                                  String((totals.total ?? 0) + (surchargeAmount || 0) + shippingPrice),
+                                  { currency },
+                                )}
+                              </span>
+                            </div>
+                          </>
+                        );
+                      })()}
                     </div>
                   </>
                 )}
