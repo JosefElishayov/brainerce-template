@@ -418,6 +418,22 @@ const Checkout = () => {
                   })}
                 </div>
 
+                {showBumps && bumps.length > 0 && payment?.checkoutId && (
+                  <div className="border-t border-border pt-4 mb-4 space-y-3">
+                    <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-muted-foreground">
+                      Add to your order
+                    </p>
+                    {bumps.map((b) => (
+                      <OrderBumpCard
+                        key={b.id}
+                        bump={b}
+                        cartId={payment.checkoutId}
+                        added={addedBumpIds.has(b.id)}
+                      />
+                    ))}
+                  </div>
+                )}
+
                 {totals && (
                   <>
                     <div className="border-t border-border pt-4 mb-4">
