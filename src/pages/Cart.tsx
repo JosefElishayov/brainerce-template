@@ -1,15 +1,20 @@
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, ShoppingBag, Trash2 } from "lucide-react";
+import type { CartWithIncludes } from "brainerce";
 import { formatPrice, getCartTotals, getCartItemName, getCartItemImage } from "brainerce";
 import { Layout } from "@/components/Layout";
 import { QuantitySelector } from "@/components/QuantitySelector";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/contexts/StoreContext";
+import { FreeShippingBar } from "@/components/upsell/FreeShippingBar";
+import { CartUpgradeBanner } from "@/components/upsell/CartUpgradeBanner";
+import { CartBundleOfferCard } from "@/components/upsell/CartBundleOfferCard";
+import { RecommendationSection } from "@/components/upsell/RecommendationSection";
 
 const Cart = () => {
   const navigate = useNavigate();
-  const { cart, currency, updateQuantity, removeFromCart } = useStore();
+  const { cart, currency, storeInfo, updateQuantity, removeFromCart } = useStore();
 
   if (!cart || cart.items.length === 0) {
     return (
@@ -28,6 +33,13 @@ const Cart = () => {
 
   const isServerCart = "id" in cart;
   const totals = isServerCart ? getCartTotals(cart) : null;
+  const cartIncludes = cart as CartWithIncludes;
+  const upgrades = cartIncludes.upgrades?.upgrades ?? {};
+  const bundles = cartIncludes.bundles?.bundles ?? [];
+  const recommendations = cartIncludes.recommendations?.recommendations ?? [];
+  const upsell = (storeInfo as unknown as { upsell?: Record<string, boolean> })?.upsell;
+  const showUpgrades = upsell?.cartUpgradeBannerEnabled !== false;
+  const showBundles = upsell?.cartBundleEnabled !== false;
 
   return (
     <Layout>
@@ -41,41 +53,53 @@ const Cart = () => {
 
       <section className="py-10 md:py-16">
         <div className="container-full">
-          <h1 className="font-serif text-4xl md:text-5xl mb-12">Your Bag</h1>
+          <h1 className="font-serif text-4xl md:text-5xl mb-8">Your Bag</h1>
+          <FreeShippingBar />
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
             <div className="lg:col-span-7">
               {cart.items.map((item, index) => {
                 const name = getCartItemName(item);
                 const image = getCartItemImage(item);
                 const lineTotal = parseFloat(item.unitPrice) * item.quantity;
+                const upgrade = showUpgrades ? upgrades[item.product.id] : undefined;
                 return (
                   <motion.div key={`${item.product.id}-${item.variant?.id ?? "_"}`}
                     initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: index * 0.05 }}
-                    className="flex gap-6 py-8 border-b border-border">
-                    <Link to={`/product/${item.product.id}`} className="w-28 h-32 md:w-36 md:h-44 flex-shrink-0 overflow-hidden bg-muted/30">
-                      {image ? <img src={image} alt={name} className="w-full h-full object-cover" /> : null}
-                    </Link>
-                    <div className="flex-1 flex flex-col">
-                      <div className="flex-1">
-                        <Link to={`/product/${item.product.id}`} className="font-serif text-lg md:text-xl hover:text-primary transition-colors">
-                          {name}
-                        </Link>
-                        {item.variant && <p className="text-xs text-muted-foreground mt-1">{item.variant.name}</p>}
-                        <p className="font-serif text-lg mt-3">{formatPrice(String(lineTotal), { currency })}</p>
-                      </div>
-                      <div className="flex items-center justify-between mt-4">
-                        <QuantitySelector quantity={item.quantity}
-                          onQuantityChange={(q) => updateQuantity(item.product.id, q, item.variant?.id)} />
-                        <button onClick={() => removeFromCart(item.product.id, item.variant?.id)}
-                          className="p-2 text-muted-foreground hover:text-destructive transition-colors">
-                          <Trash2 className="w-5 h-5" />
-                        </button>
+                    className="py-8 border-b border-border">
+                    <div className="flex gap-6">
+                      <Link to={`/product/${item.product.id}`} className="w-28 h-32 md:w-36 md:h-44 flex-shrink-0 overflow-hidden bg-muted/30">
+                        {image ? <img src={image} alt={name} className="w-full h-full object-cover" /> : null}
+                      </Link>
+                      <div className="flex-1 flex flex-col">
+                        <div className="flex-1">
+                          <Link to={`/product/${item.product.id}`} className="font-serif text-lg md:text-xl hover:text-primary transition-colors">
+                            {name}
+                          </Link>
+                          {item.variant && <p className="text-xs text-muted-foreground mt-1">{item.variant.name}</p>}
+                          <p className="font-serif text-lg mt-3">{formatPrice(String(lineTotal), { currency })}</p>
+                        </div>
+                        <div className="flex items-center justify-between mt-4">
+                          <QuantitySelector quantity={item.quantity}
+                            onQuantityChange={(q) => updateQuantity(item.product.id, q, item.variant?.id)} />
+                          <button onClick={() => removeFromCart(item.product.id, item.variant?.id)}
+                            className="p-2 text-muted-foreground hover:text-destructive transition-colors">
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
                       </div>
                     </div>
+                    {upgrade && <CartUpgradeBanner upgrade={upgrade} />}
                   </motion.div>
                 );
               })}
+
+              {showBundles && bundles.length > 0 && (
+                <div className="mt-8">
+                  {bundles.map((b) => <CartBundleOfferCard key={b.id} bundle={b} />)}
+                </div>
+              )}
+
               <Link to="/products" className="inline-flex items-center gap-2 mt-8 text-sm tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground">
                 <ArrowRight className="w-4 h-4 rotate-180" /> Continue Shopping
               </Link>
@@ -121,6 +145,14 @@ const Cart = () => {
           </div>
         </div>
       </section>
+
+      {recommendations.length > 0 && (
+        <RecommendationSection
+          eyebrow="Curated For You"
+          title="You Might Also Love"
+          items={recommendations}
+        />
+      )}
     </Layout>
   );
 };
