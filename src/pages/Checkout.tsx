@@ -410,7 +410,18 @@ const Checkout = () => {
                 </form>
               )}
 
-              {step === "payment" && payment && (
+              {step === "custom-fields" && (
+                <CustomFieldsStep
+                  fields={customFields}
+                  values={customFieldValues}
+                  onChange={(key, value) =>
+                    setCustomFieldValues((prev) => ({ ...prev, [key]: value }))
+                  }
+                  onApply={applyCustomFields}
+                  loading={loading}
+                />
+              )}
+
                 <div className="space-y-6">
                   {rates.length > 0 && (
                     <div>
