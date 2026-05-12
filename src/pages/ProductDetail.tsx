@@ -112,10 +112,46 @@ const ProductDetail = () => {
   const swatches = getProductSwatches(product);
   const swatchByAttr = new Map(swatches.map(s => [s.attributeName, s]));
 
+  const customFields = product.customizationFields ?? [];
+
   const handleAdd = async () => {
+    // Validate required customization fields client-side
+    for (const f of customFields) {
+      if (!f.required) continue;
+      const v = customValues[f.key];
+      const empty =
+        v === undefined ||
+        v === "" ||
+        v === null ||
+        (Array.isArray(v) && v.length === 0) ||
+        (typeof v === "number" && Number.isNaN(v));
+      if (empty) {
+        toast({
+          title: "Missing personalization",
+          description: `Please fill in "${f.name}".`,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    // Build metadata, omitting empty optional values
+    const metadata: Record<string, unknown> = {};
+    for (const f of customFields) {
+      const v = customValues[f.key];
+      if (v === undefined || v === "" || v === null) continue;
+      if (Array.isArray(v) && v.length === 0) continue;
+      if (typeof v === "number" && Number.isNaN(v)) continue;
+      metadata[f.key] = v;
+    }
+
     try {
       setAdding(true);
-      await addToCart(product, { quantity: qty, variant: selectedVariant });
+      await addToCart(product, {
+        quantity: qty,
+        variant: selectedVariant,
+        metadata: Object.keys(metadata).length ? metadata : undefined,
+      });
       toast({ title: "Added to bag", description: `${qty} × ${product.name}` });
       setQty(1);
     } catch (err) {
