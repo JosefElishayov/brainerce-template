@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { useStore } from "@/contexts/StoreContext";
 import { client } from "@/lib/brainerce";
 import { useToast } from "@/hooks/use-toast";
+import { OrderBumpCard } from "@/components/upsell/OrderBumpCard";
 
 function CouponInput() {
   const { cart, refreshCart } = useStore();
@@ -98,7 +99,9 @@ interface PaymentData {
 const Checkout = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { cart, currency } = useStore();
+  const { cart, currency, storeInfo, refreshCart } = useStore();
+  const upsell = (storeInfo as unknown as { upsell?: Record<string, boolean> })?.upsell;
+  const showBumps = upsell?.checkoutOrderBumpEnabled !== false;
 
   const [form, setForm] = useState({
     email: "",
