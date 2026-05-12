@@ -10,6 +10,10 @@ import {
 import { Layout } from "@/components/Layout";
 import { QuantitySelector } from "@/components/QuantitySelector";
 import { RecommendationSection } from "@/components/upsell/RecommendationSection";
+import {
+  ProductCustomizationFields,
+  type CustomizationValues,
+} from "@/components/ProductCustomizationFields";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { client } from "@/lib/brainerce";
@@ -27,6 +31,7 @@ const ProductDetail = () => {
   const [qty, setQty] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [adding, setAdding] = useState(false);
+  const [customValues, setCustomValues] = useState<CustomizationValues>({});
 
   useEffect(() => {
     if (!slug) return;
@@ -36,6 +41,14 @@ const ProductDetail = () => {
       .then((p) => {
         setProduct(p);
         if (p.type === "VARIABLE" && p.variants?.length) setSelectedVariant(p.variants[0]);
+        // Initialize customization defaults
+        const initial: CustomizationValues = {};
+        for (const f of p.customizationFields ?? []) {
+          if (f.type === "BOOLEAN") initial[f.key] = false;
+          else if (f.type === "MULTI_SELECT" || f.type === "GALLERY") initial[f.key] = [];
+          else initial[f.key] = f.defaultValue ?? "";
+        }
+        setCustomValues(initial);
       })
       .catch(e => setError(e instanceof Error ? e.message : "Failed to load product"))
       .finally(() => setLoading(false));
@@ -99,10 +112,46 @@ const ProductDetail = () => {
   const swatches = getProductSwatches(product);
   const swatchByAttr = new Map(swatches.map(s => [s.attributeName, s]));
 
+  const customFields = product.customizationFields ?? [];
+
   const handleAdd = async () => {
+    // Validate required customization fields client-side
+    for (const f of customFields) {
+      if (!f.required) continue;
+      const v = customValues[f.key];
+      const empty =
+        v === undefined ||
+        v === "" ||
+        v === null ||
+        (Array.isArray(v) && v.length === 0) ||
+        (typeof v === "number" && Number.isNaN(v));
+      if (empty) {
+        toast({
+          title: "Missing personalization",
+          description: `Please fill in "${f.name}".`,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    // Build metadata, omitting empty optional values
+    const metadata: Record<string, unknown> = {};
+    for (const f of customFields) {
+      const v = customValues[f.key];
+      if (v === undefined || v === "" || v === null) continue;
+      if (Array.isArray(v) && v.length === 0) continue;
+      if (typeof v === "number" && Number.isNaN(v)) continue;
+      metadata[f.key] = v;
+    }
+
     try {
       setAdding(true);
-      await addToCart(product, { quantity: qty, variant: selectedVariant });
+      await addToCart(product, {
+        quantity: qty,
+        variant: selectedVariant,
+        metadata: Object.keys(metadata).length ? metadata : undefined,
+      });
       toast({ title: "Added to bag", description: `${qty} × ${product.name}` });
       setQty(1);
     } catch (err) {
@@ -263,6 +312,14 @@ const ProductDetail = () => {
                   </div>
                 );
               })}
+
+              <ProductCustomizationFields
+                fields={customFields}
+                values={customValues}
+                onChange={(key, value) =>
+                  setCustomValues((prev) => ({ ...prev, [key]: value }))
+                }
+              />
 
               <div className="mb-6">
                 <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground block mb-3">Quantity</span>
