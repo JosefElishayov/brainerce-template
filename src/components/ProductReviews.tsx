@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import type { ProductReview, MyProductReview } from "brainerce";
+type ProductReview = Awaited<ReturnType<typeof client.listProductReviews>>["data"][number];
+type MyProductReview = Awaited<ReturnType<typeof client.getMyProductReview>>;
 import { Star, Loader2, BadgeCheck, Pencil, Trash2 } from "lucide-react";
 import { client } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
