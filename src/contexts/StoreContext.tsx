@@ -31,7 +31,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const refreshCart = useCallback(async () => {
     try {
-      const c = await client.smartGetCart();
+      const c = await client.smartGetCart({ include: ["recommendations", "upgrades", "bundles"] });
       setCart(c);
     } catch (e) {
       console.error("cart", e);

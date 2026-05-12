@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { useStore } from "@/contexts/StoreContext";
 import { client } from "@/lib/brainerce";
 import { useToast } from "@/hooks/use-toast";
+import { OrderBumpCard } from "@/components/upsell/OrderBumpCard";
 
 function CouponInput() {
   const { cart, refreshCart } = useStore();
@@ -98,7 +99,9 @@ interface PaymentData {
 const Checkout = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { cart, currency } = useStore();
+  const { cart, currency, storeInfo } = useStore();
+  const upsell = (storeInfo as unknown as { upsell?: Record<string, boolean> })?.upsell;
+  const showBumps = upsell?.checkoutOrderBumpEnabled !== false;
 
   const [form, setForm] = useState({
     email: "",
@@ -121,6 +124,30 @@ const Checkout = () => {
   const [payment, setPayment] = useState<PaymentData | null>(null);
   const [stripePromise, setStripePromise] =
     useState<ReturnType<typeof loadStripe> | null>(null);
+  const [bumps, setBumps] = useState<Array<Parameters<typeof OrderBumpCard>[0]["bump"]>>([]);
+  const [addedBumpIds, setAddedBumpIds] = useState<Set<string>>(new Set());
+
+  // Fetch order bumps once we have a checkoutId
+  useEffect(() => {
+    if (!showBumps || !payment?.checkoutId) return;
+    client.getCheckoutBumps(payment.checkoutId)
+      .then((res) => {
+        const list = (res?.bumps ?? []) as Array<Parameters<typeof OrderBumpCard>[0]["bump"]>;
+        setBumps(list);
+      })
+      .catch(() => setBumps([]));
+  }, [showBumps, payment?.checkoutId]);
+
+  // Track which bumps are already in cart
+  useEffect(() => {
+    if (!cart) return;
+    const ids = new Set<string>();
+    for (const item of cart.items) {
+      const meta = (item as unknown as { metadata?: { isOrderBump?: boolean; bumpId?: string } }).metadata;
+      if (meta?.isOrderBump && meta.bumpId) ids.add(meta.bumpId);
+    }
+    setAddedBumpIds(ids);
+  }, [cart]);
 
   const totals = useMemo(() => {
     if (!cart || !("id" in cart)) return null;
@@ -390,6 +417,22 @@ const Checkout = () => {
                     );
                   })}
                 </div>
+
+                {showBumps && bumps.length > 0 && payment?.checkoutId && (
+                  <div className="border-t border-border pt-4 mb-4 space-y-3">
+                    <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-muted-foreground">
+                      Add to your order
+                    </p>
+                    {bumps.map((b) => (
+                      <OrderBumpCard
+                        key={b.id}
+                        bump={b}
+                        cartId={payment.checkoutId}
+                        added={addedBumpIds.has(b.id)}
+                      />
+                    ))}
+                  </div>
+                )}
 
                 {totals && (
                   <>

@@ -1,15 +1,15 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
-import type { Product, ProductVariant } from "brainerce";
+import type { Product, ProductVariant, ProductRecommendationsResponse } from "brainerce";
 import {
   formatPrice, getProductPriceInfo, getVariantOptions, getVariantPrice,
   getDescriptionContent, getStockStatus, getProductSwatches,
 } from "brainerce";
 import { Layout } from "@/components/Layout";
-import { ProductCard } from "@/components/ProductCard";
 import { QuantitySelector } from "@/components/QuantitySelector";
+import { RecommendationSection } from "@/components/upsell/RecommendationSection";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { client } from "@/lib/brainerce";
@@ -21,7 +21,6 @@ const ProductDetail = () => {
   const { currency, addToCart } = useStore();
   const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
-  const [related, setRelated] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [imgIdx, setImgIdx] = useState(0);
@@ -37,17 +36,15 @@ const ProductDetail = () => {
       .then((p) => {
         setProduct(p);
         if (p.type === "VARIABLE" && p.variants?.length) setSelectedVariant(p.variants[0]);
-        // related products
-        const catId = p.categories?.[0]?.id;
-        if (catId) {
-          client.getProducts({ categories: [catId], limit: 5 })
-            .then(r => setRelated(r.data.filter(x => x.id !== p.id).slice(0, 4)))
-            .catch(() => {});
-        }
       })
       .catch(e => setError(e instanceof Error ? e.message : "Failed to load product"))
       .finally(() => setLoading(false));
   }, [slug]);
+
+  const recs = useMemo(
+    () => (product as unknown as { recommendations?: ProductRecommendationsResponse } | null)?.recommendations,
+    [product],
+  );
 
   if (loading) {
     return (
@@ -282,16 +279,29 @@ const ProductDetail = () => {
         </div>
       </section>
 
-      {related.length > 0 && (
-        <section className="py-20 md:py-28 bg-linen">
-          <div className="container-full">
-            <h2 className="font-serif text-3xl md:text-4xl mb-12">You May Also Like</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
-              {related.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
-            </div>
-          </div>
-        </section>
-      )}
+      {recs?.crossSells?.length ? (
+        <RecommendationSection
+          eyebrow="Frequently Bought Together"
+          title="Complete the Look"
+          items={recs.crossSells}
+        />
+      ) : null}
+
+      {recs?.upsells?.length ? (
+        <RecommendationSection
+          eyebrow="You Might Prefer"
+          title="Upgrade Your Choice"
+          items={recs.upsells}
+        />
+      ) : null}
+
+      {recs?.related?.length ? (
+        <RecommendationSection
+          eyebrow="Similar Pieces"
+          title="You May Also Like"
+          items={recs.related}
+        />
+      ) : null}
     </Layout>
   );
 };
