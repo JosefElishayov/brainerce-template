@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-type ProductReview = Awaited<ReturnType<typeof client.listProductReviews>>["data"][number];
-type MyProductReview = Awaited<ReturnType<typeof client.getMyProductReview>>;
 import { Star, Loader2, BadgeCheck, Pencil, Trash2 } from "lucide-react";
 import { client } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+type ProductReview = Awaited<ReturnType<typeof client.listProductReviews>>["data"][number];
+type MyProductReview = Awaited<ReturnType<typeof client.getMyProductReview>>;
 
 interface Props {
   productId: string;
