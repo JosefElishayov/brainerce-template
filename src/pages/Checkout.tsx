@@ -452,14 +452,20 @@ const Checkout = () => {
                     </div>
                   )}
 
-                  <div>
-                    <h2 className="font-serif text-xl mb-4">Payment</h2>
-                    <PaymentRenderer
-                      payment={payment}
-                      stripePromise={stripePromise}
-                      onComplete={() => navigate(`/order-confirmation?checkout_id=${payment.checkoutId}`)}
-                    />
-                  </div>
+                  {selectedRateId ? (
+                    <div>
+                      <h2 className="font-serif text-xl mb-4">Payment</h2>
+                      <PaymentRenderer
+                        payment={payment}
+                        stripePromise={stripePromise}
+                        onComplete={() => navigate(`/order-confirmation?checkout_id=${payment.checkoutId}`)}
+                      />
+                    </div>
+                  ) : rates.length > 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                      Select a shipping method to continue to payment.
+                    </p>
+                  ) : null}
                 </div>
               )}
             </div>
