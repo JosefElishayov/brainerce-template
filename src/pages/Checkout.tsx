@@ -124,7 +124,7 @@ const Checkout = () => {
     phone: "",
   });
 
-  const [step, setStep] = useState<"address" | "payment">("address");
+  const [step, setStep] = useState<"address" | "custom-fields" | "payment">("address");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rates, setRates] = useState<ShippingRate[]>([]);
@@ -134,6 +134,11 @@ const Checkout = () => {
     useState<ReturnType<typeof loadStripe> | null>(null);
   const [bumps, setBumps] = useState<Array<Parameters<typeof OrderBumpCard>[0]["bump"]>>([]);
   const [addedBumpIds, setAddedBumpIds] = useState<Set<string>>(new Set());
+  const [pendingCheckoutId, setPendingCheckoutId] = useState<string | null>(null);
+  const [customFields, setCustomFields] = useState<CheckoutCustomFieldDefinition[]>([]);
+  const [customFieldValues, setCustomFieldValues] = useState<Record<string, unknown>>({});
+  const [appliedSurcharges, setAppliedSurcharges] = useState<AppliedSurcharge[]>([]);
+  const [surchargeAmount, setSurchargeAmount] = useState<number>(0);
 
   // Fetch order bumps once we have a checkoutId
   useEffect(() => {
