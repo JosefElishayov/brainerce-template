@@ -15,6 +15,7 @@ import {
   getCartItemName,
   getCartItemImage,
   type ShippingRate,
+  type CheckoutCustomFieldDefinition,
 } from "brainerce";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,13 @@ import { useStore } from "@/contexts/StoreContext";
 import { client } from "@/lib/brainerce";
 import { useToast } from "@/hooks/use-toast";
 import { OrderBumpCard } from "@/components/upsell/OrderBumpCard";
+import { CustomFieldsStep } from "@/components/CustomFieldsStep";
+
+interface AppliedSurcharge {
+  key: string;
+  name: string;
+  amount: string | number;
+}
 
 function CouponInput() {
   const { cart, refreshCart } = useStore();
@@ -116,7 +124,7 @@ const Checkout = () => {
     phone: "",
   });
 
-  const [step, setStep] = useState<"address" | "payment">("address");
+  const [step, setStep] = useState<"address" | "custom-fields" | "payment">("address");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rates, setRates] = useState<ShippingRate[]>([]);
@@ -126,6 +134,11 @@ const Checkout = () => {
     useState<ReturnType<typeof loadStripe> | null>(null);
   const [bumps, setBumps] = useState<Array<Parameters<typeof OrderBumpCard>[0]["bump"]>>([]);
   const [addedBumpIds, setAddedBumpIds] = useState<Set<string>>(new Set());
+  const [pendingCheckoutId, setPendingCheckoutId] = useState<string | null>(null);
+  const [customFields, setCustomFields] = useState<CheckoutCustomFieldDefinition[]>([]);
+  const [customFieldValues, setCustomFieldValues] = useState<Record<string, unknown>>({});
+  const [appliedSurcharges, setAppliedSurcharges] = useState<AppliedSurcharge[]>([]);
+  const [surchargeAmount, setSurchargeAmount] = useState<number>(0);
 
   // Fetch order bumps once we have a checkoutId
   useEffect(() => {
@@ -229,35 +242,89 @@ const Checkout = () => {
         await client.selectShippingMethod(checkoutId, rateId);
       }
 
-      // 5. Create payment intent
-      const intent = await client.createPaymentIntent(checkoutId, {
-        successUrl: `${window.location.origin}/order-confirmation?checkout_id=${checkoutId}`,
-        cancelUrl: `${window.location.origin}/checkout?error=payment_cancelled`,
-      });
-
-      // 6. Initialize provider
-      if (intent.provider === "stripe") {
-        const stripeProvider = providers.find((p) => p.provider === "stripe");
-        if (stripeProvider) {
-          setStripePromise(
-            loadStripe(stripeProvider.publicKey, {
-              stripeAccount: stripeProvider.stripeAccountId,
-            }),
-          );
-        }
+      // 5. Check for custom checkout fields
+      let fields: CheckoutCustomFieldDefinition[] = [];
+      try {
+        fields = await client.getCheckoutCustomFields(checkoutId);
+      } catch (e) {
+        console.warn("custom fields", e);
       }
 
-      setPayment({
-        clientSecret: intent.clientSecret,
-        provider: intent.provider,
-        checkoutId,
-        renderType: intent.clientSdk?.renderType,
-      });
-      setStep("payment");
+      if (fields.length > 0) {
+        setCustomFields(fields);
+        // initialize defaults
+        const initial: Record<string, unknown> = {};
+        for (const f of fields) {
+          if (f.type === "BOOLEAN") initial[f.key] = false;
+          else initial[f.key] = "";
+        }
+        setCustomFieldValues(initial);
+        setPendingCheckoutId(checkoutId);
+        setStep("custom-fields");
+        return;
+      }
+
+      // No custom fields → go straight to payment
+      await initPayment(checkoutId, providers);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Failed to start checkout";
       setError(msg);
       toast({ title: "Checkout error", description: msg, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function initPayment(
+    checkoutId: string,
+    providers: Awaited<ReturnType<typeof client.getPaymentProviders>>["providers"],
+  ) {
+    const intent = await client.createPaymentIntent(checkoutId, {
+      successUrl: `${window.location.origin}/order-confirmation?checkout_id=${checkoutId}`,
+      cancelUrl: `${window.location.origin}/checkout?error=payment_cancelled`,
+    });
+
+    if (intent.provider === "stripe") {
+      const stripeProvider = providers.find((p) => p.provider === "stripe");
+      if (stripeProvider) {
+        setStripePromise(
+          loadStripe(stripeProvider.publicKey, {
+            stripeAccount: stripeProvider.stripeAccountId,
+          }),
+        );
+      }
+    }
+
+    setPayment({
+      clientSecret: intent.clientSecret,
+      provider: intent.provider,
+      checkoutId,
+      renderType: intent.clientSdk?.renderType,
+    });
+    setStep("payment");
+  }
+
+  async function applyCustomFields() {
+    if (!pendingCheckoutId) return;
+    setError(null);
+    setLoading(true);
+    try {
+      const updated = (await client.setCheckoutCustomFields(
+        pendingCheckoutId,
+        customFieldValues,
+      )) as unknown as {
+        appliedSurcharges?: AppliedSurcharge[];
+        surchargeAmount?: string | number;
+      };
+      setAppliedSurcharges(updated.appliedSurcharges ?? []);
+      setSurchargeAmount(parseFloat(String(updated.surchargeAmount ?? 0)) || 0);
+
+      const { providers } = await client.getPaymentProviders();
+      await initPayment(pendingCheckoutId, providers);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Failed to save selections";
+      setError(msg);
+      toast({ title: "Could not save options", description: msg, variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -341,6 +408,18 @@ const Checkout = () => {
                     )}
                   </Button>
                 </form>
+              )}
+
+              {step === "custom-fields" && (
+                <CustomFieldsStep
+                  fields={customFields}
+                  values={customFieldValues}
+                  onChange={(key, value) =>
+                    setCustomFieldValues((prev) => ({ ...prev, [key]: value }))
+                  }
+                  onApply={applyCustomFields}
+                  loading={loading}
+                />
               )}
 
               {step === "payment" && payment && (
@@ -450,9 +529,20 @@ const Checkout = () => {
                           <span>-{formatPrice(String(totals.discount), { currency })}</span>
                         </div>
                       )}
+                      {appliedSurcharges.map((s) => (
+                        <div key={s.key} className="flex justify-between text-sm text-muted-foreground">
+                          <span>{s.name}</span>
+                          <span>{formatPrice(String(s.amount), { currency })}</span>
+                        </div>
+                      ))}
                       <div className="flex justify-between font-serif text-xl border-t border-border pt-4">
                         <span>Total</span>
-                        <span>{formatPrice(String(totals.total), { currency })}</span>
+                        <span>
+                          {formatPrice(
+                            String((totals.total ?? 0) + (surchargeAmount || 0)),
+                            { currency },
+                          )}
+                        </span>
                       </div>
                     </div>
                   </>
