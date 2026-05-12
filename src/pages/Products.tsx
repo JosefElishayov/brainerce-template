@@ -11,7 +11,7 @@ import {
 import { client } from "@/lib/brainerce";
 import { cn } from "@/lib/utils";
 
-interface Category { id: string; name: string }
+interface Category { id: string; name: string; image?: string | null }
 
 type SortOption = "featured" | "newest" | "price-asc" | "price-desc" | "name-asc";
 const sortOptions: { value: SortOption; label: string }[] = [
@@ -76,7 +76,7 @@ const Products = () => {
     <Layout>
       <section className="relative h-[40vh] md:h-[50vh] overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80"
+          src={currentCategory?.image || "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80"}
           alt={currentCategory?.name || "All Products"}
           className="absolute inset-0 w-full h-full object-cover"
         />
