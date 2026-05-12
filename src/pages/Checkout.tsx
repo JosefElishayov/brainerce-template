@@ -234,13 +234,8 @@ const Checkout = () => {
       const rateList = shippingRates ?? [];
       setRates(rateList);
 
-      // 4. Pick a shipping method (first one by default)
-      let rateId = selectedRateId;
-      if (rateList.length > 0) {
-        rateId = rateList[0].id;
-        setSelectedRateId(rateId);
-        await client.selectShippingMethod(checkoutId, rateId);
-      }
+      // 4. Do not auto-select shipping — buyer picks below.
+      setSelectedRateId(null);
 
       // 5. Check for custom checkout fields
       let fields: CheckoutCustomFieldDefinition[] = [];
@@ -457,14 +452,20 @@ const Checkout = () => {
                     </div>
                   )}
 
-                  <div>
-                    <h2 className="font-serif text-xl mb-4">Payment</h2>
-                    <PaymentRenderer
-                      payment={payment}
-                      stripePromise={stripePromise}
-                      onComplete={() => navigate(`/order-confirmation?checkout_id=${payment.checkoutId}`)}
-                    />
-                  </div>
+                  {selectedRateId ? (
+                    <div>
+                      <h2 className="font-serif text-xl mb-4">Payment</h2>
+                      <PaymentRenderer
+                        payment={payment}
+                        stripePromise={stripePromise}
+                        onComplete={() => navigate(`/order-confirmation?checkout_id=${payment.checkoutId}`)}
+                      />
+                    </div>
+                  ) : rates.length > 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                      Select a shipping method to continue to payment.
+                    </p>
+                  ) : null}
                 </div>
               )}
             </div>
@@ -529,21 +530,37 @@ const Checkout = () => {
                           <span>-{formatPrice(String(totals.discount), { currency })}</span>
                         </div>
                       )}
-                      {appliedSurcharges.map((s) => (
-                        <div key={s.key} className="flex justify-between text-sm text-muted-foreground">
-                          <span>{s.name}</span>
-                          <span>{formatPrice(String(s.amount), { currency })}</span>
-                        </div>
-                      ))}
-                      <div className="flex justify-between font-serif text-xl border-t border-border pt-4">
-                        <span>Total</span>
-                        <span>
-                          {formatPrice(
-                            String((totals.total ?? 0) + (surchargeAmount || 0)),
-                            { currency },
-                          )}
-                        </span>
-                      </div>
+                      {(() => {
+                        const selectedRate = rates.find((r) => r.id === selectedRateId);
+                        const shippingPrice = selectedRate ? parseFloat(String(selectedRate.price)) || 0 : 0;
+                        return (
+                          <>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-muted-foreground">Shipping</span>
+                              <span>
+                                {selectedRate
+                                  ? formatPrice(String(shippingPrice), { currency })
+                                  : <span className="text-muted-foreground">Select method</span>}
+                              </span>
+                            </div>
+                            {appliedSurcharges.map((s) => (
+                              <div key={s.key} className="flex justify-between text-sm text-muted-foreground">
+                                <span>{s.name}</span>
+                                <span>{formatPrice(String(s.amount), { currency })}</span>
+                              </div>
+                            ))}
+                            <div className="flex justify-between font-serif text-xl border-t border-border pt-4">
+                              <span>Total</span>
+                              <span>
+                                {formatPrice(
+                                  String((totals.total ?? 0) + (surchargeAmount || 0) + shippingPrice),
+                                  { currency },
+                                )}
+                              </span>
+                            </div>
+                          </>
+                        );
+                      })()}
                     </div>
                   </>
                 )}
