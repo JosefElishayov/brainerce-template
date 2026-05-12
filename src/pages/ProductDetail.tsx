@@ -21,7 +21,6 @@ const ProductDetail = () => {
   const { currency, addToCart } = useStore();
   const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
-  const [related, setRelated] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [imgIdx, setImgIdx] = useState(0);
@@ -37,17 +36,15 @@ const ProductDetail = () => {
       .then((p) => {
         setProduct(p);
         if (p.type === "VARIABLE" && p.variants?.length) setSelectedVariant(p.variants[0]);
-        // related products
-        const catId = p.categories?.[0]?.id;
-        if (catId) {
-          client.getProducts({ categories: [catId], limit: 5 })
-            .then(r => setRelated(r.data.filter(x => x.id !== p.id).slice(0, 4)))
-            .catch(() => {});
-        }
       })
       .catch(e => setError(e instanceof Error ? e.message : "Failed to load product"))
       .finally(() => setLoading(false));
   }, [slug]);
+
+  const recs = useMemo(
+    () => (product as unknown as { recommendations?: ProductRecommendationsResponse } | null)?.recommendations,
+    [product],
+  );
 
   if (loading) {
     return (
