@@ -26,6 +26,7 @@ const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeCategory = searchParams.get("category") || "all";
   const activeSort = (searchParams.get("sort") as SortOption) || "featured";
+  const saleOnly = searchParams.get("sale") === "true";
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -41,6 +42,7 @@ const Products = () => {
     setError(null);
     const params: Record<string, unknown> = { page: 1, limit: 48 };
     if (activeCategory !== "all") params.categories = [activeCategory];
+    if (saleOnly) params.metafields = { sale: ["true"] };
     if (activeSort === "price-asc") { params.sortBy = "price"; params.sortOrder = "asc"; }
     if (activeSort === "price-desc") { params.sortBy = "price"; params.sortOrder = "desc"; }
     if (activeSort === "name-asc") { params.sortBy = "name"; params.sortOrder = "asc"; }
@@ -49,7 +51,7 @@ const Products = () => {
       .then(r => setProducts(r.data))
       .catch(e => setError(e instanceof Error ? e.message : "Failed to load products"))
       .finally(() => setLoading(false));
-  }, [activeCategory, activeSort]);
+  }, [activeCategory, activeSort, saleOnly]);
 
   const currentCategory = useMemo(
     () => (activeCategory !== "all" ? categories.find(c => c.id === activeCategory) : null),
@@ -82,10 +84,10 @@ const Products = () => {
         <div className="relative container-full h-full flex flex-col justify-end pb-12 md:pb-16">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-white/50 mb-3">
-              {currentCategory ? "Collection" : "Shop"}
+              {saleOnly ? "Special Offers" : currentCategory ? "Collection" : "Shop"}
             </p>
             <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl text-white leading-[0.95]">
-              {currentCategory?.name || "All Pieces"}
+              {saleOnly ? "Sale" : currentCategory?.name || "All Pieces"}
             </h1>
           </motion.div>
         </div>
