@@ -74,11 +74,11 @@ const Products = () => {
 
   return (
     <Layout>
-      <section className="relative h-[60vh] md:h-[75vh] overflow-hidden bg-muted">
+      <section className="relative h-[85vh] md:h-[90vh] overflow-hidden bg-muted">
         <img
           src={currentCategory?.image || "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80"}
           alt={currentCategory?.name || "All Products"}
-          className="absolute inset-0 w-full h-full object-contain md:object-cover object-center"
+          className="absolute inset-0 w-full h-full object-contain object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-charcoal/70 via-charcoal/20 to-transparent" />
         <div className="relative container-full h-full flex flex-col justify-end pb-12 md:pb-16">
