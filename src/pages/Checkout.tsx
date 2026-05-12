@@ -422,6 +422,7 @@ const Checkout = () => {
                 />
               )}
 
+              {step === "payment" && payment && (
                 <div className="space-y-6">
                   {rates.length > 0 && (
                     <div>
