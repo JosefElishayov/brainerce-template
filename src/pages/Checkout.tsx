@@ -242,35 +242,89 @@ const Checkout = () => {
         await client.selectShippingMethod(checkoutId, rateId);
       }
 
-      // 5. Create payment intent
-      const intent = await client.createPaymentIntent(checkoutId, {
-        successUrl: `${window.location.origin}/order-confirmation?checkout_id=${checkoutId}`,
-        cancelUrl: `${window.location.origin}/checkout?error=payment_cancelled`,
-      });
-
-      // 6. Initialize provider
-      if (intent.provider === "stripe") {
-        const stripeProvider = providers.find((p) => p.provider === "stripe");
-        if (stripeProvider) {
-          setStripePromise(
-            loadStripe(stripeProvider.publicKey, {
-              stripeAccount: stripeProvider.stripeAccountId,
-            }),
-          );
-        }
+      // 5. Check for custom checkout fields
+      let fields: CheckoutCustomFieldDefinition[] = [];
+      try {
+        fields = await client.getCheckoutCustomFields(checkoutId);
+      } catch (e) {
+        console.warn("custom fields", e);
       }
 
-      setPayment({
-        clientSecret: intent.clientSecret,
-        provider: intent.provider,
-        checkoutId,
-        renderType: intent.clientSdk?.renderType,
-      });
-      setStep("payment");
+      if (fields.length > 0) {
+        setCustomFields(fields);
+        // initialize defaults
+        const initial: Record<string, unknown> = {};
+        for (const f of fields) {
+          if (f.type === "BOOLEAN") initial[f.key] = false;
+          else initial[f.key] = "";
+        }
+        setCustomFieldValues(initial);
+        setPendingCheckoutId(checkoutId);
+        setStep("custom-fields");
+        return;
+      }
+
+      // No custom fields → go straight to payment
+      await initPayment(checkoutId, providers);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Failed to start checkout";
       setError(msg);
       toast({ title: "Checkout error", description: msg, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function initPayment(
+    checkoutId: string,
+    providers: Awaited<ReturnType<typeof client.getPaymentProviders>>["providers"],
+  ) {
+    const intent = await client.createPaymentIntent(checkoutId, {
+      successUrl: `${window.location.origin}/order-confirmation?checkout_id=${checkoutId}`,
+      cancelUrl: `${window.location.origin}/checkout?error=payment_cancelled`,
+    });
+
+    if (intent.provider === "stripe") {
+      const stripeProvider = providers.find((p) => p.provider === "stripe");
+      if (stripeProvider) {
+        setStripePromise(
+          loadStripe(stripeProvider.publicKey, {
+            stripeAccount: stripeProvider.stripeAccountId,
+          }),
+        );
+      }
+    }
+
+    setPayment({
+      clientSecret: intent.clientSecret,
+      provider: intent.provider,
+      checkoutId,
+      renderType: intent.clientSdk?.renderType,
+    });
+    setStep("payment");
+  }
+
+  async function applyCustomFields() {
+    if (!pendingCheckoutId) return;
+    setError(null);
+    setLoading(true);
+    try {
+      const updated = (await client.setCheckoutCustomFields(
+        pendingCheckoutId,
+        customFieldValues,
+      )) as unknown as {
+        appliedSurcharges?: AppliedSurcharge[];
+        surchargeAmount?: string | number;
+      };
+      setAppliedSurcharges(updated.appliedSurcharges ?? []);
+      setSurchargeAmount(parseFloat(String(updated.surchargeAmount ?? 0)) || 0);
+
+      const { providers } = await client.getPaymentProviders();
+      await initPayment(pendingCheckoutId, providers);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Failed to save selections";
+      setError(msg);
+      toast({ title: "Could not save options", description: msg, variant: "destructive" });
     } finally {
       setLoading(false);
     }
