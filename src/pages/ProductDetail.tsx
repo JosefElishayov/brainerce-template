@@ -1,15 +1,15 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
-import type { Product, ProductVariant } from "brainerce";
+import type { Product, ProductVariant, ProductRecommendationsResponse } from "brainerce";
 import {
   formatPrice, getProductPriceInfo, getVariantOptions, getVariantPrice,
   getDescriptionContent, getStockStatus, getProductSwatches,
 } from "brainerce";
 import { Layout } from "@/components/Layout";
-import { ProductCard } from "@/components/ProductCard";
 import { QuantitySelector } from "@/components/QuantitySelector";
+import { RecommendationSection } from "@/components/upsell/RecommendationSection";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { client } from "@/lib/brainerce";
