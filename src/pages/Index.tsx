@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { client } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
 
-interface Category { id: string; name: string }
+interface Category { id: string; name: string; image?: string | null }
 
 const Index = () => {
   const { storeInfo } = useStore();
@@ -132,7 +132,7 @@ const Index = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {categories.slice(0, 6).map((c, i) => (
-                <CollectionCard key={c.id} collection={{ id: c.id, name: c.name, slug: c.id }} index={i} />
+                <CollectionCard key={c.id} collection={{ id: c.id, name: c.name, slug: c.id, image: c.image }} index={i} />
               ))}
             </div>
           </div>

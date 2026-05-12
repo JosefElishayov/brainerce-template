@@ -11,7 +11,7 @@ import {
 import { client } from "@/lib/brainerce";
 import { cn } from "@/lib/utils";
 
-interface Category { id: string; name: string }
+interface Category { id: string; name: string; image?: string | null }
 
 type SortOption = "featured" | "newest" | "price-asc" | "price-desc" | "name-asc";
 const sortOptions: { value: SortOption; label: string }[] = [

@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 interface CategoryItem {
   id: string;
   name: string;
+  image?: string | null;
 }
 
 export const Header = () => {
@@ -77,8 +78,18 @@ export const Header = () => {
                             <NavigationMenuLink asChild>
                               <Link
                                 to={`/products?category=${c.id}`}
-                                className="block select-none space-y-1 rounded-sm p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                                className="flex items-center gap-3 select-none rounded-sm p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
                               >
+                                {c.image ? (
+                                  <img
+                                    src={c.image}
+                                    alt={c.name}
+                                    className="w-12 h-12 object-cover rounded-sm flex-shrink-0"
+                                    loading="lazy"
+                                  />
+                                ) : (
+                                  <div className="w-12 h-12 bg-muted rounded-sm flex-shrink-0" />
+                                )}
                                 <div className="text-sm font-medium leading-none">{c.name}</div>
                               </Link>
                             </NavigationMenuLink>
