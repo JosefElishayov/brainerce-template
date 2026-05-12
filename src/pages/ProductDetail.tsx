@@ -41,6 +41,14 @@ const ProductDetail = () => {
       .then((p) => {
         setProduct(p);
         if (p.type === "VARIABLE" && p.variants?.length) setSelectedVariant(p.variants[0]);
+        // Initialize customization defaults
+        const initial: CustomizationValues = {};
+        for (const f of p.customizationFields ?? []) {
+          if (f.type === "BOOLEAN") initial[f.key] = false;
+          else if (f.type === "MULTI_SELECT" || f.type === "GALLERY") initial[f.key] = [];
+          else initial[f.key] = f.defaultValue ?? "";
+        }
+        setCustomValues(initial);
       })
       .catch(e => setError(e instanceof Error ? e.message : "Failed to load product"))
       .finally(() => setLoading(false));
