@@ -99,7 +99,7 @@ interface PaymentData {
 const Checkout = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { cart, currency, storeInfo, refreshCart } = useStore();
+  const { cart, currency, storeInfo } = useStore();
   const upsell = (storeInfo as unknown as { upsell?: Record<string, boolean> })?.upsell;
   const showBumps = upsell?.checkoutOrderBumpEnabled !== false;
 
