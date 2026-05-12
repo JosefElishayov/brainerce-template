@@ -10,6 +10,10 @@ import {
 import { Layout } from "@/components/Layout";
 import { QuantitySelector } from "@/components/QuantitySelector";
 import { RecommendationSection } from "@/components/upsell/RecommendationSection";
+import {
+  ProductCustomizationFields,
+  type CustomizationValues,
+} from "@/components/ProductCustomizationFields";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { client } from "@/lib/brainerce";
