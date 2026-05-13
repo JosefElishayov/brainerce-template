@@ -86,10 +86,10 @@ const Products = () => {
         <div className="relative container-full h-full flex flex-col justify-end pb-12 md:pb-16">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-white/50 mb-3">
-              {saleOnly ? "Special Offers" : currentCategory ? "Collection" : "Shop"}
+              {searchQuery ? "Search Results" : saleOnly ? "Special Offers" : currentCategory ? "Collection" : "Shop"}
             </p>
             <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl text-white leading-[0.95]">
-              {saleOnly ? "Sale" : currentCategory?.name || "All Pieces"}
+              {searchQuery ? `"${searchQuery}"` : saleOnly ? "Sale" : currentCategory?.name || "All Pieces"}
             </h1>
           </motion.div>
         </div>
