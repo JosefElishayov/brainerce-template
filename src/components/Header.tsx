@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
-import { User, Menu, X } from "lucide-react";
+import { User, Menu, X, Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CartIcon } from "@/components/CartIcon";
+import { SearchDialog } from "@/components/SearchDialog";
 import { useStore } from "@/contexts/StoreContext";
 import { client } from "@/lib/brainerce";
 import {
@@ -26,6 +27,7 @@ export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [categories, setCategories] = useState<CategoryItem[]>([]);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -129,6 +131,13 @@ export const Header = () => {
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setSearchOpen(true)}
+              aria-label="Search"
+              className="p-2 hover:bg-accent transition-colors duration-300 group"
+            >
+              <Search className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
+            </button>
             <Link
               to={loggedIn ? "/account" : "/login"}
               aria-label={loggedIn ? "My account" : "Sign in"}
@@ -198,6 +207,7 @@ export const Header = () => {
           )}
         </AnimatePresence>
       </nav>
+      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
   );
 };
