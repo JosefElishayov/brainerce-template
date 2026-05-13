@@ -207,6 +207,7 @@ export const Header = () => {
           )}
         </AnimatePresence>
       </nav>
+      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
   );
 };
