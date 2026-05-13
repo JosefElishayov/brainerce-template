@@ -131,6 +131,13 @@ export const Header = () => {
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setSearchOpen(true)}
+              aria-label="Search"
+              className="p-2 hover:bg-accent transition-colors duration-300 group"
+            >
+              <Search className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
+            </button>
             <Link
               to={loggedIn ? "/account" : "/login"}
               aria-label={loggedIn ? "My account" : "Sign in"}
