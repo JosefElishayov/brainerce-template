@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
-import { User, Menu, X } from "lucide-react";
+import { User, Menu, X, Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CartIcon } from "@/components/CartIcon";
+import { SearchDialog } from "@/components/SearchDialog";
 import { useStore } from "@/contexts/StoreContext";
 import { client } from "@/lib/brainerce";
 import {
