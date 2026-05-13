@@ -44,6 +44,7 @@ const Products = () => {
     const params: Record<string, unknown> = { page: 1, limit: 48 };
     if (activeCategory !== "all") params.categories = [activeCategory];
     if (saleOnly) params.metafields = { sale: ["true"] };
+    if (searchQuery) params.search = searchQuery;
     if (activeSort === "price-asc") { params.sortBy = "price"; params.sortOrder = "asc"; }
     if (activeSort === "price-desc") { params.sortBy = "price"; params.sortOrder = "desc"; }
     if (activeSort === "name-asc") { params.sortBy = "name"; params.sortOrder = "asc"; }
@@ -52,7 +53,7 @@ const Products = () => {
       .then(r => setProducts(r.data))
       .catch(e => setError(e instanceof Error ? e.message : "Failed to load products"))
       .finally(() => setLoading(false));
-  }, [activeCategory, activeSort, saleOnly]);
+  }, [activeCategory, activeSort, saleOnly, searchQuery]);
 
   const currentCategory = useMemo(
     () => (activeCategory !== "all" ? categories.find(c => c.id === activeCategory) : null),
