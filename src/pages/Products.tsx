@@ -27,6 +27,7 @@ const Products = () => {
   const activeCategory = searchParams.get("category") || "all";
   const activeSort = (searchParams.get("sort") as SortOption) || "featured";
   const saleOnly = searchParams.get("sale") === "true";
+  const searchQuery = searchParams.get("q") || "";
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
