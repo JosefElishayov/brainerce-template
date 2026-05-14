@@ -8,6 +8,7 @@ import {
   getDescriptionContent, getStockStatus, getProductSwatches,
 } from "brainerce";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import { QuantitySelector } from "@/components/QuantitySelector";
 import { RecommendationSection } from "@/components/upsell/RecommendationSection";
 import { ProductReviews } from "@/components/ProductReviews";
