@@ -40,6 +40,15 @@ const Index = () => {
 
   return (
     <Layout>
+      <SEO
+        title={`${brandName} — Artisan Home & Lifestyle Store`}
+        description="A curated collection of handcrafted home goods, lighting, and lifestyle pieces for considered living."
+        path="/"
+        jsonLd={[
+          { "@context": "https://schema.org", "@type": "Organization", name: brandName, description: "Artisan home goods and lifestyle pieces." },
+          { "@context": "https://schema.org", "@type": "WebSite", name: brandName, url: "/" },
+        ]}
+      />
       <section ref={heroRef} className="relative h-[100svh] -mt-16 md:-mt-20 overflow-hidden">
         <motion.div className="absolute inset-0" style={{ y: heroImageY }}>
           <img

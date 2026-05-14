@@ -1,5 +1,6 @@
 import { useEffect, useState, FormEvent } from "react";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import { client } from "@/lib/brainerce";
 import { toast } from "@/hooks/use-toast";
 import type { ContactFormPublic, ContactFormPublicField } from "brainerce";

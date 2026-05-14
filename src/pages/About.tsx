@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 
 const About = () => {
@@ -15,6 +16,11 @@ const About = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Our Story — Maison"
+        description="Learn the story behind Maison: artisan craft, considered design, and a curation of home objects made to last."
+        path="/about"
+      />
       {/* Hero — Full Viewport */}
       <section ref={heroRef} className="relative h-[80vh] md:h-screen overflow-hidden">
         <motion.div className="absolute inset-0" style={{ y: heroImageY }}>
