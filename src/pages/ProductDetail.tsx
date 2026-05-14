@@ -170,6 +170,37 @@ const ProductDetail = () => {
 
   return (
     <Layout>
+      <SEO
+        title={`${product.name} — Maison`}
+        description={(description && "text" in description ? description.text : product.name) || `Shop ${product.name} at Maison.`}
+        path={`/product/${product.slug}`}
+        type="product"
+        image={images[0]}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.name,
+          description: (description && "text" in description ? description.text : undefined) || product.name,
+          image: images,
+          sku: product.id,
+          offers: {
+            "@type": "Offer",
+            price: String(displayPrice),
+            priceCurrency: currency,
+            availability: canPurchase ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            url: `/product/${product.slug}`,
+          },
+          ...(product.avgRating && product.reviewCount
+            ? {
+                aggregateRating: {
+                  "@type": "AggregateRating",
+                  ratingValue: product.avgRating,
+                  reviewCount: product.reviewCount,
+                },
+              }
+            : {}),
+        }}
+      />
       <div className="container-full py-6 border-b border-border">
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           <Link to="/products" className="hover:text-foreground">Shop</Link>
