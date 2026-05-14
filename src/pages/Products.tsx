@@ -3,6 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import type { Product } from "brainerce";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import {
