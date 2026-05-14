@@ -36,9 +36,10 @@ export const QuantitySelector = ({
         size="icon"
         onClick={decrease}
         disabled={quantity <= min}
+        aria-label="Decrease quantity"
         className="h-11 w-11 rounded-none hover:bg-accent disabled:opacity-30"
       >
-        <Minus className="w-4 h-4" />
+        <Minus className="w-4 h-4" aria-hidden="true" />
       </Button>
       <span className="w-12 text-center text-sm font-medium tabular-nums">
         {quantity}
@@ -48,9 +49,10 @@ export const QuantitySelector = ({
         size="icon"
         onClick={increase}
         disabled={quantity >= max}
+        aria-label="Increase quantity"
         className="h-11 w-11 rounded-none hover:bg-accent disabled:opacity-30"
       >
-        <Plus className="w-4 h-4" />
+        <Plus className="w-4 h-4" aria-hidden="true" />
       </Button>
     </div>
   );
