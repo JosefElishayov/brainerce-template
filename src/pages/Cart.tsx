@@ -83,8 +83,9 @@ const Cart = () => {
                           <QuantitySelector quantity={item.quantity}
                             onQuantityChange={(q) => updateQuantity(item.product.id, q, item.variant?.id)} />
                           <button onClick={() => removeFromCart(item.product.id, item.variant?.id)}
+                            aria-label={`Remove ${item.product.name} from cart`}
                             className="p-2 text-muted-foreground hover:text-destructive transition-colors">
-                            <Trash2 className="w-5 h-5" />
+                            <Trash2 className="w-5 h-5" aria-hidden="true" />
                           </button>
                         </div>
                       </div>
