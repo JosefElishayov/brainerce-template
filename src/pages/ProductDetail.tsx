@@ -168,11 +168,25 @@ const ProductDetail = () => {
     }
   };
 
+  const rawDescText = description
+    ? "text" in description
+      ? description.text
+      : description.html.replace(/<[^>]+>/g, " ")
+    : "";
+  const cleanDesc = rawDescText.replace(/\s+/g, " ").trim();
+  const collectionName = collection?.name ?? "Maison";
+  const fallbackDesc = `Discover ${product.name} from the ${collectionName} collection at Maison — handcrafted artisan design for considered, beautifully made interiors.`;
+  const baseDesc = cleanDesc.length >= 50 ? cleanDesc : `${cleanDesc ? cleanDesc + " " : ""}${fallbackDesc}`.trim();
+  const metaDesc =
+    baseDesc.length <= 160
+      ? baseDesc
+      : baseDesc.slice(0, 157).replace(/\s+\S*$/, "") + "…";
+
   return (
     <Layout>
       <SEO
         title={`${product.name} — Maison`}
-        description={(description && "text" in description ? description.text : product.name) || `Shop ${product.name} at Maison.`}
+        description={metaDesc}
         path={`/product/${product.slug}`}
         type="product"
         image={images[0]}
@@ -180,7 +194,7 @@ const ProductDetail = () => {
           "@context": "https://schema.org",
           "@type": "Product",
           name: product.name,
-          description: (description && "text" in description ? description.text : undefined) || product.name,
+          description: metaDesc,
           image: images,
           sku: product.id,
           offers: {
