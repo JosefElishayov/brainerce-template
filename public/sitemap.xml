@@ -1,14 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Note: /cart, /checkout, /order-confirmation, /login, /register, /account and other
-  auth/transactional routes are intentionally excluded — they are user-specific and
-  should not be indexed by search engines (also disallowed in robots.txt).
-  Dynamic /product/:slug entries should be generated from the product catalog at
-  build time once a project domain is set.
--->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>/products</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
-  <url><loc>/about</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>/contact</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url>
+    <loc>/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>/products</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>/product/moroccan-weave-boho-rug</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>/product/arc-brass-floor-lamp</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>/product/linen-blend-throw-pillow</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>/product/abstract-flow-framed-print</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
