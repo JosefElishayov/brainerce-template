@@ -80,12 +80,12 @@ const Products = () => {
       <SEO
         title={`${searchQuery ? `Search: ${searchQuery}` : saleOnly ? "Sale" : currentCategory?.name || "Shop All"} — Maison`}
         description={searchQuery
-          ? `Search results for "${searchQuery}" at Maison.`
+          ? `Browse search results for "${searchQuery}" at Maison — handcrafted home goods, lighting, and lifestyle pieces for considered living.`
           : saleOnly
-          ? "Special offers on artisan home goods and lifestyle pieces."
+          ? "Discover special offers on artisan home goods, lighting, and lifestyle pieces at Maison — handcrafted designs for considered living, now at reduced prices."
           : currentCategory
-          ? `Shop the ${currentCategory.name} collection at Maison.`
-          : "Shop all artisan home goods, lighting, and lifestyle pieces at Maison."}
+          ? `Explore our curated collection of artisan ${currentCategory.name} at Maison, featuring handcrafted designs for considered living and timeless interiors.`
+          : "Shop the full Maison collection of artisan home goods, lighting, and lifestyle pieces — handcrafted designs for considered, beautifully made interiors."}
         path={`/products${searchQuery ? `?q=${searchQuery}` : saleOnly ? "?sale=true" : currentCategory ? `?category=${currentCategory.id}` : ""}`}
       />
       <section className="relative h-[85vh] md:h-[90vh] overflow-hidden bg-muted">
