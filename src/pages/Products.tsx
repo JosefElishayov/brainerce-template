@@ -3,6 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import type { Product } from "brainerce";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -76,6 +77,17 @@ const Products = () => {
 
   return (
     <Layout>
+      <SEO
+        title={`${searchQuery ? `Search: ${searchQuery}` : saleOnly ? "Sale" : currentCategory?.name || "Shop All"} — Maison`}
+        description={searchQuery
+          ? `Search results for "${searchQuery}" at Maison.`
+          : saleOnly
+          ? "Special offers on artisan home goods and lifestyle pieces."
+          : currentCategory
+          ? `Shop the ${currentCategory.name} collection at Maison.`
+          : "Shop all artisan home goods, lighting, and lifestyle pieces at Maison."}
+        path={`/products${searchQuery ? `?q=${searchQuery}` : saleOnly ? "?sale=true" : currentCategory ? `?category=${currentCategory.id}` : ""}`}
+      />
       <section className="relative h-[85vh] md:h-[90vh] overflow-hidden bg-muted">
         <img
           src={currentCategory?.image || "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80"}

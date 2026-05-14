@@ -89,6 +89,7 @@ export const SearchDialog = ({ open, onOpenChange }: SearchDialogProps) => {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search products, collections..."
+            aria-label="Search products and collections"
             className="flex-1 bg-transparent outline-none text-base placeholder:text-muted-foreground/60"
           />
           {query && (

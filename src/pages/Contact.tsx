@@ -1,5 +1,6 @@
 import { useEffect, useState, FormEvent } from "react";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import { client } from "@/lib/brainerce";
 import { toast } from "@/hooks/use-toast";
 import type { ContactFormPublic, ContactFormPublicField } from "brainerce";
@@ -220,6 +221,11 @@ const Contact = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Contact — Maison"
+        description="Get in touch with the Maison studio. We'd love to hear from you about pieces, partnerships, or projects."
+        path="/contact"
+      />
       <section className="container-full py-16 md:py-24 max-w-4xl">
         <div className="text-center mb-12">
           <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-muted-foreground mb-4">

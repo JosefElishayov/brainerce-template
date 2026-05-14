@@ -8,6 +8,7 @@ import {
   getDescriptionContent, getStockStatus, getProductSwatches,
 } from "brainerce";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import { QuantitySelector } from "@/components/QuantitySelector";
 import { RecommendationSection } from "@/components/upsell/RecommendationSection";
 import { ProductReviews } from "@/components/ProductReviews";
@@ -169,6 +170,37 @@ const ProductDetail = () => {
 
   return (
     <Layout>
+      <SEO
+        title={`${product.name} — Maison`}
+        description={(description && "text" in description ? description.text : product.name) || `Shop ${product.name} at Maison.`}
+        path={`/product/${product.slug}`}
+        type="product"
+        image={images[0]}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.name,
+          description: (description && "text" in description ? description.text : undefined) || product.name,
+          image: images,
+          sku: product.id,
+          offers: {
+            "@type": "Offer",
+            price: String(displayPrice),
+            priceCurrency: currency,
+            availability: canPurchase ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            url: `/product/${product.slug}`,
+          },
+          ...(product.avgRating && product.reviewCount
+            ? {
+                aggregateRating: {
+                  "@type": "AggregateRating",
+                  ratingValue: product.avgRating,
+                  reviewCount: product.reviewCount,
+                },
+              }
+            : {}),
+        }}
+      />
       <div className="container-full py-6 border-b border-border">
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           <Link to="/products" className="hover:text-foreground">Shop</Link>
@@ -192,12 +224,14 @@ const ProductDetail = () => {
                 {images.length > 1 && !selectedVariant?.image && (
                   <>
                     <button onClick={() => setImgIdx(i => i === 0 ? images.length - 1 : i - 1)}
+                      aria-label="Previous image"
                       className="absolute left-5 top-1/2 -translate-y-1/2 p-3 bg-background/90 backdrop-blur-md hover:bg-background opacity-0 group-hover:opacity-100 transition-opacity">
-                      <ChevronLeft className="w-5 h-5" />
+                      <ChevronLeft className="w-5 h-5" aria-hidden="true" />
                     </button>
                     <button onClick={() => setImgIdx(i => i === images.length - 1 ? 0 : i + 1)}
+                      aria-label="Next image"
                       className="absolute right-5 top-1/2 -translate-y-1/2 p-3 bg-background/90 backdrop-blur-md hover:bg-background opacity-0 group-hover:opacity-100 transition-opacity">
-                      <ChevronRight className="w-5 h-5" />
+                      <ChevronRight className="w-5 h-5" aria-hidden="true" />
                     </button>
                   </>
                 )}

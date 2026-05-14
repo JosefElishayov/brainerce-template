@@ -1,0 +1,15 @@
+# Maison
+
+> Artisan home goods, lighting, and lifestyle pieces for considered living.
+
+## Pages
+
+- [Home](/): Featured collections and editorial highlights.
+- [Shop](/products): Browse all products and collections.
+- [About](/about): Our story and craft philosophy.
+- [Contact](/contact): Get in touch with the studio.
+
+## Optional
+
+- [Cart](/cart): Shopping bag.
+- [Account](/account): Customer account and orders.
