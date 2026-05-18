@@ -60,6 +60,16 @@ const ProductDetail = () => {
           else initial[f.key] = f.defaultValue ?? "";
         }
         setCustomValues(initial);
+        // Initialize modifier defaults
+        const modInit: ModifierSelections = {};
+        for (const g of p.modifierGroups ?? []) {
+          if (g.defaultModifierIds?.length) {
+            modInit[g.id] = g.selectionType === "SINGLE"
+              ? [g.defaultModifierIds[0]]
+              : [...g.defaultModifierIds];
+          }
+        }
+        setModifierSelections(modInit);
       })
       .catch(e => setError(e instanceof Error ? e.message : "Failed to load product"))
       .finally(() => setLoading(false));
