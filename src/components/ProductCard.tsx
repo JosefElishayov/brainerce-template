@@ -43,8 +43,8 @@ export const ProductCard = ({ product, index = 0, variant = "default" }: Product
   const handleQuickAdd = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (product.type === "VARIABLE") {
-      // Navigate to PDP for variant selection
+    if (product.type === "VARIABLE" || (product.modifierGroups?.length ?? 0) > 0) {
+      // Navigate to PDP for variant / modifier selection
       window.location.href = `/product/${product.slug}`;
       return;
     }
