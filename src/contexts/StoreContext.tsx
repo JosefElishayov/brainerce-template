@@ -56,6 +56,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         variantId: variant?.id,
         quantity: opts.quantity ?? 1,
         metadata: opts.metadata,
+        selections: opts.selections,
       });
       await refreshCart();
     },
