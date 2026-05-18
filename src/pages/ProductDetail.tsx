@@ -42,6 +42,7 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [adding, setAdding] = useState(false);
   const [customValues, setCustomValues] = useState<CustomizationValues>({});
+  const [modifierSelections, setModifierSelections] = useState<ModifierSelections>({});
 
   useEffect(() => {
     if (!slug) return;
