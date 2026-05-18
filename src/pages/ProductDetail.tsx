@@ -417,6 +417,13 @@ const ProductDetail = () => {
                 );
               })}
 
+              <ProductModifierGroups
+                groups={modifierGroups}
+                selections={modifierSelections}
+                onChange={setModifierSelections}
+                currency={currency}
+              />
+
               <ProductCustomizationFields
                 fields={customFields}
                 values={customValues}
@@ -429,6 +436,17 @@ const ProductDetail = () => {
                 <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground block mb-3">Quantity</span>
                 <QuantitySelector quantity={qty} onQuantityChange={setQty} />
               </div>
+
+              {(extras.total > 0 || qty > 1) && (
+                <div className="flex items-baseline justify-between mb-4 pb-4 border-t border-border pt-4">
+                  <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground">
+                    Total
+                  </span>
+                  <span className="font-serif text-xl text-foreground">
+                    {formatPrice(String(totalPrice), { currency })}
+                  </span>
+                </div>
+              )}
 
               <Button size="lg" onClick={handleAdd} disabled={adding || !canPurchase}
                 className="rounded-none w-full py-6 text-sm tracking-[0.15em] uppercase btn-premium">
