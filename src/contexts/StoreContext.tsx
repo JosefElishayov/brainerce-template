@@ -11,7 +11,12 @@ interface StoreContextValue {
   refreshCart: () => Promise<void>;
   addToCart: (
     product: Product,
-    opts?: { variant?: ProductVariant | null; quantity?: number; metadata?: Record<string, unknown> },
+    opts?: {
+      variant?: ProductVariant | null;
+      quantity?: number;
+      metadata?: Record<string, unknown>;
+      selections?: ModifierSelection[];
+    },
   ) => Promise<void>;
   updateQuantity: (productId: string, quantity: number, variantId?: string) => Promise<void>;
   removeFromCart: (productId: string, variantId?: string) => Promise<void>;
