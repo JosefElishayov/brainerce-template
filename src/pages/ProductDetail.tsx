@@ -16,6 +16,13 @@ import {
   ProductCustomizationFields,
   type CustomizationValues,
 } from "@/components/ProductCustomizationFields";
+import {
+  ProductModifierGroups,
+  computeModifierExtras,
+  validateModifierSelections,
+  selectionsToPayload,
+  type ModifierSelections,
+} from "@/components/ProductModifierGroups";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { client } from "@/lib/brainerce";
