@@ -77,6 +77,23 @@ const Cart = () => {
                             {name}
                           </Link>
                           {item.variant && <p className="text-xs text-muted-foreground mt-1">{item.variant.name}</p>}
+                          {item.modifiers && item.modifiers.length > 0 && (
+                            <ul className="mt-2 space-y-0.5">
+                              {item.modifiers.map((mod) => {
+                                const delta = parseFloat(mod.priceDelta);
+                                return (
+                                  <li key={mod.modifierId} className="text-xs text-muted-foreground flex justify-between gap-3">
+                                    <span>+ {mod.name}</span>
+                                    <span>
+                                      {mod.freeApplied || delta === 0
+                                        ? <span className="text-primary">Free</span>
+                                        : `${delta > 0 ? "+" : ""}${formatPrice(String(delta), { currency })}`}
+                                    </span>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          )}
                           <p className="font-serif text-lg mt-3">{formatPrice(String(lineTotal), { currency })}</p>
                         </div>
                         <div className="flex items-center justify-between mt-4">

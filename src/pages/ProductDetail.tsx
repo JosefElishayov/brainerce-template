@@ -16,6 +16,13 @@ import {
   ProductCustomizationFields,
   type CustomizationValues,
 } from "@/components/ProductCustomizationFields";
+import {
+  ProductModifierGroups,
+  computeModifierExtras,
+  validateModifierSelections,
+  selectionsToPayload,
+  type ModifierSelections,
+} from "@/components/ProductModifierGroups";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { client } from "@/lib/brainerce";
@@ -35,6 +42,7 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [adding, setAdding] = useState(false);
   const [customValues, setCustomValues] = useState<CustomizationValues>({});
+  const [modifierSelections, setModifierSelections] = useState<ModifierSelections>({});
 
   useEffect(() => {
     if (!slug) return;
@@ -52,6 +60,16 @@ const ProductDetail = () => {
           else initial[f.key] = f.defaultValue ?? "";
         }
         setCustomValues(initial);
+        // Initialize modifier defaults
+        const modInit: ModifierSelections = {};
+        for (const g of p.modifierGroups ?? []) {
+          if (g.defaultModifierIds?.length) {
+            modInit[g.id] = g.selectionType === "SINGLE"
+              ? [g.defaultModifierIds[0]]
+              : [...g.defaultModifierIds];
+          }
+        }
+        setModifierSelections(modInit);
       })
       .catch(e => setError(e instanceof Error ? e.message : "Failed to load product"))
       .finally(() => setLoading(false));
@@ -116,8 +134,18 @@ const ProductDetail = () => {
   const swatchByAttr = new Map(swatches.map(s => [s.attributeName, s]));
 
   const customFields = product.customizationFields ?? [];
+  const modifierGroups = product.modifierGroups ?? [];
+  const extras = computeModifierExtras(modifierGroups, modifierSelections);
+  const unitWithExtras = parseFloat(displayPrice) + extras.total;
+  const totalPrice = unitWithExtras * qty;
 
   const handleAdd = async () => {
+    // Validate modifier groups
+    const modErr = validateModifierSelections(modifierGroups, modifierSelections);
+    if (modErr) {
+      toast({ title: "Missing selection", description: modErr, variant: "destructive" });
+      return;
+    }
     // Validate required customization fields client-side
     for (const f of customFields) {
       if (!f.required) continue;
@@ -154,6 +182,7 @@ const ProductDetail = () => {
         quantity: qty,
         variant: selectedVariant,
         metadata: Object.keys(metadata).length ? metadata : undefined,
+        selections: selectionsToPayload(modifierSelections),
       });
       toast({ title: "Added to bag", description: `${qty} × ${product.name}` });
       setQty(1);
@@ -388,6 +417,13 @@ const ProductDetail = () => {
                 );
               })}
 
+              <ProductModifierGroups
+                groups={modifierGroups}
+                selections={modifierSelections}
+                onChange={setModifierSelections}
+                currency={currency}
+              />
+
               <ProductCustomizationFields
                 fields={customFields}
                 values={customValues}
@@ -400,6 +436,17 @@ const ProductDetail = () => {
                 <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground block mb-3">Quantity</span>
                 <QuantitySelector quantity={qty} onQuantityChange={setQty} />
               </div>
+
+              {(extras.total > 0 || qty > 1) && (
+                <div className="flex items-baseline justify-between mb-4 pb-4 border-t border-border pt-4">
+                  <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground">
+                    Total
+                  </span>
+                  <span className="font-serif text-xl text-foreground">
+                    {formatPrice(String(totalPrice), { currency })}
+                  </span>
+                </div>
+              )}
 
               <Button size="lg" onClick={handleAdd} disabled={adding || !canPurchase}
                 className="rounded-none w-full py-6 text-sm tracking-[0.15em] uppercase btn-premium">

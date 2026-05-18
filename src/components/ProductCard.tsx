@@ -43,8 +43,8 @@ export const ProductCard = ({ product, index = 0, variant = "default" }: Product
   const handleQuickAdd = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (product.type === "VARIABLE") {
-      // Navigate to PDP for variant selection
+    if (product.type === "VARIABLE" || (product.modifierGroups?.length ?? 0) > 0) {
+      // Navigate to PDP for variant / modifier selection
       window.location.href = `/product/${product.slug}`;
       return;
     }
@@ -110,7 +110,7 @@ export const ProductCard = ({ product, index = 0, variant = "default" }: Product
             )}
           >
             <span className="px-6 py-2.5 text-xs font-medium tracking-[0.15em] uppercase bg-background/95 backdrop-blur-md text-foreground shadow-lg">
-              {adding ? "Adding…" : product.type === "VARIABLE" ? "View Details" : "Quick Add"}
+              {adding ? "Adding…" : (product.type === "VARIABLE" || (product.modifierGroups?.length ?? 0) > 0) ? "View Details" : "Quick Add"}
             </span>
           </button>
         </div>

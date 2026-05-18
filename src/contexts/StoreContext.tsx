@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from "react";
-import type { StoreInfo, Cart, CartWithIncludes, Product, ProductVariant } from "brainerce";
+import type { StoreInfo, Cart, CartWithIncludes, Product, ProductVariant, ModifierSelection } from "brainerce";
 import { client, isLoggedIn } from "@/lib/brainerce";
 
 interface StoreContextValue {
@@ -11,7 +11,12 @@ interface StoreContextValue {
   refreshCart: () => Promise<void>;
   addToCart: (
     product: Product,
-    opts?: { variant?: ProductVariant | null; quantity?: number; metadata?: Record<string, unknown> },
+    opts?: {
+      variant?: ProductVariant | null;
+      quantity?: number;
+      metadata?: Record<string, unknown>;
+      selections?: ModifierSelection[];
+    },
   ) => Promise<void>;
   updateQuantity: (productId: string, quantity: number, variantId?: string) => Promise<void>;
   removeFromCart: (productId: string, variantId?: string) => Promise<void>;
@@ -51,6 +56,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         variantId: variant?.id,
         quantity: opts.quantity ?? 1,
         metadata: opts.metadata,
+        selections: opts.selections,
       });
       await refreshCart();
     },
