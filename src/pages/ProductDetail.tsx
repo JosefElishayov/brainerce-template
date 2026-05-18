@@ -182,6 +182,7 @@ const ProductDetail = () => {
         quantity: qty,
         variant: selectedVariant,
         metadata: Object.keys(metadata).length ? metadata : undefined,
+        selections: selectionsToPayload(modifierSelections),
       });
       toast({ title: "Added to bag", description: `${qty} × ${product.name}` });
       setQty(1);
