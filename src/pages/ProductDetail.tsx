@@ -134,6 +134,10 @@ const ProductDetail = () => {
   const swatchByAttr = new Map(swatches.map(s => [s.attributeName, s]));
 
   const customFields = product.customizationFields ?? [];
+  const modifierGroups = product.modifierGroups ?? [];
+  const extras = computeModifierExtras(modifierGroups, modifierSelections);
+  const unitWithExtras = parseFloat(displayPrice) + extras.total;
+  const totalPrice = unitWithExtras * qty;
 
   const handleAdd = async () => {
     // Validate required customization fields client-side
