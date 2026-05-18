@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from "react";
-import type { StoreInfo, Cart, CartWithIncludes, Product, ProductVariant } from "brainerce";
+import type { StoreInfo, Cart, CartWithIncludes, Product, ProductVariant, ModifierSelection } from "brainerce";
 import { client, isLoggedIn } from "@/lib/brainerce";
 
 interface StoreContextValue {
