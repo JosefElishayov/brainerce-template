@@ -140,6 +140,12 @@ const ProductDetail = () => {
   const totalPrice = unitWithExtras * qty;
 
   const handleAdd = async () => {
+    // Validate modifier groups
+    const modErr = validateModifierSelections(modifierGroups, modifierSelections);
+    if (modErr) {
+      toast({ title: "Missing selection", description: modErr, variant: "destructive" });
+      return;
+    }
     // Validate required customization fields client-side
     for (const f of customFields) {
       if (!f.required) continue;
