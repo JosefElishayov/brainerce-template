@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Layout } from "@/components/Layout";
 import { SEO } from "@/components/SEO";
 import { client } from "@/lib/brainerce";
+import { useLocale } from "@/contexts/LocaleContext";
 import { toast } from "@/hooks/use-toast";
 import type { ContactFormPublic, ContactFormPublicField } from "brainerce";
 
