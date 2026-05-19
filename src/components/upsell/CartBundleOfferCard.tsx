@@ -149,7 +149,7 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="font-serif">
-              {t("cart.selectBundleOptions", "Select options")}
+              {t("cart.selectBundleOptions")}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-6 py-2">
