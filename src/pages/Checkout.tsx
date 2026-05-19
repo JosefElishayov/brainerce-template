@@ -358,12 +358,12 @@ const Checkout = () => {
               {step === "address" && (
                 <form onSubmit={startBrainerceCheckout} className="space-y-8">
                   <div>
-                    <h2 className="font-serif text-xl mb-6">Contact</h2>
+                    <h2 className="font-serif text-xl mb-6">{t("checkout.contact")}</h2>
                     <Input
                       name="email"
                       type="email"
                       required
-                      placeholder="Email"
+                      placeholder={t("checkout.email")}
                       value={form.email}
                       onChange={onField}
                       className="rounded-none h-12"
@@ -371,21 +371,21 @@ const Checkout = () => {
                   </div>
 
                   <div>
-                    <h2 className="font-serif text-xl mb-6">Shipping Address</h2>
+                    <h2 className="font-serif text-xl mb-6">{t("checkout.shippingAddress")}</h2>
                     <div className="grid sm:grid-cols-2 gap-4">
-                      <Input name="firstName" required placeholder="First name" value={form.firstName} onChange={onField} className="rounded-none h-12" />
-                      <Input name="lastName" required placeholder="Last name" value={form.lastName} onChange={onField} className="rounded-none h-12" />
+                      <Input name="firstName" required placeholder={t("checkout.firstName")} value={form.firstName} onChange={onField} className="rounded-none h-12" />
+                      <Input name="lastName" required placeholder={t("checkout.lastName")} value={form.lastName} onChange={onField} className="rounded-none h-12" />
                     </div>
-                    <Input name="line1" required placeholder="Street address" value={form.line1} onChange={onField} className="rounded-none h-12 mt-4" />
-                    <Input name="line2" placeholder="Apt, suite (optional)" value={form.line2} onChange={onField} className="rounded-none h-12 mt-4" />
+                    <Input name="line1" required placeholder={t("checkout.street")} value={form.line1} onChange={onField} className="rounded-none h-12 mt-4" />
+                    <Input name="line2" placeholder={t("checkout.apt")} value={form.line2} onChange={onField} className="rounded-none h-12 mt-4" />
                     <div className="grid sm:grid-cols-3 gap-4 mt-4">
-                      <Input name="city" required placeholder="City" value={form.city} onChange={onField} className="rounded-none h-12" />
-                      <Input name="region" required placeholder="State / Region" value={form.region} onChange={onField} className="rounded-none h-12" />
-                      <Input name="postalCode" required placeholder="Postal code" value={form.postalCode} onChange={onField} className="rounded-none h-12" />
+                      <Input name="city" required placeholder={t("checkout.city")} value={form.city} onChange={onField} className="rounded-none h-12" />
+                      <Input name="region" required placeholder={t("checkout.region")} value={form.region} onChange={onField} className="rounded-none h-12" />
+                      <Input name="postalCode" required placeholder={t("checkout.postalCode")} value={form.postalCode} onChange={onField} className="rounded-none h-12" />
                     </div>
                     <div className="grid sm:grid-cols-2 gap-4 mt-4">
-                      <Input name="country" required placeholder="Country (e.g. US)" value={form.country} onChange={onField} className="rounded-none h-12" />
-                      <Input name="phone" placeholder="Phone (optional)" value={form.phone} onChange={onField} className="rounded-none h-12" />
+                      <Input name="country" required placeholder={t("checkout.country")} value={form.country} onChange={onField} className="rounded-none h-12" />
+                      <Input name="phone" placeholder={t("checkout.phone")} value={form.phone} onChange={onField} className="rounded-none h-12" />
                     </div>
                   </div>
 
@@ -396,9 +396,9 @@ const Checkout = () => {
                     className="w-full rounded-none py-6 text-sm tracking-[0.15em] uppercase btn-premium"
                   >
                     {loading ? (
-                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Preparing payment…</>
+                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("checkout.preparingPayment")}</>
                     ) : (
-                      <>Continue to Payment <ArrowRight className="ml-3 w-4 h-4" /></>
+                      <>{t("checkout.continueToPayment")} <ArrowRight className="ml-3 w-4 h-4" /></>
                     )}
                   </Button>
                 </form>
