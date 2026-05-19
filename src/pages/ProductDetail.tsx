@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Product, ProductVariant, ProductRecommendationsResponse } from "brainerce";
 import {
   formatPrice, getProductPriceInfo, getVariantOptions, getVariantPrice,
@@ -31,6 +32,7 @@ import { cn } from "@/lib/utils";
 import { Star } from "lucide-react";
 
 const ProductDetail = () => {
+  const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const { currency, addToCart } = useStore();
   const { toast } = useToast();
@@ -101,10 +103,10 @@ const ProductDetail = () => {
     return (
       <Layout>
         <div className="container-narrow py-28 text-center">
-          <h1 className="font-serif text-4xl mb-4">Product Not Found</h1>
-          <p className="text-muted-foreground mb-8">{error || "The piece you're looking for doesn't exist."}</p>
+          <h1 className="font-serif text-4xl mb-4">{t("productDetail.notFoundTitle")}</h1>
+          <p className="text-muted-foreground mb-8">{error || t("productDetail.notFoundHint")}</p>
           <Button asChild className="rounded-none px-8 text-sm tracking-[0.1em] uppercase">
-            <Link to="/products">Browse All Products</Link>
+            <Link to="/products">{t("productDetail.browseAll")}</Link>
           </Button>
         </div>
       </Layout>
@@ -143,7 +145,7 @@ const ProductDetail = () => {
     // Validate modifier groups
     const modErr = validateModifierSelections(modifierGroups, modifierSelections);
     if (modErr) {
-      toast({ title: "Missing selection", description: modErr, variant: "destructive" });
+      toast({ title: t("productDetail.missingSelection"), description: modErr, variant: "destructive" });
       return;
     }
     // Validate required customization fields client-side
@@ -158,8 +160,8 @@ const ProductDetail = () => {
         (typeof v === "number" && Number.isNaN(v));
       if (empty) {
         toast({
-          title: "Missing personalization",
-          description: `Please fill in "${f.name}".`,
+          title: t("productDetail.missingPersonalization"),
+          description: `${t("productDetail.fillIn")} "${f.name}".`,
           variant: "destructive",
         });
         return;
@@ -184,12 +186,12 @@ const ProductDetail = () => {
         metadata: Object.keys(metadata).length ? metadata : undefined,
         selections: selectionsToPayload(modifierSelections),
       });
-      toast({ title: "Added to bag", description: `${qty} × ${product.name}` });
+      toast({ title: t("productDetail.addedToBag"), description: `${qty} × ${product.name}` });
       setQty(1);
     } catch (err) {
       toast({
-        title: "Could not add to bag",
-        description: err instanceof Error ? err.message : "Please try again",
+        title: t("productDetail.couldNotAdd"),
+        description: err instanceof Error ? err.message : t("productDetail.tryAgain"),
         variant: "destructive",
       });
     } finally {
@@ -246,7 +248,7 @@ const ProductDetail = () => {
       />
       <div className="container-full py-6 border-b border-border">
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
-          <Link to="/products" className="hover:text-foreground">Shop</Link>
+          <Link to="/products" className="hover:text-foreground">{t("productDetail.breadcrumbShop")}</Link>
           <span className="text-border">/</span>
           {collection && (
             <>
@@ -267,12 +269,12 @@ const ProductDetail = () => {
                 {images.length > 1 && !selectedVariant?.image && (
                   <>
                     <button onClick={() => setImgIdx(i => i === 0 ? images.length - 1 : i - 1)}
-                      aria-label="Previous image"
+                      aria-label={t("productDetail.previousImage")}
                       className="absolute left-5 top-1/2 -translate-y-1/2 p-3 bg-background/90 backdrop-blur-md hover:bg-background opacity-0 group-hover:opacity-100 transition-opacity">
                       <ChevronLeft className="w-5 h-5" aria-hidden="true" />
                     </button>
                     <button onClick={() => setImgIdx(i => i === images.length - 1 ? 0 : i + 1)}
-                      aria-label="Next image"
+                      aria-label={t("productDetail.nextImage")}
                       className="absolute right-5 top-1/2 -translate-y-1/2 p-3 bg-background/90 backdrop-blur-md hover:bg-background opacity-0 group-hover:opacity-100 transition-opacity">
                       <ChevronRight className="w-5 h-5" aria-hidden="true" />
                     </button>
@@ -319,8 +321,7 @@ const ProductDetail = () => {
                     ))}
                   </span>
                   <span>
-                    {(product.avgRating ?? 0).toFixed(1)} · {product.reviewCount} review
-                    {product.reviewCount === 1 ? "" : "s"}
+                    {(product.avgRating ?? 0).toFixed(1)} · {product.reviewCount} {product.reviewCount === 1 ? t("productDetail.reviewSingular") : t("productDetail.reviewPlural")}
                   </span>
                 </a>
               )}
@@ -433,14 +434,14 @@ const ProductDetail = () => {
               />
 
               <div className="mb-6">
-                <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground block mb-3">Quantity</span>
+                <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground block mb-3">{t("productDetail.quantity")}</span>
                 <QuantitySelector quantity={qty} onQuantityChange={setQty} />
               </div>
 
               {(extras.total > 0 || qty > 1) && (
                 <div className="flex items-baseline justify-between mb-4 pb-4 border-t border-border pt-4">
                   <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground">
-                    Total
+                    {t("cart.total")}
                   </span>
                   <span className="font-serif text-xl text-foreground">
                     {formatPrice(String(totalPrice), { currency })}
@@ -451,7 +452,7 @@ const ProductDetail = () => {
               <Button size="lg" onClick={handleAdd} disabled={adding || !canPurchase}
                 className="rounded-none w-full py-6 text-sm tracking-[0.15em] uppercase btn-premium">
                 <ShoppingBag className="w-4 h-4 mr-3" />
-                {!canPurchase ? "Out of Stock" : adding ? "Adding…" : "Add to Bag"}
+                {!canPurchase ? t("productDetail.soldOut") : adding ? t("productDetail.adding") : t("productDetail.addToBag")}
               </Button>
             </motion.div>
           </div>
