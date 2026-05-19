@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Loader2, AlertCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +11,7 @@ import { useStore } from "@/contexts/StoreContext";
 import type { CustomerOAuthProvider } from "brainerce";
 
 const Login = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { setLoggedIn, refreshCart } = useStore();
   const [email, setEmail] = useState("");
@@ -42,7 +44,7 @@ const Login = () => {
       await refreshCart();
       navigate("/account");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      setError(err instanceof Error ? err.message : t("auth.loginFailed"));
     } finally {
       setLoading(false);
     }
@@ -55,7 +57,7 @@ const Login = () => {
       });
       window.location.href = authorizationUrl;
     } catch (err) {
-      setError(err instanceof Error ? err.message : "OAuth failed");
+      setError(err instanceof Error ? err.message : t("auth.oauthFailed"));
     }
   }
 
@@ -64,9 +66,9 @@ const Login = () => {
       <section className="py-20">
         <div className="max-w-md mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="font-serif text-4xl mb-2 text-center">Welcome Back</h1>
+            <h1 className="font-serif text-4xl mb-2 text-center">{t("auth.welcomeBack")}</h1>
             <p className="text-sm text-muted-foreground text-center mb-10">
-              Sign in to your account
+              {t("auth.signInToAccount")}
             </p>
 
             {error && (
@@ -80,7 +82,7 @@ const Login = () => {
               <Input
                 type="email"
                 required
-                placeholder="Email"
+                placeholder={t("auth.email")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="rounded-none h-12"
@@ -88,14 +90,14 @@ const Login = () => {
               <Input
                 type="password"
                 required
-                placeholder="Password"
+                placeholder={t("auth.password")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="rounded-none h-12"
               />
               <div className="text-right">
                 <Link to="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground">
-                  Forgot password?
+                  {t("auth.forgotPassword")}
                 </Link>
               </div>
               <Button
@@ -103,7 +105,7 @@ const Login = () => {
                 disabled={loading}
                 className="w-full rounded-none py-6 text-sm tracking-[0.15em] uppercase btn-premium"
               >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Sign In"}
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : t("auth.signIn")}
               </Button>
             </form>
 
@@ -115,7 +117,7 @@ const Login = () => {
                   </div>
                   <div className="relative flex justify-center text-xs">
                     <span className="bg-background px-3 text-muted-foreground tracking-widest uppercase">
-                      Or
+                      {t("auth.or")}
                     </span>
                   </div>
                 </div>
@@ -128,7 +130,7 @@ const Login = () => {
                       onClick={() => handleOAuth(p)}
                       className="w-full rounded-none py-6 text-sm tracking-[0.15em] uppercase"
                     >
-                      Continue with {p.charAt(0) + p.slice(1).toLowerCase()}
+                      {t("auth.continueWith", { provider: p.charAt(0) + p.slice(1).toLowerCase() })}
                     </Button>
                   ))}
                 </div>
@@ -136,9 +138,9 @@ const Login = () => {
             )}
 
             <p className="mt-8 text-center text-sm text-muted-foreground">
-              Don't have an account?{" "}
+              {t("auth.noAccount")}{" "}
               <Link to="/register" className="text-foreground underline underline-offset-4">
-                Create one
+                {t("auth.createOne")}
               </Link>
             </p>
           </motion.div>

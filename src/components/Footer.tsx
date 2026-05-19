@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useStore } from "@/contexts/StoreContext";
 import { client } from "@/lib/brainerce";
 
@@ -10,6 +11,7 @@ interface CategoryItem {
 }
 
 export const Footer = () => {
+  const { t } = useTranslation();
   const { storeInfo } = useStore();
   const brandName = storeInfo?.name || "Lumeno";
   const [categories, setCategories] = useState<CategoryItem[]>([]);
@@ -33,25 +35,25 @@ export const Footer = () => {
                 {brandName}
               </Link>
               <p className="mt-3 text-sm text-background/50 leading-relaxed max-w-xs">
-                Curated home objects and lifestyle pieces for considered living.
+                {t("footer.tagline")}
               </p>
             </div>
             <div className="max-w-sm w-full">
               <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-background/40 mb-3">
-                Stay Connected
+                {t("footer.stayConnected")}
               </p>
               <form className="flex gap-0" onSubmit={(e) => e.preventDefault()}>
-                <label htmlFor="newsletter-email" className="sr-only">Email address</label>
+                <label htmlFor="newsletter-email" className="sr-only">{t("footer.emailPlaceholder")}</label>
                 <input
                   id="newsletter-email"
                   type="email"
-                  placeholder="Your email"
-                  aria-label="Email address"
+                  placeholder={t("footer.emailPlaceholder")}
+                  aria-label={t("footer.emailPlaceholder")}
                   className="flex-1 h-12 px-4 text-sm bg-background/5 border border-background/15 text-background placeholder:text-background/30 focus:outline-none focus:border-background/40 transition-colors"
                 />
                 <button
                   type="submit"
-                  aria-label="Subscribe to newsletter"
+                  aria-label={t("footer.subscribe")}
                   className="h-12 px-5 text-sm font-medium bg-background text-foreground hover:bg-background/90 transition-colors"
                 >
                   <ArrowRight className="w-4 h-4" />
@@ -66,11 +68,11 @@ export const Footer = () => {
         <div className="grid gap-10 md:grid-cols-4">
           <div>
             <h4 className="text-[11px] font-semibold tracking-[0.25em] uppercase text-background/40 mb-5">
-              Collections
+              {t("footer.collections")}
             </h4>
             <ul className="space-y-3">
               {categories.length === 0 ? (
-                <li className="text-sm text-background/40">No collections yet</li>
+                <li className="text-sm text-background/40">{t("footer.noCollections")}</li>
               ) : (
                 categories.map((c) => (
                   <li key={c.id}>
@@ -87,61 +89,33 @@ export const Footer = () => {
           </div>
           <div>
             <h4 className="text-[11px] font-semibold tracking-[0.25em] uppercase text-background/40 mb-5">
-              Explore
+              {t("footer.explore")}
             </h4>
             <ul className="space-y-3">
-              <li>
-                <Link to="/products" className="text-sm text-background/60 hover:text-background transition-colors">
-                  Shop All
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-sm text-background/60 hover:text-background transition-colors">
-                  Our Story
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-sm text-background/60 hover:text-background transition-colors">
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link to="/cart" className="text-sm text-background/60 hover:text-background transition-colors">
-                  Shopping Bag
-                </Link>
-              </li>
+              <li><Link to="/products" className="text-sm text-background/60 hover:text-background transition-colors">{t("footer.shopAll")}</Link></li>
+              <li><Link to="/about" className="text-sm text-background/60 hover:text-background transition-colors">{t("footer.ourStory")}</Link></li>
+              <li><Link to="/contact" className="text-sm text-background/60 hover:text-background transition-colors">{t("footer.contact")}</Link></li>
+              <li><Link to="/cart" className="text-sm text-background/60 hover:text-background transition-colors">{t("footer.shoppingBag")}</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="text-[11px] font-semibold tracking-[0.25em] uppercase text-background/40 mb-5">
-              Account
+              {t("footer.account")}
             </h4>
             <ul className="space-y-3">
-              <li>
-                <Link to="/login" className="text-sm text-background/60 hover:text-background transition-colors">
-                  Sign In
-                </Link>
-              </li>
-              <li>
-                <Link to="/register" className="text-sm text-background/60 hover:text-background transition-colors">
-                  Create Account
-                </Link>
-              </li>
-              <li>
-                <Link to="/account" className="text-sm text-background/60 hover:text-background transition-colors">
-                  My Orders
-                </Link>
-              </li>
+              <li><Link to="/login" className="text-sm text-background/60 hover:text-background transition-colors">{t("footer.signIn")}</Link></li>
+              <li><Link to="/register" className="text-sm text-background/60 hover:text-background transition-colors">{t("footer.createAccount")}</Link></li>
+              <li><Link to="/account" className="text-sm text-background/60 hover:text-background transition-colors">{t("footer.myOrders")}</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="text-[11px] font-semibold tracking-[0.25em] uppercase text-background/40 mb-5">
-              Help
+              {t("footer.help")}
             </h4>
             <ul className="space-y-3">
-              <li className="text-sm text-background/60">Shipping & Returns</li>
-              <li className="text-sm text-background/60">Care Guide</li>
-              <li className="text-sm text-background/60">FAQ</li>
+              <li className="text-sm text-background/60">{t("footer.shippingReturns")}</li>
+              <li className="text-sm text-background/60">{t("footer.careGuide")}</li>
+              <li className="text-sm text-background/60">{t("footer.faq")}</li>
             </ul>
           </div>
         </div>
@@ -150,10 +124,10 @@ export const Footer = () => {
       <div className="border-t border-background/10">
         <div className="container-full py-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-background/30">
-            © {new Date().getFullYear()} {brandName}. All rights reserved.
+            © {new Date().getFullYear()} {brandName}. {t("footer.rightsReserved")}
           </p>
           <div className="flex gap-8">
-            <span className="text-xs text-background/30">Powered by Brainerce</span>
+            <span className="text-xs text-background/30">{t("footer.poweredBy")}</span>
           </div>
         </div>
       </div>

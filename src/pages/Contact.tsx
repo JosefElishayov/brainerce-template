@@ -1,4 +1,5 @@
 import { useEffect, useState, FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { Layout } from "@/components/Layout";
 import { SEO } from "@/components/SEO";
 import { client } from "@/lib/brainerce";
@@ -12,6 +13,7 @@ const inputCls =
   "w-full h-12 px-4 text-sm bg-background border border-border focus:outline-none focus:border-foreground transition-colors";
 
 const Contact = () => {
+  const { t } = useTranslation();
   const [form, setForm] = useState<ContactFormPublic | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -62,7 +64,7 @@ const Contact = () => {
     for (const f of form.fields) {
       const v = values[f.key];
       if (f.isRequired && (v === undefined || v === "" || v === null || (Array.isArray(v) && v.length === 0))) {
-        toast({ title: "Missing field", description: `${f.label} is required`, variant: "destructive" });
+        toast({ title: t("contact.missingField"), description: `${f.label} ${t("contact.requiredSuffix")}`, variant: "destructive" });
         return;
       }
     }
@@ -76,8 +78,8 @@ const Contact = () => {
       setSubmitted(true);
     } catch (err) {
       toast({
-        title: "Could not send",
-        description: err instanceof Error ? err.message : "Please try again.",
+        title: t("contact.couldNotSend"),
+        description: err instanceof Error ? err.message : t("contact.tryAgain"),
         variant: "destructive",
       });
     } finally {
@@ -222,17 +224,17 @@ const Contact = () => {
   return (
     <Layout>
       <SEO
-        title="Contact — Maison"
-        description="Get in touch with the Maison studio. We'd love to hear from you about pieces, partnerships, or projects."
+        title={t("contact.seoTitle")}
+        description={t("contact.seoDescription")}
         path="/contact"
       />
       <section className="container-full py-16 md:py-24 max-w-4xl">
         <div className="text-center mb-12">
           <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-muted-foreground mb-4">
-            Contact
+            {t("contact.eyebrow")}
           </p>
           <h1 className="font-serif text-4xl md:text-5xl tracking-tight">
-            {form?.name || "Get in touch"}
+            {form?.name || t("contact.defaultTitle")}
           </h1>
           {form?.description && (
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto">{form.description}</p>
@@ -240,11 +242,11 @@ const Contact = () => {
         </div>
 
         {loading ? (
-          <div className="text-center py-12 text-muted-foreground text-sm">Loading…</div>
+          <div className="text-center py-12 text-muted-foreground text-sm">{t("common.loading")}</div>
         ) : submitted ? (
           <div className="border border-border p-10 text-center">
-            <h2 className="font-serif text-2xl mb-3">Message sent</h2>
-            <p className="text-muted-foreground">{form?.successMessage || "Thanks — we'll be in touch."}</p>
+            <h2 className="font-serif text-2xl mb-3">{t("contact.messageSent")}</h2>
+            <p className="text-muted-foreground">{form?.successMessage || t("contact.defaultSuccess")}</p>
           </div>
         ) : (
           form && (
@@ -269,7 +271,7 @@ const Contact = () => {
                   disabled={submitting}
                   className="h-12 px-8 bg-foreground text-background text-xs font-medium tracking-[0.2em] uppercase hover:bg-foreground/90 transition-colors disabled:opacity-50"
                 >
-                  {submitting ? "Sending…" : form.submitButton}
+                  {submitting ? t("contact.sending") : form.submitButton}
                 </button>
               </div>
             </form>

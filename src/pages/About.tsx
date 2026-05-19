@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { ArrowRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Layout } from "@/components/Layout";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 
 const About = () => {
+  const { t } = useTranslation();
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -17,8 +19,8 @@ const About = () => {
   return (
     <Layout>
       <SEO
-        title="Our Story — Maison"
-        description="Learn the story behind Maison: artisan craft, considered design, and a curation of home objects made to last."
+        title={t("about.seoTitle")}
+        description={t("about.seoDescription")}
         path="/about"
       />
       {/* Hero — Full Viewport */}
@@ -39,16 +41,15 @@ const About = () => {
             transition={{ duration: 1, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-white/60 mb-5">
-              Our Story
+              {t("about.eyebrow")}
             </p>
             <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-white mb-6 leading-[0.9]">
-              Curating Beauty
+              {t("about.titleLine1")}
               <br />
-              <span className="italic font-normal">for Living</span>
+              <span className="italic font-normal">{t("about.titleLine2")}</span>
             </h1>
             <p className="text-base md:text-lg text-white/70 max-w-lg leading-relaxed">
-              Objects made with care, materials that age gracefully,
-              and spaces that invite pause.
+              {t("about.subtitle")}
             </p>
           </motion.div>
         </div>
@@ -66,13 +67,13 @@ const About = () => {
           >
             <div className="divider-ornament mb-12">
               <span className="text-[10px] font-semibold tracking-[0.3em] uppercase text-primary whitespace-nowrap">
-                Our Philosophy
+                {t("about.philosophyEyebrow")}
               </span>
             </div>
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground leading-[1.25] tracking-tight">
-              We believe that the objects we surround ourselves with should tell
-              stories, age beautifully, and bring quiet{" "}
-              <span className="italic">joy</span> to everyday moments.
+              {t("about.philosophyHeadline")}{" "}
+              <span className="italic">{t("about.philosophyEmphasis")}</span>{" "}
+              {t("about.philosophyTail")}
             </h2>
           </motion.div>
         </div>
@@ -91,24 +92,18 @@ const About = () => {
               className="md:col-span-5"
             >
               <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-primary mb-5">
-                The Beginning
+                {t("about.beginningEyebrow")}
               </p>
               <h3 className="font-serif text-3xl md:text-4xl text-foreground mb-8 leading-tight">
-                A Personal Quest
+                {t("about.beginningTitle")}
                 <br />
-                <span className="italic">for Meaning</span>
+                <span className="italic">{t("about.beginningTitleEmphasis")}</span>
               </h3>
               <p className="text-muted-foreground leading-[1.8] mb-5">
-                Maison began as a personal quest—a search for objects that felt
-                meaningful in an age of disposable everything. After years of
-                collecting and curating, we opened our doors to share these
-                discoveries with others who value craftsmanship over convenience.
+                {t("about.beginningP1")}
               </p>
               <p className="text-muted-foreground leading-[1.8]">
-                What started as a small collection has grown into a carefully
-                edited selection of home goods and lifestyle pieces, each chosen
-                for its ability to bring warmth, texture, and intention to the
-                spaces we inhabit.
+                {t("about.beginningP2")}
               </p>
             </motion.div>
             <motion.div
@@ -149,13 +144,9 @@ const About = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: 0.3 }}
-                  className="font-serif text-3xl md:text-5xl lg:text-6xl text-white text-center max-w-3xl px-6 leading-tight"
+                  className="font-serif text-3xl md:text-5xl lg:text-6xl text-white text-center max-w-3xl px-6 leading-tight italic"
                 >
-                  "Beauty lies in the
-                  <br />
-                  <span className="italic">imperfection</span>
-                  <br />
-                  of things made by hand"
+                  "{t("about.quote")}"
                 </motion.p>
               </div>
             </div>
@@ -186,24 +177,18 @@ const About = () => {
               className="md:col-span-5"
             >
               <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-primary mb-5">
-                Our Approach
+                {t("about.approachEyebrow")}
               </p>
               <h3 className="font-serif text-3xl md:text-4xl text-foreground mb-8 leading-tight">
-                From Workshop
+                {t("about.approachTitle")}
                 <br />
-                <span className="italic">to Home</span>
+                <span className="italic">{t("about.approachTitleEmphasis")}</span>
               </h3>
               <p className="text-muted-foreground leading-[1.8] mb-5">
-                Every piece in our collection passes through our hands before
-                reaching yours. We visit workshops, meet makers, and learn the
-                stories behind each object. This personal connection ensures that
-                what we offer isn't just beautiful—it's honest.
+                {t("about.approachP1")}
               </p>
               <p className="text-muted-foreground leading-[1.8]">
-                We prioritize natural materials, traditional techniques, and
-                makers who share our values. Whether it's a hand-thrown ceramic
-                vessel or a solid oak table built to last generations, we believe
-                in objects that get better with time, not worse.
+                {t("about.approachP2")}
               </p>
             </motion.div>
           </div>
@@ -221,32 +206,29 @@ const About = () => {
             className="text-center mb-20"
           >
             <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-primary mb-3">
-              What Guides Us
+              {t("about.valuesEyebrow")}
             </p>
             <h2 className="font-serif text-4xl md:text-5xl text-foreground">
-              Our Values
+              {t("about.valuesTitle")}
             </h2>
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-16 md:gap-12 lg:gap-20">
             {[
               {
-                title: "Craftsmanship",
+                title: t("about.value1Title"),
                 number: "01",
-                description:
-                  "We champion the work of skilled hands—artisans who have honed their craft over years, creating objects with care and intention that machines cannot replicate.",
+                description: t("about.value1Desc"),
               },
               {
-                title: "Sustainability",
+                title: t("about.value2Title"),
                 number: "02",
-                description:
-                  "We choose natural materials that age gracefully and makers who respect the environment. Quality over quantity means less waste and more meaning.",
+                description: t("about.value2Desc"),
               },
               {
-                title: "Slow Living",
+                title: t("about.value3Title"),
                 number: "03",
-                description:
-                  "In a world of constant acceleration, we believe in the beauty of pause. Our objects invite moments of calm and presence in daily life.",
+                description: t("about.value3Desc"),
               },
             ].map((value, i) => (
               <motion.div
@@ -327,14 +309,13 @@ const About = () => {
             transition={{ duration: 0.8 }}
           >
             <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-white/50 mb-5">
-              Let's Connect
+              {t("about.ctaEyebrow")}
             </p>
             <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white mb-6 leading-tight">
-              Have a Question?
+              {t("about.ctaTitle")}
             </h2>
             <p className="text-white/60 mb-10 max-w-md mx-auto leading-relaxed">
-              We're always happy to discuss our pieces, our makers, or help you
-              find exactly what you're looking for.
+              {t("about.ctaSubtitle")}
             </p>
             <Button
               asChild
@@ -342,7 +323,7 @@ const About = () => {
               className="rounded-none px-12 py-6 text-sm tracking-[0.15em] uppercase bg-white text-charcoal hover:bg-white/90"
             >
               <a href="mailto:hello@maison.com">
-                Get in Touch
+                {t("about.getInTouch")}
                 <ArrowRight className="ml-3 w-4 h-4" />
               </a>
             </Button>

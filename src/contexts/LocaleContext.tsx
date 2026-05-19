@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from "react";
 import { client, LOCALE_STORAGE_KEY } from "@/lib/brainerce";
 import { getDirectionForLocale } from "brainerce";
+import { syncI18nLocale } from "@/i18n";
 
 interface LocaleContextValue {
   locale: string | undefined;
@@ -35,6 +36,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     if (typeof document === "undefined") return;
     document.documentElement.lang = locale || "";
     document.documentElement.dir = direction;
+    syncI18nLocale(locale);
   }, [locale, direction]);
 
   const setLocale = useCallback((next: string) => {
