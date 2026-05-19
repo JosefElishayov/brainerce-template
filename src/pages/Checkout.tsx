@@ -471,7 +471,7 @@ const Checkout = () => {
 
             <div className="lg:col-span-5">
               <div className="bg-linen p-8 lg:sticky lg:top-28">
-                <h2 className="font-serif text-2xl mb-6">Order Summary</h2>
+                <h2 className="font-serif text-2xl mb-6">{t("checkout.orderSummary")}</h2>
                 <div className="space-y-4 mb-6">
                   {cart.items.map((item) => {
                     const name = getCartItemName(item);
@@ -489,7 +489,7 @@ const Checkout = () => {
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-medium line-clamp-1">{name}</p>
-                          <p className="text-xs text-muted-foreground mt-0.5">Qty: {item.quantity}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">{t("checkout.qty")}: {item.quantity}</p>
                           <p className="text-sm mt-1">{formatPrice(String(lineTotal), { currency })}</p>
                         </div>
                       </div>
@@ -500,7 +500,7 @@ const Checkout = () => {
                 {showBumps && bumps.length > 0 && payment?.checkoutId && (
                   <div className="border-t border-border pt-4 mb-4 space-y-3">
                     <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-muted-foreground">
-                      Add to your order
+                      {t("checkout.addToOrder")}
                     </p>
                     {bumps.map((b) => (
                       <OrderBumpCard
@@ -520,12 +520,12 @@ const Checkout = () => {
                     </div>
                     <div className="border-t border-border pt-4 space-y-3">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Subtotal</span>
+                        <span className="text-muted-foreground">{t("checkout.subtotal")}</span>
                         <span>{formatPrice(String(totals.subtotal), { currency })}</span>
                       </div>
                       {totals.discount > 0 && (
                         <div className="flex justify-between text-sm text-primary">
-                          <span>Discount</span>
+                          <span>{t("checkout.discount")}</span>
                           <span>-{formatPrice(String(totals.discount), { currency })}</span>
                         </div>
                       )}
@@ -535,11 +535,11 @@ const Checkout = () => {
                         return (
                           <>
                             <div className="flex justify-between text-sm">
-                              <span className="text-muted-foreground">Shipping</span>
+                              <span className="text-muted-foreground">{t("checkout.shipping")}</span>
                               <span>
                                 {selectedRate
                                   ? formatPrice(String(shippingPrice), { currency })
-                                  : <span className="text-muted-foreground">Select method</span>}
+                                  : <span className="text-muted-foreground">{t("checkout.selectMethod")}</span>}
                               </span>
                             </div>
                             {appliedSurcharges.map((s) => (
@@ -549,7 +549,7 @@ const Checkout = () => {
                               </div>
                             ))}
                             <div className="flex justify-between font-serif text-xl border-t border-border pt-4">
-                              <span>Total</span>
+                              <span>{t("checkout.total")}</span>
                               <span>
                                 {formatPrice(
                                   String((totals.total ?? 0) + (surchargeAmount || 0) + shippingPrice),
