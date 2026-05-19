@@ -82,7 +82,7 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
     for (const lp of variableProducts) {
       if (!lp.selectedVariantId) {
         toast({
-          title: t("productDetail.missingSelection", "Selection required"),
+          title: t("productDetail.missingSelection"),
           description: lp.product.name,
           variant: "destructive",
         });
