@@ -15,6 +15,7 @@ const inputCls =
 
 const Contact = () => {
   const { t } = useTranslation();
+  const { locale } = useLocale();
   const [form, setForm] = useState<ContactFormPublic | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -24,7 +25,7 @@ const Contact = () => {
   useEffect(() => {
     let cancelled = false;
     client.contactForms
-      .get("main")
+      .get("main", locale)
       .then((f) => {
         if (cancelled) return;
         setForm(f);
