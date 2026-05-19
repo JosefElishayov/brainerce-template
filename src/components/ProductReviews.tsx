@@ -59,6 +59,7 @@ function Stars({
 export function ProductReviews({ productId }: Props) {
   const { loggedIn } = useStore();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [reviews, setReviews] = useState<ProductReview[]>([]);
   const [meta, setMeta] = useState<{ total: number } | null>(null);
   const [loading, setLoading] = useState(true);
