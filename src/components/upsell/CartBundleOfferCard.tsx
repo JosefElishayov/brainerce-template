@@ -11,6 +11,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useStore } from "@/contexts/StoreContext";
+import { useLocale } from "@/contexts/LocaleContext";
 import { client } from "@/lib/brainerce";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
