@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import type { Product } from "brainerce";
 import { Layout } from "@/components/Layout";
 import { SEO } from "@/components/SEO";
@@ -15,15 +16,16 @@ import { cn } from "@/lib/utils";
 interface Category { id: string; name: string; image?: string | null }
 
 type SortOption = "featured" | "newest" | "price-asc" | "price-desc" | "name-asc";
-const sortOptions: { value: SortOption; label: string }[] = [
-  { value: "featured", label: "Featured" },
-  { value: "newest", label: "Newest" },
-  { value: "price-asc", label: "Price: Low to High" },
-  { value: "price-desc", label: "Price: High to Low" },
-  { value: "name-asc", label: "Alphabetical A-Z" },
-];
 
 const Products = () => {
+  const { t } = useTranslation();
+  const sortOptions: { value: SortOption; labelKey: string }[] = [
+    { value: "featured", labelKey: "products.sortOptions.featured" },
+    { value: "newest", labelKey: "products.sortOptions.newest" },
+    { value: "price-asc", labelKey: "products.sortOptions.priceAsc" },
+    { value: "price-desc", labelKey: "products.sortOptions.priceDesc" },
+    { value: "name-asc", labelKey: "products.sortOptions.nameAsc" },
+  ];
   const [searchParams, setSearchParams] = useSearchParams();
   const activeCategory = searchParams.get("category") || "all";
   const activeSort = (searchParams.get("sort") as SortOption) || "featured";
@@ -98,10 +100,10 @@ const Products = () => {
         <div className="relative container-full h-full flex flex-col justify-end pb-12 md:pb-16">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-white/50 mb-3">
-              {searchQuery ? "Search Results" : saleOnly ? "Special Offers" : currentCategory ? "Collection" : "Shop"}
+              {searchQuery ? t("products.searchResults") : saleOnly ? t("products.specialOffers") : currentCategory ? t("products.collection") : t("products.shop")}
             </p>
             <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl text-white leading-[0.95]">
-              {searchQuery ? `"${searchQuery}"` : saleOnly ? "Sale" : currentCategory?.name || "All Pieces"}
+              {searchQuery ? `"${searchQuery}"` : saleOnly ? t("products.saleTitle") : currentCategory?.name || t("products.allPieces")}
             </h1>
           </motion.div>
         </div>
