@@ -21,6 +21,7 @@ type LoadedProduct = { product: Product; selectedVariantId: string };
 
 export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => {
   const { cart, currency, refreshCart } = useStore();
+  const { locale } = useLocale();
   const { toast } = useToast();
   const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
