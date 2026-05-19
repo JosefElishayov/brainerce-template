@@ -42,23 +42,16 @@ export const Footer = () => {
               <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-background/40 mb-3">
                 {t("footer.stayConnected")}
               </p>
-              <form className="flex gap-0" onSubmit={(e) => e.preventDefault()}>
-                <label htmlFor="newsletter-email" className="sr-only">{t("footer.emailPlaceholder")}</label>
-                <input
-                  id="newsletter-email"
-                  type="email"
-                  placeholder={t("footer.emailPlaceholder")}
-                  aria-label={t("footer.emailPlaceholder")}
-                  className="flex-1 h-12 px-4 text-sm bg-background/5 border border-background/15 text-background placeholder:text-background/30 focus:outline-none focus:border-background/40 transition-colors"
-                />
-                <button
-                  type="submit"
-                  aria-label={t("footer.subscribe")}
-                  className="h-12 px-5 text-sm font-medium bg-background text-foreground hover:bg-background/90 transition-colors"
-                >
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </form>
+              <p className="text-sm text-background/60 leading-relaxed mb-4">
+                {t("footer.contactPrompt")}
+              </p>
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-3 h-12 px-5 text-xs font-medium tracking-[0.2em] uppercase bg-background text-foreground hover:bg-background/90 transition-colors"
+              >
+                {t("footer.getInTouch")}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
           </div>
         </div>

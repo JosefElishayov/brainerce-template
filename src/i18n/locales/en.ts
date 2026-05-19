@@ -39,8 +39,8 @@ const en = {
   footer: {
     tagline: "Curated home objects and lifestyle pieces for considered living.",
     stayConnected: "Stay Connected",
-    emailPlaceholder: "Your email",
-    subscribe: "Subscribe to newsletter",
+    contactPrompt: "Questions, custom orders, or trade enquiries — we'd love to hear from you.",
+    getInTouch: "Get in Touch",
     collections: "Collections",
     noCollections: "No collections yet",
     explore: "Explore",
