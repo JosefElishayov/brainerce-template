@@ -141,7 +141,7 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
           disabled={busy}
           className="w-full rounded-none py-5 text-xs tracking-[0.15em] uppercase btn-premium"
         >
-          {busy ? t("common.loading", "Loading…") : t("cart.addBundle", "Add Bundle")}
+          {busy ? t("common.loading") : t("cart.addBundle")}
         </Button>
       </div>
 
