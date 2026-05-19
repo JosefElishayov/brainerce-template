@@ -329,10 +329,10 @@ const Checkout = () => {
       <div className="container-full py-6 border-b border-border">
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           <Link to="/cart" className="hover:text-foreground">
-            Your Bag
+            {t("checkout.yourBag")}
           </Link>
           <span className="text-border">/</span>
-          <span className="text-foreground">Checkout</span>
+          <span className="text-foreground">{t("checkout.breadcrumb")}</span>
         </div>
       </div>
 
@@ -343,7 +343,7 @@ const Checkout = () => {
             animate={{ opacity: 1, y: 0 }}
             className="font-serif text-4xl md:text-5xl mb-12"
           >
-            Checkout
+            {t("checkout.title")}
           </motion.h1>
 
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
