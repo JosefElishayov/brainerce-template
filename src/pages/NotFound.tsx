@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 
 const NotFound = () => {
+  const { t } = useTranslation();
   return (
     <Layout>
       <section className="py-20 md:py-28">
@@ -15,17 +17,17 @@ const NotFound = () => {
           >
             <p className="text-8xl font-serif text-muted-foreground/30 mb-4">404</p>
             <h1 className="font-serif text-3xl md:text-4xl text-foreground mb-4">
-              Page Not Found
+              {t("notFound.title")}
             </h1>
             <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-              The page you're looking for doesn't exist or has been moved.
+              {t("notFound.hint")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild className="rounded-sm">
-                <Link to="/">Return Home</Link>
+                <Link to="/">{t("notFound.returnHome")}</Link>
               </Button>
               <Button asChild variant="outline" className="rounded-sm">
-                <Link to="/products">Browse Products</Link>
+                <Link to="/products">{t("notFound.browseProducts")}</Link>
               </Button>
             </div>
           </motion.div>

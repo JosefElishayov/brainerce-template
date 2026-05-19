@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { CheckCircle2, Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { client } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
 
 const OrderConfirmation = () => {
+  const { t } = useTranslation();
   const [params] = useSearchParams();
   const checkoutId = params.get("checkout_id");
   const { refreshCart } = useStore();
@@ -48,28 +50,28 @@ const OrderConfirmation = () => {
         {status === "loading" && (
           <>
             <Loader2 className="w-12 h-12 mx-auto mb-6 animate-spin text-muted-foreground" />
-            <h1 className="font-serif text-3xl mb-2">Confirming your order…</h1>
-            <p className="text-muted-foreground">Just a moment.</p>
+            <h1 className="font-serif text-3xl mb-2">{t("orderConfirmation.confirming")}</h1>
+            <p className="text-muted-foreground">{t("orderConfirmation.moment")}</p>
           </>
         )}
         {status === "ok" && (
           <>
             <CheckCircle2 className="w-14 h-14 mx-auto mb-6 text-primary" />
-            <h1 className="font-serif text-4xl mb-3">Thank you</h1>
-            <p className="text-muted-foreground mb-8">Your order has been placed.</p>
+            <h1 className="font-serif text-4xl mb-3">{t("orderConfirmation.thankYou")}</h1>
+            <p className="text-muted-foreground mb-8">{t("orderConfirmation.placed")}</p>
             <Button asChild size="lg" className="rounded-none px-10 py-6 text-sm tracking-[0.15em] uppercase btn-premium">
-              <Link to="/products">Continue Shopping</Link>
+              <Link to="/products">{t("orderConfirmation.continueShopping")}</Link>
             </Button>
           </>
         )}
         {status === "error" && (
           <>
-            <h1 className="font-serif text-3xl mb-3">We couldn't confirm your order</h1>
+            <h1 className="font-serif text-3xl mb-3">{t("orderConfirmation.errorTitle")}</h1>
             <p className="text-muted-foreground mb-8">
-              If you were charged, please contact support — your order is safe.
+              {t("orderConfirmation.errorHint")}
             </p>
             <Button asChild className="rounded-none px-10 py-6 text-sm tracking-[0.15em] uppercase btn-premium">
-              <Link to="/">Back Home</Link>
+              <Link to="/">{t("orderConfirmation.backHome")}</Link>
             </Button>
           </>
         )}
