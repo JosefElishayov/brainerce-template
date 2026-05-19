@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, ShoppingBag, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { CartWithIncludes } from "brainerce";
 import { formatPrice, getCartTotals, getCartItemName, getCartItemImage } from "brainerce";
 import { Layout } from "@/components/Layout";
@@ -13,6 +14,7 @@ import { CartBundleOfferCard } from "@/components/upsell/CartBundleOfferCard";
 import { RecommendationSection } from "@/components/upsell/RecommendationSection";
 
 const Cart = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { cart, currency, storeInfo, updateQuantity, removeFromCart } = useStore();
 
@@ -21,10 +23,10 @@ const Cart = () => {
       <Layout>
         <div className="container-narrow py-28 text-center">
           <ShoppingBag className="w-16 h-16 mx-auto mb-6 text-muted-foreground/30" />
-          <h1 className="font-serif text-4xl mb-4">Your Bag is Empty</h1>
-          <p className="text-muted-foreground mb-8 max-w-md mx-auto">Discover our curated collection.</p>
+          <h1 className="font-serif text-4xl mb-4">{t("cart.emptyTitle")}</h1>
+          <p className="text-muted-foreground mb-8 max-w-md mx-auto">{t("cart.emptyHint")}</p>
           <Button asChild size="lg" className="rounded-none px-10 py-6 text-sm tracking-[0.15em] uppercase btn-premium">
-            <Link to="/products">Start Shopping <ArrowRight className="ml-3 w-4 h-4" /></Link>
+            <Link to="/products">{t("cart.startShopping")} <ArrowRight className="ml-3 w-4 h-4" /></Link>
           </Button>
         </div>
       </Layout>
@@ -45,15 +47,15 @@ const Cart = () => {
     <Layout>
       <div className="container-full py-6 border-b border-border">
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
-          <Link to="/products" className="hover:text-foreground">Shop</Link>
+          <Link to="/products" className="hover:text-foreground">{t("cart.shop")}</Link>
           <span className="text-border">/</span>
-          <span className="text-foreground">Your Bag</span>
+          <span className="text-foreground">{t("cart.yourBag")}</span>
         </div>
       </div>
 
       <section className="py-10 md:py-16">
         <div className="container-full">
-          <h1 className="font-serif text-4xl md:text-5xl mb-8">Your Bag</h1>
+          <h1 className="font-serif text-4xl md:text-5xl mb-8">{t("cart.yourBag")}</h1>
           <FreeShippingBar />
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
             <div className="lg:col-span-7">
@@ -86,7 +88,7 @@ const Cart = () => {
                                     <span>+ {mod.name}</span>
                                     <span>
                                       {mod.freeApplied || delta === 0
-                                        ? <span className="text-primary">Free</span>
+                                        ? <span className="text-primary">{t("cart.free")}</span>
                                         : `${delta > 0 ? "+" : ""}${formatPrice(String(delta), { currency })}`}
                                     </span>
                                   </li>
@@ -119,44 +121,44 @@ const Cart = () => {
               )}
 
               <Link to="/products" className="inline-flex items-center gap-2 mt-8 text-sm tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground">
-                <ArrowRight className="w-4 h-4 rotate-180" /> Continue Shopping
+                <ArrowRight className="w-4 h-4 rotate-180" /> {t("cart.continueShopping")}
               </Link>
             </div>
 
             <div className="lg:col-span-5">
               <div className="bg-linen p-8 lg:sticky lg:top-28">
-                <h2 className="font-serif text-2xl mb-8">Order Summary</h2>
+                <h2 className="font-serif text-2xl mb-8">{t("cart.orderSummary")}</h2>
                 {totals ? (
                   <>
                     <div className="space-y-4 mb-8">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Subtotal</span>
+                        <span className="text-muted-foreground">{t("cart.subtotal")}</span>
                         <span>{formatPrice(String(totals.subtotal), { currency })}</span>
                       </div>
                       {totals.discount > 0 && (
                         <div className="flex justify-between text-sm text-primary">
-                          <span>Discount</span>
+                          <span>{t("cart.discount")}</span>
                           <span>-{formatPrice(String(totals.discount), { currency })}</span>
                         </div>
                       )}
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Shipping</span>
-                        <span>Calculated at checkout</span>
+                        <span className="text-muted-foreground">{t("cart.shipping")}</span>
+                        <span>{t("cart.calculatedAtCheckout")}</span>
                       </div>
                     </div>
                     <div className="border-t border-border pt-4 mb-8">
                       <div className="flex justify-between font-serif text-xl">
-                        <span>Total</span>
+                        <span>{t("cart.total")}</span>
                         <span>{formatPrice(String(totals.total), { currency })}</span>
                       </div>
                     </div>
                   </>
                 ) : (
-                  <p className="text-sm text-muted-foreground mb-8">Sign in or proceed to checkout for full pricing.</p>
+                  <p className="text-sm text-muted-foreground mb-8">{t("cart.signInNote")}</p>
                 )}
                 <Button onClick={() => navigate("/checkout")} size="lg"
                   className="w-full rounded-none py-6 text-sm tracking-[0.15em] uppercase btn-premium">
-                  Proceed to Checkout <ArrowRight className="ml-3 w-4 h-4" />
+                  {t("cart.proceedToCheckout")} <ArrowRight className="ml-3 w-4 h-4" />
                 </Button>
               </div>
             </div>
@@ -166,8 +168,8 @@ const Cart = () => {
 
       {recommendations.length > 0 && (
         <RecommendationSection
-          eyebrow="Curated For You"
-          title="You Might Also Love"
+          eyebrow={t("cart.curatedForYou")}
+          title={t("cart.youMightAlsoLove")}
           items={recommendations}
         />
       )}
