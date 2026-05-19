@@ -56,7 +56,7 @@ const Contact = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [locale]);
 
   const setField = (key: string, v: unknown) => setValues((p) => ({ ...p, [key]: v }));
 
