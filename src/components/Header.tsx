@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { User, Menu, X, Search, Globe } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { CartIcon } from "@/components/CartIcon";
 import { SearchDialog } from "@/components/SearchDialog";
 import { useStore } from "@/contexts/StoreContext";
@@ -30,6 +31,7 @@ interface CategoryItem {
 }
 
 export const Header = () => {
+  const { t } = useTranslation();
   const { storeInfo, loggedIn } = useStore();
   const { locale, supportedLocales, setLocale } = useLocale();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -79,7 +81,7 @@ export const Header = () => {
                 <NavigationMenuList>
                   <NavigationMenuItem>
                     <NavigationMenuTrigger className="bg-transparent text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground">
-                      Collections
+                      {t("header.collections")}
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
                       <ul className="grid w-[400px] gap-1 p-4 md:w-[500px] md:grid-cols-2">
@@ -116,32 +118,32 @@ export const Header = () => {
               to="/products"
               className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline"
             >
-              Shop All
+              {t("header.shopAll")}
             </Link>
             <Link
               to="/products?sale=true"
               className="text-xs font-medium tracking-[0.15em] uppercase text-primary hover:text-primary/80 transition-colors duration-300 link-underline"
             >
-              Sale
+              {t("header.sale")}
             </Link>
             <Link
               to="/about"
               className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline"
             >
-              About
+              {t("header.about")}
             </Link>
             <Link
               to="/contact"
               className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline"
             >
-              Contact
+              {t("header.contact")}
             </Link>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={() => setSearchOpen(true)}
-              aria-label="Search"
+              aria-label={t("common.search")}
               className="p-2 hover:bg-accent transition-colors duration-300 group"
             >
               <Search className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
@@ -150,7 +152,7 @@ export const Header = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    aria-label="Change language"
+                    aria-label={t("common.changeLanguage")}
                     className="p-2 hover:bg-accent transition-colors duration-300 group flex items-center gap-1"
                   >
                     <Globe className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
@@ -177,7 +179,7 @@ export const Header = () => {
             )}
             <Link
               to={loggedIn ? "/account" : "/login"}
-              aria-label={loggedIn ? "My account" : "Sign in"}
+              aria-label={loggedIn ? t("common.myAccount") : t("common.signIn")}
               className="p-2 hover:bg-accent transition-colors duration-300 group"
             >
               <User className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
@@ -186,7 +188,7 @@ export const Header = () => {
             <button
               className="md:hidden p-2 hover:bg-accent transition-colors duration-300"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
+              aria-label={t("header.toggleMenu")}
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -206,7 +208,7 @@ export const Header = () => {
                 {categories.length > 0 && (
                   <div className="space-y-1">
                     <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-muted-foreground/50 px-2 mb-3">
-                      Collections
+                      {t("header.collections")}
                     </p>
                     {categories.slice(0, 6).map((c) => (
                       <Link
@@ -222,12 +224,12 @@ export const Header = () => {
                 )}
                 <div className="pt-6 border-t border-border space-y-1">
                   {[
-                    { to: "/products", label: "Shop All" },
-                    { to: "/products?sale=true", label: "Sale" },
-                    { to: "/about", label: "About" },
-                    { to: "/contact", label: "Contact" },
-                    { to: "/cart", label: "Shopping Bag" },
-                    { to: loggedIn ? "/account" : "/login", label: loggedIn ? "My Account" : "Sign In" },
+                    { to: "/products", label: t("header.shopAll") },
+                    { to: "/products?sale=true", label: t("header.sale") },
+                    { to: "/about", label: t("header.about") },
+                    { to: "/contact", label: t("header.contact") },
+                    { to: "/cart", label: t("common.shoppingBag") },
+                    { to: loggedIn ? "/account" : "/login", label: loggedIn ? t("common.myAccount") : t("common.signIn") },
                   ].map((link) => (
                     <Link
                       key={link.to + link.label}
