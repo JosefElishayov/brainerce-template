@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Loader2, LogOut, Package } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { CustomerProfile, Order } from "brainerce";
 import { formatPrice } from "brainerce";
 import { Layout } from "@/components/Layout";
@@ -10,6 +11,7 @@ import { client, setCustomerToken } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
 
 const Account = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { loggedIn, setLoggedIn, refreshCart, currency } = useStore();
   const [profile, setProfile] = useState<CustomerProfile | null>(null);
@@ -31,7 +33,7 @@ const Account = () => {
         setProfile(p);
         setOrders(o.data || []);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load account");
+        setError(err instanceof Error ? err.message : t("account.failedLoad"));
       } finally {
         setLoading(false);
       }
@@ -66,10 +68,10 @@ const Account = () => {
           >
             <div>
               <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-2">
-                My Account
+                {t("account.myAccount")}
               </p>
               <h1 className="font-serif text-4xl md:text-5xl">
-                Hello, {profile?.firstName || "Friend"}
+                {t("account.hello", { name: profile?.firstName || t("account.friend") })}
               </h1>
               {profile?.email && (
                 <p className="text-sm text-muted-foreground mt-2">{profile.email}</p>
@@ -80,7 +82,7 @@ const Account = () => {
               onClick={handleLogout}
               className="rounded-none px-6 py-5 text-xs tracking-[0.15em] uppercase"
             >
-              <LogOut className="w-4 h-4 mr-2" /> Sign Out
+              <LogOut className="w-4 h-4 mr-2" /> {t("account.signOut")}
             </Button>
           </motion.div>
 
@@ -89,19 +91,19 @@ const Account = () => {
           )}
 
           <div>
-            <h2 className="font-serif text-2xl mb-6">Order History</h2>
+            <h2 className="font-serif text-2xl mb-6">{t("account.orderHistory")}</h2>
 
             {orders.length === 0 ? (
               <div className="border border-border p-12 text-center">
                 <Package className="w-8 h-8 mx-auto mb-4 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground mb-6">
-                  You haven't placed any orders yet.
+                  {t("account.noOrders")}
                 </p>
                 <Button
                   asChild
                   className="rounded-none px-8 py-5 text-xs tracking-[0.15em] uppercase btn-premium"
                 >
-                  <Link to="/products">Start Shopping</Link>
+                  <Link to="/products">{t("account.startShopping")}</Link>
                 </Button>
               </div>
             ) : (
@@ -111,7 +113,7 @@ const Account = () => {
                     <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
                       <div>
                         <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground">
-                          Order {order.orderNumber}
+                          {t("account.order")} {order.orderNumber}
                         </p>
                         <p className="text-sm mt-1">
                           {new Date(order.createdAt).toLocaleDateString()}
@@ -138,7 +140,7 @@ const Account = () => {
                             )}
                             <div className="flex-1">
                               <p className="font-medium">{item.name}</p>
-                              <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
+                              <p className="text-xs text-muted-foreground">{t("account.qty")}: {item.quantity}</p>
                             </div>
                             <p>{formatPrice(String(item.unitPrice), { currency })}</p>
                           </div>
