@@ -1,15 +1,18 @@
 import { BrainerceClient } from "brainerce";
 
 export const SALES_CHANNEL_ID = "vc_QLZzLkJhqa1wsjPwy93VO";
+export const LOCALE_STORAGE_KEY = "storeLocale";
 
 export const client = new BrainerceClient({
   salesChannelId: SALES_CHANNEL_ID,
 });
 
-// Restore customer token immediately so SDK calls are authenticated
+// Restore customer token + locale immediately so SDK calls are authenticated/translated
 if (typeof window !== "undefined") {
   const token = localStorage.getItem("customerToken");
   if (token) client.setCustomerToken(token);
+  const locale = localStorage.getItem(LOCALE_STORAGE_KEY);
+  if (locale) client.setLocale(locale);
 }
 
 export function setCustomerToken(token: string | null): void {
