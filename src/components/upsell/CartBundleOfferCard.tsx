@@ -103,7 +103,7 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
     <>
       <div className="border border-primary/30 bg-linen p-5 mb-4">
         <div className="flex items-center gap-2 text-[10px] font-semibold tracking-[0.25em] uppercase text-primary mb-2">
-          <Package className="w-3.5 h-3.5" /> {t("cart.bundleOffer", "Bundle Offer")}
+          <Package className="w-3.5 h-3.5" /> {t("cart.bundleOffer")}
         </div>
         <h3 className="font-serif text-lg mb-1">{bundle.name}</h3>
         {bundle.description && <p className="text-xs text-muted-foreground mb-4">{bundle.description}</p>}
