@@ -25,6 +25,7 @@ import { client } from "@/lib/brainerce";
 import { useToast } from "@/hooks/use-toast";
 import { OrderBumpCard } from "@/components/upsell/OrderBumpCard";
 import { CustomFieldsStep } from "@/components/CustomFieldsStep";
+import { useTranslation } from "react-i18next";
 
 interface AppliedSurcharge {
   key: string;
@@ -33,6 +34,7 @@ interface AppliedSurcharge {
 }
 
 function CouponInput() {
+  const { t } = useTranslation();
   const { cart, refreshCart } = useStore();
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
@@ -49,7 +51,7 @@ function CouponInput() {
       await refreshCart();
       setCode("");
     } catch (e2) {
-      setErr(e2 instanceof Error ? e2.message : "Invalid code");
+      setErr(e2 instanceof Error ? e2.message : t("checkout.invalidCode"));
     } finally {
       setBusy(false);
     }
@@ -69,11 +71,9 @@ function CouponInput() {
   if (applied) {
     return (
       <div className="flex items-center justify-between text-sm border border-border p-3">
-        <span>
-          Coupon <strong>{applied}</strong> applied
-        </span>
+        <span>{t("checkout.couponApplied", { code: applied })}</span>
         <button onClick={remove} disabled={busy} className="text-xs underline text-muted-foreground hover:text-foreground">
-          Remove
+          {t("common.remove")}
         </button>
       </div>
     );
@@ -83,13 +83,13 @@ function CouponInput() {
     <form onSubmit={apply} className="space-y-2">
       <div className="flex gap-2">
         <Input
-          placeholder="Promo code"
+          placeholder={t("checkout.promoCode")}
           value={code}
           onChange={(e) => setCode(e.target.value)}
           className="rounded-none h-11"
         />
         <Button type="submit" variant="outline" disabled={busy || !code.trim()} className="rounded-none px-5 text-xs tracking-widest uppercase">
-          Apply
+          {t("checkout.apply")}
         </Button>
       </div>
       {err && <p className="text-xs text-destructive">{err}</p>}
@@ -105,6 +105,7 @@ interface PaymentData {
 }
 
 const Checkout = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { cart, currency, storeInfo } = useStore();
@@ -171,15 +172,15 @@ const Checkout = () => {
     return (
       <Layout>
         <div className="container-narrow py-28 text-center">
-          <h1 className="font-serif text-4xl mb-4">No Items to Checkout</h1>
-          <p className="text-muted-foreground mb-8">Your bag is empty.</p>
+          <h1 className="font-serif text-4xl mb-4">{t("checkout.noItemsTitle")}</h1>
+          <p className="text-muted-foreground mb-8">{t("checkout.noItemsHint")}</p>
           <Button
             asChild
             size="lg"
             className="rounded-none px-10 py-6 text-sm tracking-[0.15em] uppercase btn-premium"
           >
             <Link to="/products">
-              Start Shopping <ArrowRight className="ml-3 w-4 h-4" />
+              {t("checkout.startShopping")} <ArrowRight className="ml-3 w-4 h-4" />
             </Link>
           </Button>
         </div>
@@ -198,7 +199,7 @@ const Checkout = () => {
       // 1. Detect providers
       const { hasPayments, providers } = await client.getPaymentProviders();
       if (!hasPayments)
-        throw new Error("Payment is not configured for this store yet.");
+        throw new Error(t("checkout.paymentNotConfigured"));
 
       // 2. Start checkout (guest or logged-in)
       let checkoutId: string;
@@ -208,9 +209,7 @@ const Checkout = () => {
       } else {
         const result = await client.startGuestCheckout();
         if (!result.tracked)
-          throw new Error(
-            "Checkout tracking is not enabled on this store. Enable it in Brainerce admin.",
-          );
+          throw new Error(t("checkout.trackingDisabled"));
         checkoutId = result.checkoutId;
       }
 
@@ -262,9 +261,9 @@ const Checkout = () => {
       // No custom fields → go straight to payment
       await initPayment(checkoutId, providers);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Failed to start checkout";
+      const msg = err instanceof Error ? err.message : t("checkout.failedToStart");
       setError(msg);
-      toast({ title: "Checkout error", description: msg, variant: "destructive" });
+      toast({ title: t("checkout.checkoutError"), description: msg, variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -317,9 +316,9 @@ const Checkout = () => {
       const { providers } = await client.getPaymentProviders();
       await initPayment(pendingCheckoutId, providers);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Failed to save selections";
+      const msg = err instanceof Error ? err.message : t("checkout.failedToSave");
       setError(msg);
-      toast({ title: "Could not save options", description: msg, variant: "destructive" });
+      toast({ title: t("checkout.couldNotSave"), description: msg, variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -330,10 +329,10 @@ const Checkout = () => {
       <div className="container-full py-6 border-b border-border">
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           <Link to="/cart" className="hover:text-foreground">
-            Your Bag
+            {t("checkout.yourBag")}
           </Link>
           <span className="text-border">/</span>
-          <span className="text-foreground">Checkout</span>
+          <span className="text-foreground">{t("checkout.breadcrumb")}</span>
         </div>
       </div>
 
@@ -344,7 +343,7 @@ const Checkout = () => {
             animate={{ opacity: 1, y: 0 }}
             className="font-serif text-4xl md:text-5xl mb-12"
           >
-            Checkout
+            {t("checkout.title")}
           </motion.h1>
 
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
@@ -359,12 +358,12 @@ const Checkout = () => {
               {step === "address" && (
                 <form onSubmit={startBrainerceCheckout} className="space-y-8">
                   <div>
-                    <h2 className="font-serif text-xl mb-6">Contact</h2>
+                    <h2 className="font-serif text-xl mb-6">{t("checkout.contact")}</h2>
                     <Input
                       name="email"
                       type="email"
                       required
-                      placeholder="Email"
+                      placeholder={t("checkout.email")}
                       value={form.email}
                       onChange={onField}
                       className="rounded-none h-12"
@@ -372,21 +371,21 @@ const Checkout = () => {
                   </div>
 
                   <div>
-                    <h2 className="font-serif text-xl mb-6">Shipping Address</h2>
+                    <h2 className="font-serif text-xl mb-6">{t("checkout.shippingAddress")}</h2>
                     <div className="grid sm:grid-cols-2 gap-4">
-                      <Input name="firstName" required placeholder="First name" value={form.firstName} onChange={onField} className="rounded-none h-12" />
-                      <Input name="lastName" required placeholder="Last name" value={form.lastName} onChange={onField} className="rounded-none h-12" />
+                      <Input name="firstName" required placeholder={t("checkout.firstName")} value={form.firstName} onChange={onField} className="rounded-none h-12" />
+                      <Input name="lastName" required placeholder={t("checkout.lastName")} value={form.lastName} onChange={onField} className="rounded-none h-12" />
                     </div>
-                    <Input name="line1" required placeholder="Street address" value={form.line1} onChange={onField} className="rounded-none h-12 mt-4" />
-                    <Input name="line2" placeholder="Apt, suite (optional)" value={form.line2} onChange={onField} className="rounded-none h-12 mt-4" />
+                    <Input name="line1" required placeholder={t("checkout.street")} value={form.line1} onChange={onField} className="rounded-none h-12 mt-4" />
+                    <Input name="line2" placeholder={t("checkout.apt")} value={form.line2} onChange={onField} className="rounded-none h-12 mt-4" />
                     <div className="grid sm:grid-cols-3 gap-4 mt-4">
-                      <Input name="city" required placeholder="City" value={form.city} onChange={onField} className="rounded-none h-12" />
-                      <Input name="region" required placeholder="State / Region" value={form.region} onChange={onField} className="rounded-none h-12" />
-                      <Input name="postalCode" required placeholder="Postal code" value={form.postalCode} onChange={onField} className="rounded-none h-12" />
+                      <Input name="city" required placeholder={t("checkout.city")} value={form.city} onChange={onField} className="rounded-none h-12" />
+                      <Input name="region" required placeholder={t("checkout.region")} value={form.region} onChange={onField} className="rounded-none h-12" />
+                      <Input name="postalCode" required placeholder={t("checkout.postalCode")} value={form.postalCode} onChange={onField} className="rounded-none h-12" />
                     </div>
                     <div className="grid sm:grid-cols-2 gap-4 mt-4">
-                      <Input name="country" required placeholder="Country (e.g. US)" value={form.country} onChange={onField} className="rounded-none h-12" />
-                      <Input name="phone" placeholder="Phone (optional)" value={form.phone} onChange={onField} className="rounded-none h-12" />
+                      <Input name="country" required placeholder={t("checkout.country")} value={form.country} onChange={onField} className="rounded-none h-12" />
+                      <Input name="phone" placeholder={t("checkout.phone")} value={form.phone} onChange={onField} className="rounded-none h-12" />
                     </div>
                   </div>
 
@@ -397,9 +396,9 @@ const Checkout = () => {
                     className="w-full rounded-none py-6 text-sm tracking-[0.15em] uppercase btn-premium"
                   >
                     {loading ? (
-                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Preparing payment…</>
+                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("checkout.preparingPayment")}</>
                     ) : (
-                      <>Continue to Payment <ArrowRight className="ml-3 w-4 h-4" /></>
+                      <>{t("checkout.continueToPayment")} <ArrowRight className="ml-3 w-4 h-4" /></>
                     )}
                   </Button>
                 </form>
@@ -421,7 +420,7 @@ const Checkout = () => {
                 <div className="space-y-6">
                   {rates.length > 0 && (
                     <div>
-                      <h2 className="font-serif text-xl mb-4">Shipping Method</h2>
+                      <h2 className="font-serif text-xl mb-4">{t("checkout.shippingMethod")}</h2>
                       <div className="space-y-2">
                         {rates.map((r) => (
                           <label
@@ -441,7 +440,7 @@ const Checkout = () => {
                               <span>
                                 <span className="font-medium">{r.name}</span>
                                 {r.estimatedDays != null && (
-                                  <span className="text-muted-foreground"> · ~{r.estimatedDays} days</span>
+                                  <span className="text-muted-foreground"> · ~{r.estimatedDays} {t("checkout.days")}</span>
                                 )}
                               </span>
                             </span>
@@ -454,7 +453,7 @@ const Checkout = () => {
 
                   {selectedRateId || rates.length === 0 ? (
                     <div>
-                      <h2 className="font-serif text-xl mb-4">Payment</h2>
+                      <h2 className="font-serif text-xl mb-4">{t("checkout.payment")}</h2>
                       <PaymentRenderer
                         payment={payment}
                         stripePromise={stripePromise}
@@ -463,7 +462,7 @@ const Checkout = () => {
                     </div>
                   ) : (
                     <p className="text-sm text-muted-foreground">
-                      Select a shipping method to continue to payment.
+                      {t("checkout.selectShipping")}
                     </p>
                   )}
                 </div>
@@ -472,7 +471,7 @@ const Checkout = () => {
 
             <div className="lg:col-span-5">
               <div className="bg-linen p-8 lg:sticky lg:top-28">
-                <h2 className="font-serif text-2xl mb-6">Order Summary</h2>
+                <h2 className="font-serif text-2xl mb-6">{t("checkout.orderSummary")}</h2>
                 <div className="space-y-4 mb-6">
                   {cart.items.map((item) => {
                     const name = getCartItemName(item);
@@ -490,7 +489,7 @@ const Checkout = () => {
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-medium line-clamp-1">{name}</p>
-                          <p className="text-xs text-muted-foreground mt-0.5">Qty: {item.quantity}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">{t("checkout.qty")}: {item.quantity}</p>
                           <p className="text-sm mt-1">{formatPrice(String(lineTotal), { currency })}</p>
                         </div>
                       </div>
@@ -501,7 +500,7 @@ const Checkout = () => {
                 {showBumps && bumps.length > 0 && payment?.checkoutId && (
                   <div className="border-t border-border pt-4 mb-4 space-y-3">
                     <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-muted-foreground">
-                      Add to your order
+                      {t("checkout.addToOrder")}
                     </p>
                     {bumps.map((b) => (
                       <OrderBumpCard
@@ -521,12 +520,12 @@ const Checkout = () => {
                     </div>
                     <div className="border-t border-border pt-4 space-y-3">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Subtotal</span>
+                        <span className="text-muted-foreground">{t("checkout.subtotal")}</span>
                         <span>{formatPrice(String(totals.subtotal), { currency })}</span>
                       </div>
                       {totals.discount > 0 && (
                         <div className="flex justify-between text-sm text-primary">
-                          <span>Discount</span>
+                          <span>{t("checkout.discount")}</span>
                           <span>-{formatPrice(String(totals.discount), { currency })}</span>
                         </div>
                       )}
@@ -536,11 +535,11 @@ const Checkout = () => {
                         return (
                           <>
                             <div className="flex justify-between text-sm">
-                              <span className="text-muted-foreground">Shipping</span>
+                              <span className="text-muted-foreground">{t("checkout.shipping")}</span>
                               <span>
                                 {selectedRate
                                   ? formatPrice(String(shippingPrice), { currency })
-                                  : <span className="text-muted-foreground">Select method</span>}
+                                  : <span className="text-muted-foreground">{t("checkout.selectMethod")}</span>}
                               </span>
                             </div>
                             {appliedSurcharges.map((s) => (
@@ -550,7 +549,7 @@ const Checkout = () => {
                               </div>
                             ))}
                             <div className="flex justify-between font-serif text-xl border-t border-border pt-4">
-                              <span>Total</span>
+                              <span>{t("checkout.total")}</span>
                               <span>
                                 {formatPrice(
                                   String((totals.total ?? 0) + (surchargeAmount || 0) + shippingPrice),
@@ -584,12 +583,13 @@ function PaymentRenderer({
   stripePromise: ReturnType<typeof loadStripe> | null;
   onComplete: () => void;
 }) {
+  const { t } = useTranslation();
   if (payment.provider === "sandbox") {
     return (
       <div className="p-6 border border-border bg-muted/20">
-        <p className="font-medium mb-2">Test mode</p>
+        <p className="font-medium mb-2">{t("checkout.testModeTitle")}</p>
         <p className="text-sm text-muted-foreground mb-4">
-          No real payment will be charged. Click below to complete the test order.
+          {t("checkout.testModeHint")}
         </p>
         <Button
           onClick={async () => {
@@ -598,7 +598,7 @@ function PaymentRenderer({
           }}
           className="rounded-none py-6 text-sm tracking-[0.15em] uppercase btn-premium"
         >
-          Complete Test Order
+          {t("checkout.completeTestOrder")}
         </Button>
       </div>
     );
@@ -608,7 +608,7 @@ function PaymentRenderer({
     return (
       <iframe
         src={payment.clientSecret}
-        title="Payment"
+        title={t("checkout.payment")}
         allow="payment"
         style={{ width: "100%", height: 640, border: 0 }}
       />
@@ -625,7 +625,7 @@ function PaymentRenderer({
 
   return (
     <p className="text-sm text-muted-foreground">
-      Unsupported payment provider: {payment.provider}
+      {t("checkout.unsupportedProvider", { provider: payment.provider })}
     </p>
   );
 }
@@ -637,6 +637,7 @@ function StripeForm({
   checkoutId: string;
   onComplete: () => void;
 }) {
+  const { t } = useTranslation();
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -657,7 +658,7 @@ function StripeForm({
     });
 
     if (stripeError) {
-      setError(stripeError.message || "Payment failed");
+      setError(stripeError.message || t("checkout.paymentFailed"));
       setLoading(false);
       return;
     }
@@ -678,9 +679,9 @@ function StripeForm({
         className="w-full rounded-none py-6 text-sm tracking-[0.15em] uppercase btn-premium"
       >
         {loading ? (
-          <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing…</>
+          <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("checkout.processing")}</>
         ) : (
-          "Pay Now"
+          t("checkout.payNow")
         )}
       </Button>
     </form>
