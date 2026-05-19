@@ -235,23 +235,23 @@ export function ProductReviews({ productId }: Props) {
             {showForm && (
               <div className="border border-border p-6 bg-linen">
                 <h3 className="font-serif text-xl mb-4">
-                  {my?.myReview ? "Edit your review" : "Write a review"}
+                  {my?.myReview ? t("reviews.editYourReview") : t("reviews.writeYourReview")}
                 </h3>
                 <div className="mb-4">
                   <span className="block text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-2">
-                    Your rating
+                    {t("reviews.yourRating")}
                   </span>
                   <Stars value={rating} size={28} interactive onChange={setRating} />
                 </div>
                 <div className="mb-4">
                   <span className="block text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-2">
-                    Your review (optional)
+                    {t("reviews.yourReviewOptional")}
                   </span>
                   <textarea
                     value={body}
                     onChange={(e) => setBody(e.target.value.slice(0, 2000))}
                     rows={5}
-                    placeholder="Share your thoughts about this piece…"
+                    placeholder={t("reviews.reviewPlaceholder")}
                     className="w-full border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   />
                   <p className="text-[10px] text-muted-foreground mt-1">{body.length}/2000</p>
@@ -264,12 +264,12 @@ export function ProductReviews({ productId }: Props) {
                   >
                     {submitting ? (
                       <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Submitting…
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("reviews.submitting")}
                       </>
                     ) : my?.myReview ? (
-                      "Update Review"
+                      t("reviews.updateReview")
                     ) : (
-                      "Submit Review"
+                      t("reviews.submitReview")
                     )}
                   </Button>
                   <Button
@@ -278,7 +278,7 @@ export function ProductReviews({ productId }: Props) {
                     onClick={() => setShowForm(false)}
                     className="rounded-none text-xs tracking-[0.15em] uppercase"
                   >
-                    Cancel
+                    {t("reviews.cancel")}
                   </Button>
                 </div>
               </div>
