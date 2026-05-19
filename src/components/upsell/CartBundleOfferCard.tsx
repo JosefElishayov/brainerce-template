@@ -11,6 +11,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useStore } from "@/contexts/StoreContext";
+import { useLocale } from "@/contexts/LocaleContext";
 import { client } from "@/lib/brainerce";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
@@ -20,6 +21,7 @@ type LoadedProduct = { product: Product; selectedVariantId: string };
 
 export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => {
   const { cart, currency, refreshCart } = useStore();
+  const { locale } = useLocale();
   const { toast } = useToast();
   const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
@@ -35,11 +37,11 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
       await client.addBundleToCart(cart.id, bundle.id, selections);
       await refreshCart();
       setOpen(false);
-      toast({ title: t("cart.bundleAdded", "Bundle added"), description: bundle.name });
+      toast({ title: t("cart.bundleAdded"), description: bundle.name });
     } catch (err) {
       toast({
-        title: t("cart.couldNotAddBundle", "Could not add bundle"),
-        description: err instanceof Error ? err.message : "Please try again",
+        title: t("cart.couldNotAddBundle"),
+        description: err instanceof Error ? err.message : t("cart.tryAgain"),
         variant: "destructive",
       });
     } finally {
@@ -57,7 +59,7 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
       setBusy(true);
       const loaded = await Promise.all(
         variableOffered.map(async (p) => {
-          const product = await client.getProduct(p.id);
+          const product = await client.getProduct(p.id, { locale });
           const firstVariantId = product.variants?.[0]?.id ?? "";
           return { product, selectedVariantId: firstVariantId };
         }),
@@ -66,8 +68,8 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
       setOpen(true);
     } catch (err) {
       toast({
-        title: t("cart.couldNotAddBundle", "Could not add bundle"),
-        description: err instanceof Error ? err.message : "Please try again",
+        title: t("cart.couldNotAddBundle"),
+        description: err instanceof Error ? err.message : t("cart.tryAgain"),
         variant: "destructive",
       });
     } finally {
@@ -80,7 +82,7 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
     for (const lp of variableProducts) {
       if (!lp.selectedVariantId) {
         toast({
-          title: t("productDetail.missingSelection", "Selection required"),
+          title: t("productDetail.missingSelection"),
           description: lp.product.name,
           variant: "destructive",
         });
@@ -101,7 +103,7 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
     <>
       <div className="border border-primary/30 bg-linen p-5 mb-4">
         <div className="flex items-center gap-2 text-[10px] font-semibold tracking-[0.25em] uppercase text-primary mb-2">
-          <Package className="w-3.5 h-3.5" /> {t("cart.bundleOffer", "Bundle Offer")}
+          <Package className="w-3.5 h-3.5" /> {t("cart.bundleOffer")}
         </div>
         <h3 className="font-serif text-lg mb-1">{bundle.name}</h3>
         {bundle.description && <p className="text-xs text-muted-foreground mb-4">{bundle.description}</p>}
@@ -126,7 +128,7 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
           ))}
         </div>
         <div className="flex items-center justify-between mb-3 text-sm">
-          <span className="text-muted-foreground">{t("cart.bundleTotal", "Bundle total")}</span>
+          <span className="text-muted-foreground">{t("cart.bundleTotal")}</span>
           <span>
             <span className="line-through text-muted-foreground mr-2">
               {formatPrice(bundle.totalOriginalPrice, { currency })}
@@ -139,7 +141,7 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
           disabled={busy}
           className="w-full rounded-none py-5 text-xs tracking-[0.15em] uppercase btn-premium"
         >
-          {busy ? t("common.loading", "Loading…") : t("cart.addBundle", "Add Bundle")}
+          {busy ? t("common.loading") : t("cart.addBundle")}
         </Button>
       </div>
 
@@ -147,7 +149,7 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="font-serif">
-              {t("cart.selectBundleOptions", "Select options")}
+              {t("cart.selectBundleOptions")}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-6 py-2">
@@ -214,7 +216,7 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
               disabled={busy}
               className="w-full rounded-none py-5 text-xs tracking-[0.15em] uppercase btn-premium"
             >
-              {busy ? t("common.loading", "Loading…") : t("cart.addBundle", "Add Bundle")}
+              {busy ? t("common.loading") : t("cart.addBundle")}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -138,6 +138,13 @@ const en = {
     curatedForYou: "Curated For You",
     youMightAlsoLove: "You Might Also Love",
     remove: "Remove",
+    bundleOffer: "Bundle Offer",
+    bundleTotal: "Bundle total",
+    addBundle: "Add Bundle",
+    bundleAdded: "Bundle added",
+    couldNotAddBundle: "Could not add bundle",
+    selectBundleOptions: "Select options",
+    tryAgain: "Please try again",
   },
   checkout: {
     breadcrumb: "Checkout",
