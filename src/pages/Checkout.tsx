@@ -316,9 +316,9 @@ const Checkout = () => {
       const { providers } = await client.getPaymentProviders();
       await initPayment(pendingCheckoutId, providers);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Failed to save selections";
+      const msg = err instanceof Error ? err.message : t("checkout.failedToSave");
       setError(msg);
-      toast({ title: "Could not save options", description: msg, variant: "destructive" });
+      toast({ title: t("checkout.couldNotSave"), description: msg, variant: "destructive" });
     } finally {
       setLoading(false);
     }
