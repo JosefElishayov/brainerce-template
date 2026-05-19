@@ -31,6 +31,7 @@ interface CategoryItem {
 
 export const Header = () => {
   const { storeInfo, loggedIn } = useStore();
+  const { locale, supportedLocales, setLocale } = useLocale();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [categories, setCategories] = useState<CategoryItem[]>([]);
