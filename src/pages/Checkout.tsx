@@ -583,12 +583,13 @@ function PaymentRenderer({
   stripePromise: ReturnType<typeof loadStripe> | null;
   onComplete: () => void;
 }) {
+  const { t } = useTranslation();
   if (payment.provider === "sandbox") {
     return (
       <div className="p-6 border border-border bg-muted/20">
-        <p className="font-medium mb-2">Test mode</p>
+        <p className="font-medium mb-2">{t("checkout.testModeTitle")}</p>
         <p className="text-sm text-muted-foreground mb-4">
-          No real payment will be charged. Click below to complete the test order.
+          {t("checkout.testModeHint")}
         </p>
         <Button
           onClick={async () => {
@@ -597,7 +598,7 @@ function PaymentRenderer({
           }}
           className="rounded-none py-6 text-sm tracking-[0.15em] uppercase btn-premium"
         >
-          Complete Test Order
+          {t("checkout.completeTestOrder")}
         </Button>
       </div>
     );
@@ -607,7 +608,7 @@ function PaymentRenderer({
     return (
       <iframe
         src={payment.clientSecret}
-        title="Payment"
+        title={t("checkout.payment")}
         allow="payment"
         style={{ width: "100%", height: 640, border: 0 }}
       />
@@ -624,7 +625,7 @@ function PaymentRenderer({
 
   return (
     <p className="text-sm text-muted-foreground">
-      Unsupported payment provider: {payment.provider}
+      {t("checkout.unsupportedProvider", { provider: payment.provider })}
     </p>
   );
 }
