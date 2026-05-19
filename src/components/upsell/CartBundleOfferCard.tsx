@@ -128,7 +128,7 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
           ))}
         </div>
         <div className="flex items-center justify-between mb-3 text-sm">
-          <span className="text-muted-foreground">{t("cart.bundleTotal", "Bundle total")}</span>
+          <span className="text-muted-foreground">{t("cart.bundleTotal")}</span>
           <span>
             <span className="line-through text-muted-foreground mr-2">
               {formatPrice(bundle.totalOriginalPrice, { currency })}
