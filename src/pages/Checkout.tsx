@@ -261,9 +261,9 @@ const Checkout = () => {
       // No custom fields → go straight to payment
       await initPayment(checkoutId, providers);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Failed to start checkout";
+      const msg = err instanceof Error ? err.message : t("checkout.failedToStart");
       setError(msg);
-      toast({ title: "Checkout error", description: msg, variant: "destructive" });
+      toast({ title: t("checkout.checkoutError"), description: msg, variant: "destructive" });
     } finally {
       setLoading(false);
     }
