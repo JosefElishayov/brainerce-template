@@ -637,6 +637,7 @@ function StripeForm({
   checkoutId: string;
   onComplete: () => void;
 }) {
+  const { t } = useTranslation();
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -657,7 +658,7 @@ function StripeForm({
     });
 
     if (stripeError) {
-      setError(stripeError.message || "Payment failed");
+      setError(stripeError.message || t("checkout.paymentFailed"));
       setLoading(false);
       return;
     }
@@ -678,9 +679,9 @@ function StripeForm({
         className="w-full rounded-none py-6 text-sm tracking-[0.15em] uppercase btn-premium"
       >
         {loading ? (
-          <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing…</>
+          <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("checkout.processing")}</>
         ) : (
-          "Pay Now"
+          t("checkout.payNow")
         )}
       </Button>
     </form>
