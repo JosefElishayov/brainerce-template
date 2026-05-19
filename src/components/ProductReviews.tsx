@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Star, Loader2, BadgeCheck, Pencil, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { client } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
 import { useToast } from "@/hooks/use-toast";
