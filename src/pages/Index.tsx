@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, ArrowDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Product } from "brainerce";
 import { Layout } from "@/components/Layout";
 import { SEO } from "@/components/SEO";
@@ -14,6 +15,7 @@ import { useStore } from "@/contexts/StoreContext";
 interface Category { id: string; name: string; image?: string | null }
 
 const Index = () => {
+  const { t } = useTranslation();
   const { storeInfo } = useStore();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -61,25 +63,25 @@ const Index = () => {
         <motion.div className="relative container-full h-full flex flex-col justify-end pb-20 md:pb-28 pt-16 md:pt-20" style={{ opacity: heroOpacity }}>
           <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.3 }} className="max-w-3xl">
             <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-white/70 mb-6">
-              Curated for Considered Living
+              {t("home.eyebrow")}
             </p>
             <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl xl:text-9xl text-white mb-8 leading-[0.9] tracking-tight">
               {brandName}
               <br />
-              <span className="italic font-normal">Objects of Quiet Beauty</span>
+              <span className="italic font-normal">{t("home.titleSuffix")}</span>
             </h1>
             <p className="text-base md:text-lg text-white/80 mb-10 leading-relaxed max-w-lg">
-              Handcrafted home goods and lifestyle pieces designed to bring warmth and intention to everyday moments.
+              {t("home.subtitle")}
             </p>
             <Button asChild size="lg" className="rounded-none px-10 py-6 text-sm tracking-[0.15em] uppercase btn-premium">
               <Link to="/products">
-                Shop Now
+                {t("common.shopNow")}
                 <ArrowRight className="ml-3 w-4 h-4" />
               </Link>
             </Button>
           </motion.div>
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-            <span className="text-[10px] tracking-[0.3em] uppercase text-white/50">Scroll</span>
+            <span className="text-[10px] tracking-[0.3em] uppercase text-white/50">{t("home.scroll")}</span>
             <ArrowDown className="w-4 h-4 text-white/50 animate-bounce" />
           </div>
         </motion.div>
@@ -89,12 +91,12 @@ const Index = () => {
         <section className="py-20 md:py-28 bg-linen">
           <div className="container-narrow text-center">
             <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-primary mb-4">
-              Featured Collection
+              {t("home.featuredCollection")}
             </p>
             <h2 className="font-serif text-4xl md:text-5xl mb-6">{featuredCollection.name}</h2>
             <Button asChild size="lg" className="rounded-none px-10 py-6 text-sm tracking-[0.15em] uppercase btn-premium">
               <Link to={`/products?category=${featuredCollection.id}`}>
-                Explore <ArrowRight className="ml-3 w-4 h-4" />
+                {t("common.explore")} <ArrowRight className="ml-3 w-4 h-4" />
               </Link>
             </Button>
           </div>
@@ -105,11 +107,11 @@ const Index = () => {
         <div className="container-full">
           <div className="flex items-end justify-between mb-14">
             <div>
-              <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-primary mb-3">Just Arrived</p>
-              <h2 className="font-serif text-4xl md:text-5xl text-foreground">Latest Pieces</h2>
+              <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-primary mb-3">{t("home.justArrived")}</p>
+              <h2 className="font-serif text-4xl md:text-5xl text-foreground">{t("home.latestPieces")}</h2>
             </div>
             <Link to="/products" className="hidden md:flex items-center gap-3 text-sm tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground">
-              View All <ArrowRight className="w-4 h-4" />
+              {t("common.viewAll")} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
           {loading ? (
@@ -120,8 +122,8 @@ const Index = () => {
             </div>
           ) : products.length === 0 ? (
             <div className="py-20 text-center text-muted-foreground">
-              <p className="font-serif text-2xl mb-2">No products yet</p>
-              <p className="text-sm">Add products in the Brainerce dashboard to see them here.</p>
+              <p className="font-serif text-2xl mb-2">{t("home.noProducts")}</p>
+              <p className="text-sm">{t("home.noProductsHint")}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
@@ -137,8 +139,8 @@ const Index = () => {
         <section className="py-24 md:py-32 bg-linen">
           <div className="container-full">
             <div className="text-center mb-16">
-              <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-primary mb-3">Browse By</p>
-              <h2 className="font-serif text-4xl md:text-5xl">Collections</h2>
+              <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-primary mb-3">{t("home.browseBy")}</p>
+              <h2 className="font-serif text-4xl md:text-5xl">{t("home.collections")}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {categories.slice(0, 6).map((c, i) => (
@@ -151,14 +153,13 @@ const Index = () => {
 
       <section className="py-24 md:py-32">
         <div className="container-narrow text-center">
-          <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-primary mb-6">About Us</p>
+          <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-primary mb-6">{t("home.aboutEyebrow")}</p>
           <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground leading-[1.3] mb-8">
-            We believe in the beauty of slow living—in objects made with care,
-            materials that age gracefully, and spaces that invite{" "}
-            <span className="italic">pause</span>.
+            {t("home.aboutHeadline")}{" "}
+            <span className="italic">{t("home.aboutHeadlineEmphasis")}</span>.
           </h2>
           <Button asChild variant="outline" size="lg" className="rounded-none px-10 py-6 text-sm tracking-[0.15em] uppercase">
-            <Link to="/about">Read Our Story <ArrowRight className="ml-3 w-4 h-4" /></Link>
+            <Link to="/about">{t("home.readOurStory")} <ArrowRight className="ml-3 w-4 h-4" /></Link>
           </Button>
         </div>
       </section>
