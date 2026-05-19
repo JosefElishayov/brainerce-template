@@ -112,17 +112,17 @@ export function ProductReviews({ productId }: Props) {
     try {
       if (my?.myReview) {
         await client.updateMyProductReview(productId, { rating, body: body || undefined });
-        toast({ title: "Review updated" });
+        toast({ title: t("reviews.reviewUpdated") });
       } else {
         await client.submitProductReview(productId, { rating, body: body || undefined });
-        toast({ title: "Thanks for your review!" });
+        toast({ title: t("reviews.reviewThanks") });
       }
       setShowForm(false);
       await Promise.all([load(), loadMy()]);
     } catch (err) {
       toast({
-        title: "Could not submit review",
-        description: err instanceof Error ? err.message : "Please try again",
+        title: t("reviews.couldNotSubmit"),
+        description: err instanceof Error ? err.message : t("reviews.tryAgain"),
         variant: "destructive",
       });
     } finally {
@@ -131,17 +131,17 @@ export function ProductReviews({ productId }: Props) {
   };
 
   const remove = async () => {
-    if (!confirm("Delete your review?")) return;
+    if (!confirm(t("reviews.confirmDelete"))) return;
     try {
       await client.deleteMyProductReview(productId);
       setBody("");
       setRating(5);
       await Promise.all([load(), loadMy()]);
-      toast({ title: "Review deleted" });
+      toast({ title: t("reviews.reviewDeleted") });
     } catch (err) {
       toast({
-        title: "Could not delete review",
-        description: err instanceof Error ? err.message : "Please try again",
+        title: t("reviews.couldNotDelete"),
+        description: err instanceof Error ? err.message : t("reviews.tryAgain"),
         variant: "destructive",
       });
     }
