@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import { User, Menu, X, Search } from "lucide-react";
+import { User, Menu, X, Search, Globe } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CartIcon } from "@/components/CartIcon";
 import { SearchDialog } from "@/components/SearchDialog";
 import { useStore } from "@/contexts/StoreContext";
+import { useLocale } from "@/contexts/LocaleContext";
 import { client } from "@/lib/brainerce";
 import {
   NavigationMenu,
@@ -14,6 +15,12 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 interface CategoryItem {
