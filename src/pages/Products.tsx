@@ -159,14 +159,14 @@ const Products = () => {
             <div className="text-center py-28 text-destructive">{error}</div>
           ) : products.length === 0 ? (
             <div className="text-center py-28">
-              <p className="font-serif text-2xl text-muted-foreground mb-4">No pieces found</p>
+              <p className="font-serif text-2xl text-muted-foreground mb-4">{t("products.notFound")}</p>
               <Button asChild variant="outline" className="rounded-none px-8 text-sm tracking-[0.1em] uppercase">
-                <Link to="/products">View All Pieces</Link>
+                <Link to="/products">{t("products.viewAllPieces")}</Link>
               </Button>
             </div>
           ) : (
             <>
-              <p className="text-sm text-muted-foreground mb-10">{products.length} {products.length === 1 ? "piece" : "pieces"}</p>
+              <p className="text-sm text-muted-foreground mb-10">{products.length} {products.length === 1 ? t("products.pieceSingular") : t("products.piecePlural")}</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-10">
                 {products.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
               </div>
