@@ -140,6 +140,13 @@ const he: Resources = {
     curatedForYou: "נבחר עבורך",
     youMightAlsoLove: "אולי תאהבו גם",
     remove: "הסר",
+    bundleOffer: "מארז מיוחד",
+    bundleTotal: "סה״כ למארז",
+    addBundle: "הוסיפו את המארז",
+    bundleAdded: "המארז נוסף",
+    couldNotAddBundle: "לא ניתן להוסיף את המארז",
+    selectBundleOptions: "בחרו אפשרויות",
+    tryAgain: "נסו שוב",
   },
   checkout: {
     breadcrumb: "תשלום",
