@@ -420,7 +420,7 @@ const Checkout = () => {
                 <div className="space-y-6">
                   {rates.length > 0 && (
                     <div>
-                      <h2 className="font-serif text-xl mb-4">Shipping Method</h2>
+                      <h2 className="font-serif text-xl mb-4">{t("checkout.shippingMethod")}</h2>
                       <div className="space-y-2">
                         {rates.map((r) => (
                           <label
@@ -440,7 +440,7 @@ const Checkout = () => {
                               <span>
                                 <span className="font-medium">{r.name}</span>
                                 {r.estimatedDays != null && (
-                                  <span className="text-muted-foreground"> · ~{r.estimatedDays} days</span>
+                                  <span className="text-muted-foreground"> · ~{r.estimatedDays} {t("checkout.days")}</span>
                                 )}
                               </span>
                             </span>
@@ -453,7 +453,7 @@ const Checkout = () => {
 
                   {selectedRateId || rates.length === 0 ? (
                     <div>
-                      <h2 className="font-serif text-xl mb-4">Payment</h2>
+                      <h2 className="font-serif text-xl mb-4">{t("checkout.payment")}</h2>
                       <PaymentRenderer
                         payment={payment}
                         stripePromise={stripePromise}
@@ -462,7 +462,7 @@ const Checkout = () => {
                     </div>
                   ) : (
                     <p className="text-sm text-muted-foreground">
-                      Select a shipping method to continue to payment.
+                      {t("checkout.selectShipping")}
                     </p>
                   )}
                 </div>
