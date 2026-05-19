@@ -105,6 +105,7 @@ interface PaymentData {
 }
 
 const Checkout = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { cart, currency, storeInfo } = useStore();
