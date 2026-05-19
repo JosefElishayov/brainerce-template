@@ -59,7 +59,7 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
       setBusy(true);
       const loaded = await Promise.all(
         variableOffered.map(async (p) => {
-          const product = await client.getProduct(p.id);
+          const product = await client.getProduct(p.id, { locale });
           const firstVariantId = product.variants?.[0]?.id ?? "";
           return { product, selectedVariantId: firstVariantId };
         }),
@@ -68,8 +68,8 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
       setOpen(true);
     } catch (err) {
       toast({
-        title: t("cart.couldNotAddBundle", "Could not add bundle"),
-        description: err instanceof Error ? err.message : "Please try again",
+        title: t("cart.couldNotAddBundle"),
+        description: err instanceof Error ? err.message : t("cart.tryAgain"),
         variant: "destructive",
       });
     } finally {
