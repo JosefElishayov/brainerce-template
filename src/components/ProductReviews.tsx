@@ -302,7 +302,7 @@ export function ProductReviews({ productId }: Props) {
                         <span className="text-sm font-medium">{r.authorName}</span>
                         {r.verifiedPurchase && (
                           <span className="inline-flex items-center gap-1 text-[10px] font-semibold tracking-[0.2em] uppercase text-primary">
-                            <BadgeCheck className="w-3.5 h-3.5" /> Verified
+                            <BadgeCheck className="w-3.5 h-3.5" /> {t("reviews.verified")}
                           </span>
                         )}
                       </div>
