@@ -172,15 +172,15 @@ const Checkout = () => {
     return (
       <Layout>
         <div className="container-narrow py-28 text-center">
-          <h1 className="font-serif text-4xl mb-4">No Items to Checkout</h1>
-          <p className="text-muted-foreground mb-8">Your bag is empty.</p>
+          <h1 className="font-serif text-4xl mb-4">{t("checkout.noItemsTitle")}</h1>
+          <p className="text-muted-foreground mb-8">{t("checkout.noItemsHint")}</p>
           <Button
             asChild
             size="lg"
             className="rounded-none px-10 py-6 text-sm tracking-[0.15em] uppercase btn-premium"
           >
             <Link to="/products">
-              Start Shopping <ArrowRight className="ml-3 w-4 h-4" />
+              {t("checkout.startShopping")} <ArrowRight className="ml-3 w-4 h-4" />
             </Link>
           </Button>
         </div>
