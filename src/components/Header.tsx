@@ -146,6 +146,35 @@ export const Header = () => {
             >
               <Search className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
             </button>
+            {supportedLocales.length > 1 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    aria-label="Change language"
+                    className="p-2 hover:bg-accent transition-colors duration-300 group flex items-center gap-1"
+                  >
+                    <Globe className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
+                    <span className="text-[10px] font-medium tracking-[0.15em] uppercase hidden sm:inline">
+                      {locale}
+                    </span>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-[8rem]">
+                  {supportedLocales.map((l) => (
+                    <DropdownMenuItem
+                      key={l}
+                      onSelect={() => setLocale(l)}
+                      className={cn(
+                        "text-xs tracking-[0.15em] uppercase cursor-pointer",
+                        l === locale && "font-semibold",
+                      )}
+                    >
+                      {l}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
             <Link
               to={loggedIn ? "/account" : "/login"}
               aria-label={loggedIn ? "My account" : "Sign in"}
