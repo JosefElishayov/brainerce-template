@@ -40,9 +40,9 @@ const he: Resources = {
   },
   footer: {
     tagline: "אובייקטים מעוצבים לבית, נבחרים בקפידה לחיים של איכות.",
-    stayConnected: "הישארו מעודכנים",
-    emailPlaceholder: "האימייל שלך",
-    subscribe: "הרשמה לעדכונים",
+    stayConnected: "נשמח לשמוע מכם",
+    contactPrompt: "שאלות, הזמנות מותאמות אישית או פניות סיטונאיות — אנחנו כאן.",
+    getInTouch: "צרו קשר",
     collections: "קולקציות",
     noCollections: "אין קולקציות עדיין",
     explore: "גלו",
