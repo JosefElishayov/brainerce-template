@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Layout } from "@/components/Layout";
 import { SEO } from "@/components/SEO";
 import { client } from "@/lib/brainerce";
+import { useLocale } from "@/contexts/LocaleContext";
 import { toast } from "@/hooks/use-toast";
 import type { ContactFormPublic, ContactFormPublicField } from "brainerce";
 
@@ -14,6 +15,7 @@ const inputCls =
 
 const Contact = () => {
   const { t } = useTranslation();
+  const { locale } = useLocale();
   const [form, setForm] = useState<ContactFormPublic | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -23,7 +25,7 @@ const Contact = () => {
   useEffect(() => {
     let cancelled = false;
     client.contactForms
-      .get("main")
+      .get("main", locale)
       .then((f) => {
         if (cancelled) return;
         setForm(f);
@@ -54,7 +56,7 @@ const Contact = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [locale]);
 
   const setField = (key: string, v: unknown) => setValues((p) => ({ ...p, [key]: v }));
 
