@@ -37,11 +37,11 @@ export const CartBundleOfferCard = ({ bundle }: { bundle: CartBundleOffer }) => 
       await client.addBundleToCart(cart.id, bundle.id, selections);
       await refreshCart();
       setOpen(false);
-      toast({ title: t("cart.bundleAdded", "Bundle added"), description: bundle.name });
+      toast({ title: t("cart.bundleAdded"), description: bundle.name });
     } catch (err) {
       toast({
-        title: t("cart.couldNotAddBundle", "Could not add bundle"),
-        description: err instanceof Error ? err.message : "Please try again",
+        title: t("cart.couldNotAddBundle"),
+        description: err instanceof Error ? err.message : t("cart.tryAgain"),
         variant: "destructive",
       });
     } finally {
