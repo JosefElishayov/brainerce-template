@@ -290,7 +290,7 @@ export function ProductReviews({ productId }: Props) {
               </div>
             ) : reviews.length === 0 ? (
               <p className="text-sm text-muted-foreground italic">
-                No reviews yet — be the first to share your thoughts.
+                {t("reviews.empty")}
               </p>
             ) : (
               <ul className="space-y-8">
