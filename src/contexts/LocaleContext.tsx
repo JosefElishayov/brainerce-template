@@ -34,8 +34,6 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   // Apply <html dir> + lang whenever locale changes
   useEffect(() => {
     if (typeof document === "undefined") return;
-  useEffect(() => {
-    if (typeof document === "undefined") return;
     document.documentElement.lang = locale || "";
     document.documentElement.dir = direction;
     syncI18nLocale(locale);
