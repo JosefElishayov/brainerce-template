@@ -218,13 +218,13 @@ export function ProductReviews({ productId }: Props) {
           {/* Summary */}
           <div className="md:col-span-1">
             <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-muted-foreground mb-3">
-              Customer Reviews
+              {t("reviews.eyebrow")}
             </p>
-            <h2 className="font-serif text-3xl md:text-4xl mb-5">What guests are saying</h2>
+            <h2 className="font-serif text-3xl md:text-4xl mb-5">{t("reviews.title")}</h2>
             <div className="flex items-center gap-3 mb-2">
               <Stars value={avg} size={20} />
               <span className="text-sm text-muted-foreground">
-                {avg.toFixed(1)} · {meta?.total ?? 0} review{(meta?.total ?? 0) === 1 ? "" : "s"}
+                {avg.toFixed(1)} · {meta?.total ?? 0} {(meta?.total ?? 0) === 1 ? t("reviews.reviewSingular") : t("reviews.reviewPlural")}
               </span>
             </div>
             <div className="mt-8">{renderEligibilityCTA()}</div>
