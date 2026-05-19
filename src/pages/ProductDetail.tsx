@@ -461,24 +461,24 @@ const ProductDetail = () => {
 
       {recs?.crossSells?.length ? (
         <RecommendationSection
-          eyebrow="Frequently Bought Together"
-          title="Complete the Look"
+          eyebrow={t("recommendations.frequentlyBoughtEyebrow")}
+          title={t("recommendations.frequentlyBoughtTitle")}
           items={recs.crossSells}
         />
       ) : null}
 
       {recs?.upsells?.length ? (
         <RecommendationSection
-          eyebrow="You Might Prefer"
-          title="Upgrade Your Choice"
+          eyebrow={t("recommendations.upsellEyebrow")}
+          title={t("recommendations.upsellTitle")}
           items={recs.upsells}
         />
       ) : null}
 
       {recs?.related?.length ? (
         <RecommendationSection
-          eyebrow="Similar Pieces"
-          title="You May Also Like"
+          eyebrow={t("recommendations.relatedEyebrow")}
+          title={t("recommendations.relatedTitle")}
           items={recs.related}
         />
       ) : null}

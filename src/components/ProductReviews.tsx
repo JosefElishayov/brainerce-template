@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Star, Loader2, BadgeCheck, Pencil, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { client } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
 import { useToast } from "@/hooks/use-toast";
@@ -58,6 +59,7 @@ function Stars({
 export function ProductReviews({ productId }: Props) {
   const { loggedIn } = useStore();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [reviews, setReviews] = useState<ProductReview[]>([]);
   const [meta, setMeta] = useState<{ total: number } | null>(null);
   const [loading, setLoading] = useState(true);
@@ -110,17 +112,17 @@ export function ProductReviews({ productId }: Props) {
     try {
       if (my?.myReview) {
         await client.updateMyProductReview(productId, { rating, body: body || undefined });
-        toast({ title: "Review updated" });
+        toast({ title: t("reviews.reviewUpdated") });
       } else {
         await client.submitProductReview(productId, { rating, body: body || undefined });
-        toast({ title: "Thanks for your review!" });
+        toast({ title: t("reviews.reviewThanks") });
       }
       setShowForm(false);
       await Promise.all([load(), loadMy()]);
     } catch (err) {
       toast({
-        title: "Could not submit review",
-        description: err instanceof Error ? err.message : "Please try again",
+        title: t("reviews.couldNotSubmit"),
+        description: err instanceof Error ? err.message : t("reviews.tryAgain"),
         variant: "destructive",
       });
     } finally {
@@ -129,17 +131,17 @@ export function ProductReviews({ productId }: Props) {
   };
 
   const remove = async () => {
-    if (!confirm("Delete your review?")) return;
+    if (!confirm(t("reviews.confirmDelete"))) return;
     try {
       await client.deleteMyProductReview(productId);
       setBody("");
       setRating(5);
       await Promise.all([load(), loadMy()]);
-      toast({ title: "Review deleted" });
+      toast({ title: t("reviews.reviewDeleted") });
     } catch (err) {
       toast({
-        title: "Could not delete review",
-        description: err instanceof Error ? err.message : "Please try again",
+        title: t("reviews.couldNotDelete"),
+        description: err instanceof Error ? err.message : t("reviews.tryAgain"),
         variant: "destructive",
       });
     }
@@ -155,22 +157,22 @@ export function ProductReviews({ productId }: Props) {
       return (
         <p className="text-sm text-muted-foreground">
           <Link to="/login" className="underline underline-offset-4 text-foreground">
-            Sign in
+            {t("reviews.signIn")}
           </Link>{" "}
-          to leave a review.
+          {t("reviews.toLeaveReview")}
         </p>
       );
     }
     if (!my) return null;
     if (!my.eligible) {
       const reasons: Record<string, string> = {
-        no_eligible_order: "Only customers who purchased this product can review it.",
-        reviews_disabled: "Reviews are currently disabled for this store.",
-        product_not_found: "This product cannot be reviewed.",
+        no_eligible_order: t("reviews.notEligibleNoOrder"),
+        reviews_disabled: t("reviews.notEligibleDisabled"),
+        product_not_found: t("reviews.notEligibleNotFound"),
       };
       return (
         <p className="text-sm text-muted-foreground">
-          {reasons[my.reason ?? ""] ?? "You can't review this product right now."}
+          {reasons[my.reason ?? ""] ?? t("reviews.notEligibleGeneric")}
         </p>
       );
     }
@@ -183,7 +185,7 @@ export function ProductReviews({ productId }: Props) {
             onClick={() => setShowForm(true)}
             className="rounded-none text-xs tracking-[0.15em] uppercase"
           >
-            <Pencil className="w-3.5 h-3.5 mr-2" /> Edit my review
+            <Pencil className="w-3.5 h-3.5 mr-2" /> {t("reviews.editMyReview")}
           </Button>
           <Button
             variant="ghost"
@@ -191,7 +193,7 @@ export function ProductReviews({ productId }: Props) {
             onClick={remove}
             className="rounded-none text-xs tracking-[0.15em] uppercase text-destructive hover:text-destructive"
           >
-            <Trash2 className="w-3.5 h-3.5 mr-2" /> Delete
+            <Trash2 className="w-3.5 h-3.5 mr-2" /> {t("reviews.deleteReview")}
           </Button>
         </div>
       );
@@ -202,7 +204,7 @@ export function ProductReviews({ productId }: Props) {
           onClick={() => setShowForm(true)}
           className="rounded-none text-xs tracking-[0.15em] uppercase btn-premium"
         >
-          Write a Review
+          {t("reviews.writeReview")}
         </Button>
       );
     }
@@ -216,13 +218,13 @@ export function ProductReviews({ productId }: Props) {
           {/* Summary */}
           <div className="md:col-span-1">
             <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-muted-foreground mb-3">
-              Customer Reviews
+              {t("reviews.eyebrow")}
             </p>
-            <h2 className="font-serif text-3xl md:text-4xl mb-5">What guests are saying</h2>
+            <h2 className="font-serif text-3xl md:text-4xl mb-5">{t("reviews.title")}</h2>
             <div className="flex items-center gap-3 mb-2">
               <Stars value={avg} size={20} />
               <span className="text-sm text-muted-foreground">
-                {avg.toFixed(1)} · {meta?.total ?? 0} review{(meta?.total ?? 0) === 1 ? "" : "s"}
+                {avg.toFixed(1)} · {meta?.total ?? 0} {(meta?.total ?? 0) === 1 ? t("reviews.reviewSingular") : t("reviews.reviewPlural")}
               </span>
             </div>
             <div className="mt-8">{renderEligibilityCTA()}</div>
@@ -233,23 +235,23 @@ export function ProductReviews({ productId }: Props) {
             {showForm && (
               <div className="border border-border p-6 bg-linen">
                 <h3 className="font-serif text-xl mb-4">
-                  {my?.myReview ? "Edit your review" : "Write a review"}
+                  {my?.myReview ? t("reviews.editYourReview") : t("reviews.writeYourReview")}
                 </h3>
                 <div className="mb-4">
                   <span className="block text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-2">
-                    Your rating
+                    {t("reviews.yourRating")}
                   </span>
                   <Stars value={rating} size={28} interactive onChange={setRating} />
                 </div>
                 <div className="mb-4">
                   <span className="block text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-2">
-                    Your review (optional)
+                    {t("reviews.yourReviewOptional")}
                   </span>
                   <textarea
                     value={body}
                     onChange={(e) => setBody(e.target.value.slice(0, 2000))}
                     rows={5}
-                    placeholder="Share your thoughts about this piece…"
+                    placeholder={t("reviews.reviewPlaceholder")}
                     className="w-full border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   />
                   <p className="text-[10px] text-muted-foreground mt-1">{body.length}/2000</p>
@@ -262,12 +264,12 @@ export function ProductReviews({ productId }: Props) {
                   >
                     {submitting ? (
                       <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Submitting…
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("reviews.submitting")}
                       </>
                     ) : my?.myReview ? (
-                      "Update Review"
+                      t("reviews.updateReview")
                     ) : (
-                      "Submit Review"
+                      t("reviews.submitReview")
                     )}
                   </Button>
                   <Button
@@ -276,7 +278,7 @@ export function ProductReviews({ productId }: Props) {
                     onClick={() => setShowForm(false)}
                     className="rounded-none text-xs tracking-[0.15em] uppercase"
                   >
-                    Cancel
+                    {t("reviews.cancel")}
                   </Button>
                 </div>
               </div>
@@ -288,7 +290,7 @@ export function ProductReviews({ productId }: Props) {
               </div>
             ) : reviews.length === 0 ? (
               <p className="text-sm text-muted-foreground italic">
-                No reviews yet — be the first to share your thoughts.
+                {t("reviews.empty")}
               </p>
             ) : (
               <ul className="space-y-8">
@@ -300,7 +302,7 @@ export function ProductReviews({ productId }: Props) {
                         <span className="text-sm font-medium">{r.authorName}</span>
                         {r.verifiedPurchase && (
                           <span className="inline-flex items-center gap-1 text-[10px] font-semibold tracking-[0.2em] uppercase text-primary">
-                            <BadgeCheck className="w-3.5 h-3.5" /> Verified
+                            <BadgeCheck className="w-3.5 h-3.5" /> {t("reviews.verified")}
                           </span>
                         )}
                       </div>
