@@ -157,22 +157,22 @@ export function ProductReviews({ productId }: Props) {
       return (
         <p className="text-sm text-muted-foreground">
           <Link to="/login" className="underline underline-offset-4 text-foreground">
-            Sign in
+            {t("reviews.signIn")}
           </Link>{" "}
-          to leave a review.
+          {t("reviews.toLeaveReview")}
         </p>
       );
     }
     if (!my) return null;
     if (!my.eligible) {
       const reasons: Record<string, string> = {
-        no_eligible_order: "Only customers who purchased this product can review it.",
-        reviews_disabled: "Reviews are currently disabled for this store.",
-        product_not_found: "This product cannot be reviewed.",
+        no_eligible_order: t("reviews.notEligibleNoOrder"),
+        reviews_disabled: t("reviews.notEligibleDisabled"),
+        product_not_found: t("reviews.notEligibleNotFound"),
       };
       return (
         <p className="text-sm text-muted-foreground">
-          {reasons[my.reason ?? ""] ?? "You can't review this product right now."}
+          {reasons[my.reason ?? ""] ?? t("reviews.notEligibleGeneric")}
         </p>
       );
     }
@@ -185,7 +185,7 @@ export function ProductReviews({ productId }: Props) {
             onClick={() => setShowForm(true)}
             className="rounded-none text-xs tracking-[0.15em] uppercase"
           >
-            <Pencil className="w-3.5 h-3.5 mr-2" /> Edit my review
+            <Pencil className="w-3.5 h-3.5 mr-2" /> {t("reviews.editMyReview")}
           </Button>
           <Button
             variant="ghost"
@@ -193,7 +193,7 @@ export function ProductReviews({ productId }: Props) {
             onClick={remove}
             className="rounded-none text-xs tracking-[0.15em] uppercase text-destructive hover:text-destructive"
           >
-            <Trash2 className="w-3.5 h-3.5 mr-2" /> Delete
+            <Trash2 className="w-3.5 h-3.5 mr-2" /> {t("reviews.deleteReview")}
           </Button>
         </div>
       );
@@ -204,7 +204,7 @@ export function ProductReviews({ productId }: Props) {
           onClick={() => setShowForm(true)}
           className="rounded-none text-xs tracking-[0.15em] uppercase btn-premium"
         >
-          Write a Review
+          {t("reviews.writeReview")}
         </Button>
       );
     }
