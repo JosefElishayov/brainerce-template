@@ -25,6 +25,7 @@ import { client } from "@/lib/brainerce";
 import { useToast } from "@/hooks/use-toast";
 import { OrderBumpCard } from "@/components/upsell/OrderBumpCard";
 import { CustomFieldsStep } from "@/components/CustomFieldsStep";
+import { useTranslation } from "react-i18next";
 
 interface AppliedSurcharge {
   key: string;
