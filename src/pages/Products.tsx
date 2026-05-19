@@ -121,7 +121,7 @@ const Products = () => {
                   activeCategory === "all" ? "bg-foreground text-background hover:bg-foreground/90 hover:text-background" : "hover:bg-accent",
                 )}
               >
-                All
+                {t("products.all")}
               </Button>
               {categories.map((c) => (
                 <Button
@@ -137,11 +137,11 @@ const Products = () => {
               ))}
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-xs text-muted-foreground tracking-[0.1em] uppercase">Sort by</span>
+              <span className="text-xs text-muted-foreground tracking-[0.1em] uppercase">{t("products.sortBy")}</span>
               <Select value={activeSort} onValueChange={handleSortChange}>
                 <SelectTrigger className="w-[180px] rounded-none text-xs h-9"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {sortOptions.map((o) => <SelectItem key={o.value} value={o.value} className="text-xs">{o.label}</SelectItem>)}
+                  {sortOptions.map((o) => <SelectItem key={o.value} value={o.value} className="text-xs">{t(o.labelKey)}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
