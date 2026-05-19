@@ -33,6 +33,7 @@ interface AppliedSurcharge {
 }
 
 function CouponInput() {
+  const { t } = useTranslation();
   const { cart, refreshCart } = useStore();
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
@@ -49,7 +50,7 @@ function CouponInput() {
       await refreshCart();
       setCode("");
     } catch (e2) {
-      setErr(e2 instanceof Error ? e2.message : "Invalid code");
+      setErr(e2 instanceof Error ? e2.message : t("checkout.invalidCode"));
     } finally {
       setBusy(false);
     }
@@ -69,11 +70,9 @@ function CouponInput() {
   if (applied) {
     return (
       <div className="flex items-center justify-between text-sm border border-border p-3">
-        <span>
-          Coupon <strong>{applied}</strong> applied
-        </span>
+        <span>{t("checkout.couponApplied", { code: applied })}</span>
         <button onClick={remove} disabled={busy} className="text-xs underline text-muted-foreground hover:text-foreground">
-          Remove
+          {t("common.remove")}
         </button>
       </div>
     );
@@ -83,13 +82,13 @@ function CouponInput() {
     <form onSubmit={apply} className="space-y-2">
       <div className="flex gap-2">
         <Input
-          placeholder="Promo code"
+          placeholder={t("checkout.promoCode")}
           value={code}
           onChange={(e) => setCode(e.target.value)}
           className="rounded-none h-11"
         />
         <Button type="submit" variant="outline" disabled={busy || !code.trim()} className="rounded-none px-5 text-xs tracking-widest uppercase">
-          Apply
+          {t("checkout.apply")}
         </Button>
       </div>
       {err && <p className="text-xs text-destructive">{err}</p>}
