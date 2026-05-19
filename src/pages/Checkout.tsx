@@ -199,7 +199,7 @@ const Checkout = () => {
       // 1. Detect providers
       const { hasPayments, providers } = await client.getPaymentProviders();
       if (!hasPayments)
-        throw new Error("Payment is not configured for this store yet.");
+        throw new Error(t("checkout.paymentNotConfigured"));
 
       // 2. Start checkout (guest or logged-in)
       let checkoutId: string;
@@ -209,9 +209,7 @@ const Checkout = () => {
       } else {
         const result = await client.startGuestCheckout();
         if (!result.tracked)
-          throw new Error(
-            "Checkout tracking is not enabled on this store. Enable it in Brainerce admin.",
-          );
+          throw new Error(t("checkout.trackingDisabled"));
         checkoutId = result.checkoutId;
       }
 
