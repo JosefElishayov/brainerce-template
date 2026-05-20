@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { DiscountBanners } from "./DiscountBanners";
 
 interface LayoutProps {
   children: ReactNode;
@@ -29,6 +30,7 @@ const pageVariants = {
 export const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="min-h-screen flex flex-col">
+      <DiscountBanners />
       <Header />
       <motion.main
         className="flex-1"

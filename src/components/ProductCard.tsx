@@ -95,7 +95,11 @@ export const ProductCard = ({ product, index = 0, variant = "default" }: Product
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-charcoal/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-          {priceInfo.isOnSale && (
+          {product.discount?.badgeText ? (
+            <span className="absolute top-5 left-5 px-3 py-1.5 text-[10px] font-semibold tracking-[0.2em] uppercase bg-primary text-primary-foreground">
+              {product.discount.badgeText}
+            </span>
+          ) : priceInfo.isOnSale && (
             <span className="absolute top-5 left-5 px-3 py-1.5 text-[10px] font-semibold tracking-[0.2em] uppercase bg-primary text-primary-foreground">
               -{priceInfo.discountPercent}%
             </span>
