@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import DOMPurify from "dompurify";
 import { ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Product, ProductVariant, ProductRecommendationsResponse } from "brainerce";
