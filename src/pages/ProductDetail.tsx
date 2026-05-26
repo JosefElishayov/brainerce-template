@@ -345,7 +345,7 @@ const ProductDetail = () => {
               {description && (
                 <div className="text-muted-foreground leading-[1.8] mb-10">
                   {"html" in description
-                    ? <div dangerouslySetInnerHTML={{ __html: description.html }} />
+                    ? <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description.html) }} />
                     : <p>{description.text}</p>}
                 </div>
               )}
