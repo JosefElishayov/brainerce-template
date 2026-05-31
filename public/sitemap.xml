@@ -21,6 +21,11 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>/product/lavazza-super-crema-ground-coffee</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>/product/cloudrest-decorative-pillow-set-1</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
