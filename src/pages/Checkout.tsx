@@ -292,11 +292,15 @@ const Checkout = () => {
       }
     }
 
+    const providerInfo = providers.find((p) => p.provider === intent.provider);
     setPayment({
       clientSecret: intent.clientSecret,
       provider: intent.provider,
+      providerName: providerInfo?.name,
       checkoutId,
       renderType: intent.clientSdk?.renderType,
+      scriptUrl: intent.clientSdk?.scriptUrl,
+      containerId: intent.clientSdk?.containerId,
     });
     setStep("payment");
   }
