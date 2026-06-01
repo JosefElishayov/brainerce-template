@@ -100,8 +100,11 @@ function CouponInput() {
 interface PaymentData {
   clientSecret: string;
   provider: string;
+  providerName?: string;
   checkoutId: string;
   renderType?: string;
+  scriptUrl?: string;
+  containerId?: string;
 }
 
 const Checkout = () => {
