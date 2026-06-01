@@ -292,11 +292,15 @@ const Checkout = () => {
       }
     }
 
+    const providerInfo = providers.find((p) => p.provider === intent.provider);
     setPayment({
       clientSecret: intent.clientSecret,
       provider: intent.provider,
+      providerName: providerInfo?.name,
       checkoutId,
       renderType: intent.clientSdk?.renderType,
+      scriptUrl: intent.clientSdk?.scriptUrl,
+      containerId: intent.clientSdk?.containerId,
     });
     setStep("payment");
   }
@@ -587,7 +591,9 @@ function PaymentRenderer({
   onComplete: () => void;
 }) {
   const { t } = useTranslation();
-  if (payment.provider === "sandbox") {
+
+  // 1. Sandbox / test mode
+  if (payment.renderType === "sandbox" || payment.provider === "sandbox") {
     return (
       <div className="p-6 border border-border bg-muted/20">
         <p className="font-medium mb-2">{t("checkout.testModeTitle")}</p>
@@ -607,17 +613,17 @@ function PaymentRenderer({
     );
   }
 
-  if (payment.renderType === "iframe") {
-    return (
-      <iframe
-        src={payment.clientSecret}
-        title={t("checkout.payment")}
-        allow="payment"
-        style={{ width: "100%", height: 640, border: 0 }}
-      />
-    );
+  // 2. Redirect — used by Morning and other off-site providers
+  if (payment.renderType === "redirect") {
+    return <RedirectPayment payment={payment} />;
   }
 
+  // 3. Iframe — Brainerce-hosted embed or provider-hosted page
+  if (payment.renderType === "iframe") {
+    return <IframePayment payment={payment} onComplete={onComplete} />;
+  }
+
+  // 4. Stripe Elements (sdk-widget)
   if (payment.provider === "stripe" && stripePromise) {
     return (
       <Elements stripe={stripePromise} options={{ clientSecret: payment.clientSecret }}>
@@ -626,12 +632,90 @@ function PaymentRenderer({
     );
   }
 
+  // 5. Generic sdk-widget — load script + mount container
+  if (payment.renderType === "sdk-widget" && payment.scriptUrl && payment.containerId) {
+    return <SdkWidgetPayment payment={payment} />;
+  }
+
   return (
     <p className="text-sm text-muted-foreground">
-      {t("checkout.unsupportedProvider", { provider: payment.provider })}
+      {t("checkout.unsupportedProvider", { provider: payment.providerName ?? payment.provider })}
     </p>
   );
 }
+
+function RedirectPayment({ payment }: { payment: PaymentData }) {
+  const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
+  const providerLabel = payment.providerName ?? payment.provider;
+  return (
+    <div className="p-6 border border-border bg-muted/20 space-y-4">
+      <p className="text-sm text-muted-foreground">
+        {t("checkout.redirectNotice", { provider: providerLabel })}
+      </p>
+      <Button
+        onClick={() => {
+          setLoading(true);
+          window.location.href = payment.clientSecret;
+        }}
+        disabled={loading}
+        className="w-full rounded-none py-6 text-sm tracking-[0.15em] uppercase btn-premium"
+      >
+        {loading ? (
+          <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("checkout.redirecting")}</>
+        ) : (
+          t("checkout.redirectToPay")
+        )}
+      </Button>
+    </div>
+  );
+}
+
+function IframePayment({ payment, onComplete }: { payment: PaymentData; onComplete: () => void }) {
+  const { t } = useTranslation();
+  const [height, setHeight] = useState(640);
+
+  useEffect(() => {
+    function handleMessage(e: MessageEvent) {
+      const data = e.data as { type?: string; height?: number; url?: string };
+      if (data?.type === "brainerce:resize" && typeof data.height === "number") {
+        setHeight(data.height);
+      }
+      if (data?.type === "brainerce:redirect" && typeof data.url === "string") {
+        window.top!.location.href = data.url;
+      }
+      if (data?.type === "brainerce:payment-complete") {
+        onComplete();
+      }
+    }
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [onComplete]);
+
+  return (
+    <iframe
+      src={payment.clientSecret}
+      title={t("checkout.payment")}
+      allow="payment"
+      style={{ width: "100%", height, border: 0, transition: "height 0.2s ease-out" }}
+    />
+  );
+}
+
+function SdkWidgetPayment({ payment }: { payment: PaymentData }) {
+  useEffect(() => {
+    if (!payment.scriptUrl) return;
+    const existing = document.querySelector(`script[src="${payment.scriptUrl}"]`);
+    if (existing) return;
+    const script = document.createElement("script");
+    script.src = payment.scriptUrl;
+    script.async = true;
+    document.body.appendChild(script);
+  }, [payment.scriptUrl]);
+
+  return <div id={payment.containerId} className="min-h-[400px]" />;
+}
+
 
 function StripeForm({
   checkoutId,
