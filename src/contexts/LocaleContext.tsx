@@ -20,12 +20,22 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     client
       .getSupportedLocales()
       .then((locales) => {
-        setSupportedLocales(locales);
-        if (!locale && locales.length > 0) {
-          setLocaleState(locales[0]);
+        // Brainerce /info no longer always returns i18n config, so the SDK may
+        // fall back to [storeLanguage]. Merge in the current/stored locale so
+        // the language switcher still appears when a user has chosen one.
+        const merged = new Set<string>(locales);
+        const current = client.getLocale();
+        if (current) merged.add(current);
+        // Ensure both en + he are available for this bilingual store
+        merged.add("en");
+        merged.add("he");
+        const list = Array.from(merged);
+        setSupportedLocales(list);
+        if (!locale && list.length > 0) {
+          setLocaleState(list[0]);
         }
       })
-      .catch(() => setSupportedLocales([]));
+      .catch(() => setSupportedLocales(["en", "he"]));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
