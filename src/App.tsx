@@ -22,6 +22,7 @@ import ResetPassword from "./pages/ResetPassword";
 import OAuthCallback from "./pages/OAuthCallback";
 import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
+import { BrainerceBotWidget } from "./components/BrainerceBotWidget";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
         <LocaleProvider>
           <StoreProvider>
             <ScrollToTop />
+            <BrainerceBotWidget />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/products" element={<Products />} />
