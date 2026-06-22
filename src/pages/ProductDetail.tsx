@@ -216,37 +216,51 @@ const ProductDetail = () => {
 
   return (
     <Layout>
-      <SEO
-        title={`${product.name} — Maison`}
-        description={metaDesc}
-        path={`/product/${product.slug}`}
-        type="product"
-        image={images[0]}
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "Product",
-          name: product.name,
-          description: metaDesc,
-          image: images,
-          sku: product.id,
-          offers: {
-            "@type": "Offer",
-            price: String(displayPrice),
-            priceCurrency: currency,
-            availability: canPurchase ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-            url: `/product/${product.slug}`,
-          },
-          ...(product.avgRating && product.reviewCount
-            ? {
-                aggregateRating: {
-                  "@type": "AggregateRating",
-                  ratingValue: product.avgRating,
-                  reviewCount: product.reviewCount,
-                },
-              }
-            : {}),
-        }}
-      />
+      {(() => {
+        const localeSlugs = (product as unknown as { localeSlugs?: Record<string, string> | null }).localeSlugs || {};
+        const slugEntries = Object.entries(localeSlugs).filter(([, s]) => !!s);
+        const alternates = slugEntries.length
+          ? [
+              ...slugEntries.map(([loc, s]) => ({ hrefLang: loc, href: `/product/${s}` })),
+              { hrefLang: "x-default", href: `/product/${localeSlugs.en || product.slug || ""}` },
+            ]
+          : undefined;
+        return (
+          <SEO
+            title={`${product.name} — Maison`}
+            description={metaDesc}
+            path={`/product/${product.slug}`}
+            type="product"
+            image={images[0]}
+            alternates={alternates}
+            jsonLd={{
+              "@context": "https://schema.org",
+              "@type": "Product",
+              name: product.name,
+              description: metaDesc,
+              image: images,
+              sku: product.id,
+              offers: {
+                "@type": "Offer",
+                price: String(displayPrice),
+                priceCurrency: currency,
+                availability: canPurchase ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+                url: `/product/${product.slug}`,
+              },
+              ...(product.avgRating && product.reviewCount
+                ? {
+                    aggregateRating: {
+                      "@type": "AggregateRating",
+                      ratingValue: product.avgRating,
+                      reviewCount: product.reviewCount,
+                    },
+                  }
+                : {}),
+            }}
+          />
+        );
+      })()}
+
       <div className="container-full py-6 border-b border-border">
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           <Link to="/products" className="hover:text-foreground">{t("productDetail.breadcrumbShop")}</Link>

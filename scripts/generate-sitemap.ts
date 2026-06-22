@@ -1,28 +1,38 @@
 // Runs before `vite dev` and `vite build` (predev/prebuild hooks); writes public/sitemap.xml.
-// Fetches all product slugs from the Brainerce catalog so dynamic /product/:slug
-// routes are included in the sitemap.
+// Fetches all product slugs from the Brainerce catalog, including per-locale
+// `localeSlugs`, and emits hreflang alternates for each product entry.
 
 import { writeFileSync } from "fs";
 import { resolve } from "path";
 import { BrainerceClient } from "brainerce";
 
-// TODO: replace with your project URL once a project name or custom domain is set.
-const BASE_URL = "";
-
+const BASE_URL = "https://brainerce-template.lovable.app";
 const SALES_CHANNEL_ID = "vc_QLZzLkJhqa1wsjPwy93VO";
+
+interface Alternate {
+  hreflang: string;
+  path: string;
+}
 
 interface SitemapEntry {
   path: string;
   lastmod?: string;
   changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
   priority?: string;
+  alternates?: Alternate[];
 }
 
+const STATIC_LOCALES = ["en", "he"]; // bilingual store; static pages serve both
+const staticAlternates = (path: string): Alternate[] => [
+  ...STATIC_LOCALES.map((l) => ({ hreflang: l, path })),
+  { hreflang: "x-default", path },
+];
+
 const staticEntries: SitemapEntry[] = [
-  { path: "/", changefreq: "weekly", priority: "1.0" },
-  { path: "/products", changefreq: "daily", priority: "0.9" },
-  { path: "/about", changefreq: "monthly", priority: "0.6" },
-  { path: "/contact", changefreq: "monthly", priority: "0.5" },
+  { path: "/", changefreq: "weekly", priority: "1.0", alternates: staticAlternates("/") },
+  { path: "/products", changefreq: "daily", priority: "0.9", alternates: staticAlternates("/products") },
+  { path: "/about", changefreq: "monthly", priority: "0.6", alternates: staticAlternates("/about") },
+  { path: "/contact", changefreq: "monthly", priority: "0.5", alternates: staticAlternates("/contact") },
 ];
 
 async function fetchProductEntries(): Promise<SitemapEntry[]> {
@@ -31,17 +41,24 @@ async function fetchProductEntries(): Promise<SitemapEntry[]> {
   let page = 1;
   const limit = 100;
 
-  // Walk all pages
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     const res = await client.getProducts({ page, limit });
     const items = res?.data ?? [];
-    for (const p of items) {
+    for (const p of items as Array<{ slug?: string | null; localeSlugs?: Record<string, string> | null }>) {
       if (!p?.slug) continue;
+      const localeSlugs = p.localeSlugs || {};
+      const alts: Alternate[] = Object.entries(localeSlugs)
+        .filter(([, s]) => !!s)
+        .map(([loc, s]) => ({ hreflang: loc, path: `/product/${s}` }));
+      if (alts.length) {
+        const def = localeSlugs.en || p.slug;
+        alts.push({ hreflang: "x-default", path: `/product/${def}` });
+      }
       entries.push({
         path: `/product/${p.slug}`,
         changefreq: "weekly",
         priority: "0.7",
+        alternates: alts.length ? alts : undefined,
       });
     }
     const total = res?.pagination?.total ?? items.length;
@@ -53,6 +70,7 @@ async function fetchProductEntries(): Promise<SitemapEntry[]> {
 }
 
 function generateSitemap(entries: SitemapEntry[]) {
+  const hasAlternates = entries.some((e) => e.alternates?.length);
   const urls = entries.map((e) =>
     [
       `  <url>`,
@@ -60,18 +78,20 @@ function generateSitemap(entries: SitemapEntry[]) {
       e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
       e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
       e.priority ? `    <priority>${e.priority}</priority>` : null,
+      ...(e.alternates?.map(
+        (a) => `    <xhtml:link rel="alternate" hreflang="${a.hreflang}" href="${BASE_URL}${a.path}"/>`,
+      ) ?? []),
       `  </url>`,
     ]
       .filter(Boolean)
       .join("\n"),
   );
 
-  return [
-    `<?xml version="1.0" encoding="UTF-8"?>`,
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
-    ...urls,
-    `</urlset>`,
-  ].join("\n");
+  const urlsetOpen = hasAlternates
+    ? `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">`
+    : `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+
+  return [`<?xml version="1.0" encoding="UTF-8"?>`, urlsetOpen, ...urls, `</urlset>`].join("\n");
 }
 
 async function main() {
