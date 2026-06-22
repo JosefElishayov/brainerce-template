@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { client } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
+import { useLocale } from "@/contexts/LocaleContext";
 import { cn } from "@/lib/utils";
 import { Star } from "lucide-react";
 
@@ -36,6 +37,7 @@ const ProductDetail = () => {
   const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const { currency, addToCart } = useStore();
+  const { locale } = useLocale();
   const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -49,9 +51,11 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (!slug) return;
+    const decodedSlug = decodeURIComponent(slug);
     setLoading(true);
     setError(null);
-    client.getProductBySlug(slug)
+    client.getProductBySlug(decodedSlug, { locale })
+
       .then((p) => {
         setProduct(p);
         if (p.type === "VARIABLE" && p.variants?.length) setSelectedVariant(p.variants[0]);
@@ -76,7 +80,7 @@ const ProductDetail = () => {
       })
       .catch(e => setError(e instanceof Error ? e.message : "Failed to load product"))
       .finally(() => setLoading(false));
-  }, [slug]);
+  }, [slug, locale]);
 
   const recs = useMemo(
     () => (product as unknown as { recommendations?: ProductRecommendationsResponse } | null)?.recommendations,
