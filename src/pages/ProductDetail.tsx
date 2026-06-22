@@ -80,7 +80,7 @@ const ProductDetail = () => {
       })
       .catch(e => setError(e instanceof Error ? e.message : "Failed to load product"))
       .finally(() => setLoading(false));
-  }, [slug]);
+  }, [slug, locale]);
 
   const recs = useMemo(
     () => (product as unknown as { recommendations?: ProductRecommendationsResponse } | null)?.recommendations,
