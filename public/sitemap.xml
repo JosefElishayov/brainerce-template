@@ -1,63 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>/</loc>
+    <loc>https://brainerce-template.lovable.app/en</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://brainerce-template.lovable.app/he"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en"/>
   </url>
   <url>
-    <loc>/products</loc>
+    <loc>https://brainerce-template.lovable.app/he</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://brainerce-template.lovable.app/he"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en"/>
+  </url>
+  <url>
+    <loc>https://brainerce-template.lovable.app/en/products</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/products"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://brainerce-template.lovable.app/he/products"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/products"/>
   </url>
   <url>
-    <loc>/about</loc>
+    <loc>https://brainerce-template.lovable.app/he/products</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/products"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://brainerce-template.lovable.app/he/products"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/products"/>
+  </url>
+  <url>
+    <loc>https://brainerce-template.lovable.app/en/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/about"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://brainerce-template.lovable.app/he/about"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/about"/>
   </url>
   <url>
-    <loc>/contact</loc>
+    <loc>https://brainerce-template.lovable.app/he/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/about"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://brainerce-template.lovable.app/he/about"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/about"/>
+  </url>
+  <url>
+    <loc>https://brainerce-template.lovable.app/en/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/contact"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://brainerce-template.lovable.app/he/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/contact"/>
   </url>
   <url>
-    <loc>/product/artisan-ceramic-mug-1</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://brainerce-template.lovable.app/he/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/contact"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://brainerce-template.lovable.app/he/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/contact"/>
   </url>
   <url>
-    <loc>/product/artisan-ceramic-mug</loc>
+    <loc>https://brainerce-template.lovable.app/en/product/artisan-ceramic-mug-1</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/product/artisan-ceramic-mug-1"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/product/artisan-ceramic-mug-1"/>
   </url>
   <url>
-    <loc>/product/lavazza-super-crema-ground-coffee</loc>
+    <loc>https://brainerce-template.lovable.app/en/product/artisan-ceramic-mug</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/product/artisan-ceramic-mug"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/product/artisan-ceramic-mug"/>
   </url>
   <url>
-    <loc>/product/cloudrest-decorative-pillow-set-1</loc>
+    <loc>https://brainerce-template.lovable.app/en/product/lavazza-super-crema-ground-coffee</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/product/lavazza-super-crema-ground-coffee"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/product/lavazza-super-crema-ground-coffee"/>
   </url>
   <url>
-    <loc>/product/moroccan-weave-boho-rug</loc>
+    <loc>https://brainerce-template.lovable.app/en/product/cloudrest-decorative-pillow-set-1</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/product/cloudrest-decorative-pillow-set-1"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/product/cloudrest-decorative-pillow-set-1"/>
   </url>
   <url>
-    <loc>/product/arc-brass-floor-lamp</loc>
+    <loc>https://brainerce-template.lovable.app/en/product/moroccan-weave-boho-rug</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/product/moroccan-weave-boho-rug"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/product/moroccan-weave-boho-rug"/>
   </url>
   <url>
-    <loc>/product/linen-blend-throw-pillow</loc>
+    <loc>https://brainerce-template.lovable.app/en/product/arc-brass-floor-lamp</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/product/arc-brass-floor-lamp"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/product/arc-brass-floor-lamp"/>
   </url>
   <url>
-    <loc>/product/abstract-flow-framed-print</loc>
+    <loc>https://brainerce-template.lovable.app/en/product/linen-blend-throw-pillow</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/product/linen-blend-throw-pillow"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/product/linen-blend-throw-pillow"/>
+  </url>
+  <url>
+    <loc>https://brainerce-template.lovable.app/en/product/abstract-flow-framed-print</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/product/abstract-flow-framed-print"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/product/abstract-flow-framed-print"/>
   </url>
 </urlset>
