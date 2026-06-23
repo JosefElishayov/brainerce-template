@@ -1,6 +1,5 @@
 // Runs before `vite dev` and `vite build` (predev/prebuild hooks); writes public/sitemap.xml.
-// Fetches all product slugs from the Brainerce catalog, including per-locale
-// `localeSlugs`, and emits hreflang alternates for each product entry.
+// Emits language-prefixed URLs (/en/... and /he/...) with hreflang alternates.
 
 import { writeFileSync } from "fs";
 import { resolve } from "path";
@@ -8,6 +7,8 @@ import { BrainerceClient } from "brainerce";
 
 const BASE_URL = "https://brainerce-template.lovable.app";
 const SALES_CHANNEL_ID = "vc_QLZzLkJhqa1wsjPwy93VO";
+const LOCALES = ["en", "he"] as const;
+const DEFAULT_LOCALE: (typeof LOCALES)[number] = "en";
 
 interface Alternate {
   hreflang: string;
@@ -22,17 +23,24 @@ interface SitemapEntry {
   alternates?: Alternate[];
 }
 
-const STATIC_LOCALES = ["en", "he"]; // bilingual store; static pages serve both
-const staticAlternates = (path: string): Alternate[] => [
-  ...STATIC_LOCALES.map((l) => ({ hreflang: l, path })),
-  { hreflang: "x-default", path },
-];
+function staticEntriesFor(routePath: string, opts: { changefreq?: SitemapEntry["changefreq"]; priority?: string }): SitemapEntry[] {
+  const alts: Alternate[] = [
+    ...LOCALES.map((l) => ({ hreflang: l, path: `/${l}${routePath === "/" ? "" : routePath}` })),
+    { hreflang: "x-default", path: `/${DEFAULT_LOCALE}${routePath === "/" ? "" : routePath}` },
+  ];
+  return LOCALES.map((l) => ({
+    path: `/${l}${routePath === "/" ? "" : routePath}`,
+    changefreq: opts.changefreq,
+    priority: opts.priority,
+    alternates: alts,
+  }));
+}
 
 const staticEntries: SitemapEntry[] = [
-  { path: "/", changefreq: "weekly", priority: "1.0", alternates: staticAlternates("/") },
-  { path: "/products", changefreq: "daily", priority: "0.9", alternates: staticAlternates("/products") },
-  { path: "/about", changefreq: "monthly", priority: "0.6", alternates: staticAlternates("/about") },
-  { path: "/contact", changefreq: "monthly", priority: "0.5", alternates: staticAlternates("/contact") },
+  ...staticEntriesFor("/", { changefreq: "weekly", priority: "1.0" }),
+  ...staticEntriesFor("/products", { changefreq: "daily", priority: "0.9" }),
+  ...staticEntriesFor("/about", { changefreq: "monthly", priority: "0.6" }),
+  ...staticEntriesFor("/contact", { changefreq: "monthly", priority: "0.5" }),
 ];
 
 async function fetchProductEntries(): Promise<SitemapEntry[]> {
@@ -47,19 +55,29 @@ async function fetchProductEntries(): Promise<SitemapEntry[]> {
     for (const p of items as Array<{ slug?: string | null; localeSlugs?: Record<string, string> | null }>) {
       if (!p?.slug) continue;
       const localeSlugs = p.localeSlugs || {};
-      const alts: Alternate[] = Object.entries(localeSlugs)
-        .filter(([, s]) => !!s)
-        .map(([loc, s]) => ({ hreflang: loc, path: `/product/${s}` }));
-      if (alts.length) {
-        const def = localeSlugs.en || p.slug;
-        alts.push({ hreflang: "x-default", path: `/product/${def}` });
+      // Resolve a slug for every supported locale (fall back to base slug)
+      const perLocale = LOCALES.map((l) => ({
+        locale: l,
+        slug: localeSlugs[l] || (l === DEFAULT_LOCALE ? p.slug! : null),
+      })).filter((x): x is { locale: string; slug: string } => !!x.slug);
+
+      if (!perLocale.length) continue;
+
+      const alts: Alternate[] = perLocale.map((x) => ({
+        hreflang: x.locale,
+        path: `/${x.locale}/product/${x.slug}`,
+      }));
+      const def = perLocale.find((x) => x.locale === DEFAULT_LOCALE) || perLocale[0];
+      alts.push({ hreflang: "x-default", path: `/${def.locale}/product/${def.slug}` });
+
+      for (const x of perLocale) {
+        entries.push({
+          path: `/${x.locale}/product/${x.slug}`,
+          changefreq: "weekly",
+          priority: "0.7",
+          alternates: alts,
+        });
       }
-      entries.push({
-        path: `/product/${p.slug}`,
-        changefreq: "weekly",
-        priority: "0.7",
-        alternates: alts.length ? alts : undefined,
-      });
     }
     const total = res?.pagination?.total ?? items.length;
     if (page * limit >= total || items.length === 0) break;
