@@ -1,22 +1,24 @@
 import { Helmet } from "react-helmet-async";
+import { useLocale } from "@/contexts/LocaleContext";
 
 export const SITE_URL = "https://brainerce-template.lovable.app";
 
 export interface HrefLangAlternate {
   hrefLang: string; // e.g. "en", "he", "x-default"
-  href: string;     // absolute or root-relative path
+  href: string;     // absolute or root-relative path (already locale-prefixed)
 }
 
 interface SEOProps {
   title: string;
   description: string;
-  path: string; // root-relative ("/product/foo") or absolute
+  /** Route path WITHOUT the language prefix (e.g. "/products"). SEO prepends /{locale}. */
+  path: string;
   image?: string;
   type?: "website" | "article" | "product";
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   /**
-   * Per-locale alternates for hreflang. Include one for `x-default`
-   * when possible. The canonical itself stays on `path`.
+   * Per-locale alternates for hreflang. Each href must already include
+   * its language prefix (e.g. "/he/product/foo"). Include `x-default` when possible.
    */
   alternates?: HrefLangAlternate[];
 }
@@ -28,10 +30,14 @@ function toAbsolute(url: string): string {
 }
 
 export const SEO = ({ title, description, path, image, type = "website", jsonLd, alternates }: SEOProps) => {
+  const { locale } = useLocale();
   const lds = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
-  const canonical = toAbsolute(path);
+  // Prepend locale prefix so canonical/og:url match the actual URL
+  const prefixed = path.startsWith(`/${locale}`) ? path : `/${locale}${path === "/" ? "" : path}`;
+  const canonical = toAbsolute(prefixed);
   return (
     <Helmet>
+      <html lang={locale} />
       <title>{title}</title>
       <meta name="description" content={description} />
       <link rel="canonical" href={canonical} />

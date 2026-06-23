@@ -26,12 +26,42 @@ import { BrainerceBotWidget } from "./components/BrainerceBotWidget";
 
 const queryClient = new QueryClient();
 
+const SUPPORTED_LANGS = ["en", "he"] as const;
+const LOCALE_STORAGE_KEY = "storeLocale";
+
+function detectInitialLang(): "en" | "he" {
+  if (typeof window === "undefined") return "en";
+  const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
+  if (stored && (SUPPORTED_LANGS as readonly string[]).includes(stored)) {
+    return stored as "en" | "he";
+  }
+  const nav = navigator.language?.toLowerCase() || "en";
+  return nav.startsWith("he") ? "he" : "en";
+}
+
+function resolveBasename(): string {
+  if (typeof window === "undefined") return "/en";
+  const segments = window.location.pathname.split("/").filter(Boolean);
+  const first = segments[0];
+  if (first && (SUPPORTED_LANGS as readonly string[]).includes(first)) {
+    return `/${first}`;
+  }
+  // Inject language prefix into the current URL before the router mounts
+  const lang = detectInitialLang();
+  const rest = window.location.pathname === "/" ? "" : window.location.pathname;
+  const newPath = `/${lang}${rest}${window.location.search}${window.location.hash}`;
+  window.history.replaceState(null, "", newPath);
+  return `/${lang}`;
+}
+
+const BASENAME = resolveBasename();
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename={BASENAME}>
         <LocaleProvider>
           <StoreProvider>
             <ScrollToTop />

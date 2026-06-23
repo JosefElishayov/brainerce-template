@@ -4,7 +4,7 @@ import { getDirectionForLocale } from "brainerce";
 import { syncI18nLocale } from "@/i18n";
 
 interface LocaleContextValue {
-  locale: string | undefined;
+  locale: string;
   supportedLocales: string[];
   direction: "ltr" | "rtl";
   setLocale: (locale: string) => void;
@@ -12,31 +12,36 @@ interface LocaleContextValue {
 
 const LocaleContext = createContext<LocaleContextValue | null>(null);
 
+const SUPPORTED = ["en", "he"];
+
+function getLocaleFromPath(): string {
+  if (typeof window === "undefined") return "en";
+  const first = window.location.pathname.split("/").filter(Boolean)[0];
+  return first && SUPPORTED.includes(first) ? first : "en";
+}
+
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<string | undefined>(() => client.getLocale());
-  const [supportedLocales, setSupportedLocales] = useState<string[]>([]);
+  // URL is the source of truth — read prefix injected by App's basename logic
+  const [locale] = useState<string>(() => {
+    const fromUrl = getLocaleFromPath();
+    // Sync SDK + storage on bootstrap so all data fetching uses the URL locale
+    client.setLocale(fromUrl);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(LOCALE_STORAGE_KEY, fromUrl);
+    }
+    return fromUrl;
+  });
+  const [supportedLocales, setSupportedLocales] = useState<string[]>(SUPPORTED);
 
   useEffect(() => {
     client
       .getSupportedLocales()
       .then((locales) => {
-        // Brainerce /info no longer always returns i18n config, so the SDK may
-        // fall back to [storeLanguage]. Merge in the current/stored locale so
-        // the language switcher still appears when a user has chosen one.
         const merged = new Set<string>(locales);
-        const current = client.getLocale();
-        if (current) merged.add(current);
-        // Ensure both en + he are available for this bilingual store
-        merged.add("en");
-        merged.add("he");
-        const list = Array.from(merged);
-        setSupportedLocales(list);
-        if (!locale && list.length > 0) {
-          setLocaleState(list[0]);
-        }
+        SUPPORTED.forEach((l) => merged.add(l));
+        setSupportedLocales(Array.from(merged));
       })
-      .catch(() => setSupportedLocales(["en", "he"]));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      .catch(() => setSupportedLocales(SUPPORTED));
   }, []);
 
   const direction = getDirectionForLocale(locale);
@@ -44,18 +49,28 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   // Apply <html dir> + lang whenever locale changes
   useEffect(() => {
     if (typeof document === "undefined") return;
-    document.documentElement.lang = locale || "";
+    document.documentElement.lang = locale;
     document.documentElement.dir = direction;
     syncI18nLocale(locale);
   }, [locale, direction]);
 
   const setLocale = useCallback((next: string) => {
-    if (next === client.getLocale()) return;
+    if (next === locale) return;
+    if (typeof window === "undefined") return;
     localStorage.setItem(LOCALE_STORAGE_KEY, next);
-    client.setLocale(next);
-    // Hard reload to refetch all translated content cleanly
-    window.location.reload();
-  }, []);
+
+    // Replace the first path segment (the language) with the new one.
+    // Note: window.location.pathname includes the basename — strip the old lang.
+    const segments = window.location.pathname.split("/").filter(Boolean);
+    if (segments[0] && SUPPORTED.includes(segments[0])) {
+      segments[0] = next;
+    } else {
+      segments.unshift(next);
+    }
+    const newPath = "/" + segments.join("/") + window.location.search + window.location.hash;
+    // Hard reload so all data refetches in the new locale and basename resets cleanly
+    window.location.href = newPath;
+  }, [locale]);
 
   return (
     <LocaleContext.Provider value={{ locale, supportedLocales, direction, setLocale }}>

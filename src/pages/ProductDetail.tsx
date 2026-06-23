@@ -225,8 +225,8 @@ const ProductDetail = () => {
         const slugEntries = Object.entries(localeSlugs).filter(([, s]) => !!s);
         const alternates = slugEntries.length
           ? [
-              ...slugEntries.map(([loc, s]) => ({ hrefLang: loc, href: `/product/${s}` })),
-              { hrefLang: "x-default", href: `/product/${localeSlugs.en || product.slug || ""}` },
+              ...slugEntries.map(([loc, s]) => ({ hrefLang: loc, href: `/${loc}/product/${s}` })),
+              { hrefLang: "x-default", href: `/en/product/${localeSlugs.en || product.slug || ""}` },
             ]
           : undefined;
         return (
@@ -249,7 +249,7 @@ const ProductDetail = () => {
                 price: String(displayPrice),
                 priceCurrency: currency,
                 availability: canPurchase ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-                url: `/product/${product.slug}`,
+                url: `/${locale}/product/${product.slug}`,
               },
               ...(product.avgRating && product.reviewCount
                 ? {
@@ -264,6 +264,7 @@ const ProductDetail = () => {
           />
         );
       })()}
+
 
       <div className="container-full py-6 border-b border-border">
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
