@@ -27,6 +27,17 @@ import { useToast } from "@/hooks/use-toast";
 import { OrderBumpCard } from "@/components/upsell/OrderBumpCard";
 import { CustomFieldsStep } from "@/components/CustomFieldsStep";
 import { useTranslation } from "react-i18next";
+import { useRegion } from "@/contexts/RegionContext";
+
+// Display names for ISO country codes, localized to current i18n language
+function getCountryName(code: string, lang: string): string {
+  try {
+    const dn = new Intl.DisplayNames([lang || "en"], { type: "region" });
+    return dn.of(code) || code;
+  } catch {
+    return code;
+  }
+}
 
 interface AppliedSurcharge {
   key: string;
@@ -113,8 +124,24 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { cart, currency, storeInfo } = useStore();
+  const { regions, region } = useRegion();
+  const { i18n } = useTranslation();
   const upsell = (storeInfo as unknown as { upsell?: Record<string, boolean> })?.upsell;
   const showBumps = upsell?.checkoutOrderBumpEnabled !== false;
+
+  // Unique list of country codes across all configured regions
+  const availableCountries = useMemo(() => {
+    const set = new Set<string>();
+    regions.forEach((r) => r.countries?.forEach((c) => set.add(c)));
+    const list = Array.from(set);
+    list.sort((a, b) =>
+      getCountryName(a, i18n.language).localeCompare(getCountryName(b, i18n.language)),
+    );
+    return list;
+  }, [regions, i18n.language]);
+
+  const defaultCountry =
+    region?.countries?.[0] || availableCountries[0] || "";
 
   const [form, setForm] = useState({
     email: "",
@@ -125,9 +152,19 @@ const Checkout = () => {
     city: "",
     region: "",
     postalCode: "",
-    country: "US",
+    country: defaultCountry,
     phone: "",
   });
+
+  // Once regions load (or change), fill country if still empty / not allowed
+  useEffect(() => {
+    if (!availableCountries.length) return;
+    setForm((f) =>
+      !f.country || !availableCountries.includes(f.country)
+        ? { ...f, country: defaultCountry }
+        : f,
+    );
+  }, [availableCountries, defaultCountry]);
 
   const [step, setStep] = useState<"address" | "custom-fields" | "payment">("address");
   const [loading, setLoading] = useState(false);
@@ -193,7 +230,7 @@ const Checkout = () => {
     );
   }
 
-  const onField = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const onField = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
   async function startBrainerceCheckout(e: React.FormEvent) {
@@ -394,7 +431,20 @@ const Checkout = () => {
                       <Input name="postalCode" required placeholder={t("checkout.postalCode")} value={form.postalCode} onChange={onField} className="rounded-none h-12" />
                     </div>
                     <div className="grid sm:grid-cols-2 gap-4 mt-4">
-                      <Input name="country" required placeholder={t("checkout.country")} value={form.country} onChange={onField} className="rounded-none h-12" />
+                      <select
+                        name="country"
+                        required
+                        value={form.country}
+                        onChange={onField}
+                        className="rounded-none h-12 border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                      >
+                        {!form.country && <option value="">{t("checkout.country")}</option>}
+                        {availableCountries.map((c) => (
+                          <option key={c} value={c}>
+                            {getCountryName(c, i18n.language)}
+                          </option>
+                        ))}
+                      </select>
                       <Input name="phone" placeholder={t("checkout.phone")} value={form.phone} onChange={onField} className="rounded-none h-12" />
                     </div>
                   </div>
