@@ -11,12 +11,14 @@ import { CollectionCard } from "@/components/CollectionCard";
 import { Button } from "@/components/ui/button";
 import { client } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
+import { useRegion } from "@/contexts/RegionContext";
 
 interface Category { id: string; name: string; image?: string | null }
 
 const Index = () => {
   const { t } = useTranslation();
   const { storeInfo } = useStore();
+  const { regionId } = useRegion();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,14 +30,14 @@ const Index = () => {
 
   useEffect(() => {
     Promise.all([
-      client.getProducts({ page: 1, limit: 8 }).then(r => r.data).catch(() => []),
+      client.getProducts({ page: 1, limit: 8, ...(regionId ? { regionId } : {}) }).then(r => r.data).catch(() => []),
       client.getCategories().then(r => (r?.categories || []) as Category[]).catch(() => []),
     ]).then(([p, c]) => {
       setProducts(p);
       setCategories(c);
       setLoading(false);
     });
-  }, []);
+  }, [regionId]);
 
   const brandName = storeInfo?.name || "Lumeno";
   const featuredCollection = categories[0];
