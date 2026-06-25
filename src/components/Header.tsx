@@ -179,6 +179,36 @@ export const Header = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
+            {regions.length > 1 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    aria-label={t("header.changeRegion", { defaultValue: "Change region" })}
+                    className="p-2 hover:bg-accent transition-colors duration-300 group flex items-center gap-1"
+                  >
+                    <MapPin className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
+                    <span className="text-[10px] font-medium tracking-[0.15em] uppercase hidden sm:inline">
+                      {region?.name ? `${region.name} · ${currency}` : currency}
+                    </span>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-[12rem]">
+                  {regions.map((r) => (
+                    <DropdownMenuItem
+                      key={r.id}
+                      onSelect={() => setRegion(r.id)}
+                      className={cn(
+                        "text-xs tracking-[0.1em] uppercase cursor-pointer flex items-center justify-between gap-3",
+                        r.id === regionId && "font-semibold",
+                      )}
+                    >
+                      <span>{r.name}</span>
+                      <span className="text-muted-foreground">{r.currency}</span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
             <Link
               to={loggedIn ? "/account" : "/login"}
               aria-label={loggedIn ? t("common.myAccount") : t("common.signIn")}
