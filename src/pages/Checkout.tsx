@@ -27,6 +27,17 @@ import { useToast } from "@/hooks/use-toast";
 import { OrderBumpCard } from "@/components/upsell/OrderBumpCard";
 import { CustomFieldsStep } from "@/components/CustomFieldsStep";
 import { useTranslation } from "react-i18next";
+import { useRegion } from "@/contexts/RegionContext";
+
+// Display names for ISO country codes, localized to current i18n language
+function getCountryName(code: string, lang: string): string {
+  try {
+    const dn = new Intl.DisplayNames([lang || "en"], { type: "region" });
+    return dn.of(code) || code;
+  } catch {
+    return code;
+  }
+}
 
 interface AppliedSurcharge {
   key: string;
