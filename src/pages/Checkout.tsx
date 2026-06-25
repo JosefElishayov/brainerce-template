@@ -129,16 +129,41 @@ const Checkout = () => {
   const upsell = (storeInfo as unknown as { upsell?: Record<string, boolean> })?.upsell;
   const showBumps = upsell?.checkoutOrderBumpEnabled !== false;
 
-  // Unique list of country codes across all configured regions
+  // Fetch shipping destinations (countries the store actually ships to)
+  const [shippingCountries, setShippingCountries] = useState<string[]>([]);
+  const [shippingWorldwide, setShippingWorldwide] = useState(false);
+  useEffect(() => {
+    client
+      .getShippingDestinations()
+      .then((dest) => {
+        setShippingWorldwide(!!dest?.worldwide);
+        const codes = (dest?.countries ?? [])
+          .map((c) => (c as { code?: string }).code)
+          .filter((c): c is string => !!c);
+        setShippingCountries(codes);
+      })
+      .catch(() => {
+        setShippingCountries([]);
+        setShippingWorldwide(false);
+      });
+  }, []);
+
+  // Build the final country list: prefer shipping destinations, then regions,
+  // then (worldwide / nothing configured) fall back to all ISO countries.
   const availableCountries = useMemo(() => {
     const set = new Set<string>();
-    regions.forEach((r) => r.countries?.forEach((c) => set.add(c)));
+    shippingCountries.forEach((c) => set.add(c));
+    if (set.size === 0) regions.forEach((r) => r.countries?.forEach((c) => set.add(c)));
+    if (set.size === 0 && (shippingWorldwide || regions.length === 0)) {
+      // Full ISO-3166-1 alpha-2 list (common countries)
+      ALL_COUNTRY_CODES.forEach((c) => set.add(c));
+    }
     const list = Array.from(set);
     list.sort((a, b) =>
       getCountryName(a, i18n.language).localeCompare(getCountryName(b, i18n.language)),
     );
     return list;
-  }, [regions, i18n.language]);
+  }, [shippingCountries, shippingWorldwide, regions, i18n.language]);
 
   const defaultCountry =
     region?.countries?.[0] || availableCountries[0] || "";
