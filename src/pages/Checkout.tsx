@@ -170,14 +170,15 @@ const Checkout = () => {
       });
   }, []);
 
-  // Build the final country list: prefer shipping destinations, then regions,
-  // then (worldwide / nothing configured) fall back to all ISO countries.
+  // Build the final country list as the UNION of shipping destinations and
+  // every configured region's countries — so users can pick any country the
+  // store has set up, not only the active region's. Falls back to all ISO
+  // countries when the store ships worldwide or has nothing configured.
   const availableCountries = useMemo(() => {
     const set = new Set<string>();
     shippingCountries.forEach((c) => set.add(c));
-    if (set.size === 0) regions.forEach((r) => r.countries?.forEach((c) => set.add(c)));
+    regions.forEach((r) => r.countries?.forEach((c) => set.add(c)));
     if (set.size === 0 && (shippingWorldwide || regions.length === 0)) {
-      // Full ISO-3166-1 alpha-2 list (common countries)
       ALL_COUNTRY_CODES.forEach((c) => set.add(c));
     }
     const list = Array.from(set);
