@@ -12,6 +12,7 @@ import { FreeShippingBar } from "@/components/upsell/FreeShippingBar";
 import { CartUpgradeBanner } from "@/components/upsell/CartUpgradeBanner";
 import { CartBundleOfferCard } from "@/components/upsell/CartBundleOfferCard";
 import { RecommendationSection } from "@/components/upsell/RecommendationSection";
+import { TaxNote } from "@/components/TaxNote";
 
 const Cart = () => {
   const { t } = useTranslation();
@@ -145,13 +146,18 @@ const Cart = () => {
                         <span className="text-muted-foreground">{t("cart.shipping")}</span>
                         <span>{t("cart.calculatedAtCheckout")}</span>
                       </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">{t("tax.label")}</span>
+                        <span>{t("tax.calculatedAtCheckout")}</span>
+                      </div>
                     </div>
-                    <div className="border-t border-border pt-4 mb-8">
+                    <div className="border-t border-border pt-4 mb-3">
                       <div className="flex justify-between font-serif text-xl">
                         <span>{t("cart.total")}</span>
                         <span>{formatPrice(String(totals.total), { currency })}</span>
                       </div>
                     </div>
+                    <TaxNote className="text-xs text-muted-foreground mb-8" />
                   </>
                 ) : (
                   <p className="text-sm text-muted-foreground mb-8">{t("cart.signInNote")}</p>
