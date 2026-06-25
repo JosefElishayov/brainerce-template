@@ -39,6 +39,28 @@ function getCountryName(code: string, lang: string): string {
   }
 }
 
+// Full ISO-3166-1 alpha-2 list used as fallback when the store ships worldwide
+// or no shipping destinations / regions are configured.
+const ALL_COUNTRY_CODES: string[] = [
+  "AD","AE","AF","AG","AI","AL","AM","AO","AR","AS","AT","AU","AW","AX","AZ",
+  "BA","BB","BD","BE","BF","BG","BH","BI","BJ","BL","BM","BN","BO","BQ","BR",
+  "BS","BT","BV","BW","BY","BZ","CA","CC","CD","CF","CG","CH","CI","CK","CL",
+  "CM","CN","CO","CR","CU","CV","CW","CX","CY","CZ","DE","DJ","DK","DM","DO",
+  "DZ","EC","EE","EG","EH","ER","ES","ET","FI","FJ","FK","FM","FO","FR","GA",
+  "GB","GD","GE","GF","GG","GH","GI","GL","GM","GN","GP","GQ","GR","GS","GT",
+  "GU","GW","GY","HK","HN","HR","HT","HU","ID","IE","IL","IM","IN","IO","IQ",
+  "IR","IS","IT","JE","JM","JO","JP","KE","KG","KH","KI","KM","KN","KP","KR",
+  "KW","KY","KZ","LA","LB","LC","LI","LK","LR","LS","LT","LU","LV","LY","MA",
+  "MC","MD","ME","MF","MG","MH","MK","ML","MM","MN","MO","MP","MQ","MR","MS",
+  "MT","MU","MV","MW","MX","MY","MZ","NA","NC","NE","NF","NG","NI","NL","NO",
+  "NP","NR","NU","NZ","OM","PA","PE","PF","PG","PH","PK","PL","PM","PN","PR",
+  "PS","PT","PW","PY","QA","RE","RO","RS","RU","RW","SA","SB","SC","SD","SE",
+  "SG","SH","SI","SJ","SK","SL","SM","SN","SO","SR","SS","ST","SV","SX","SY",
+  "SZ","TC","TD","TF","TG","TH","TJ","TK","TL","TM","TN","TO","TR","TT","TV",
+  "TW","TZ","UA","UG","UM","US","UY","UZ","VA","VC","VE","VG","VI","VN","VU",
+  "WF","WS","YE","YT","ZA","ZM","ZW",
+];
+
 interface AppliedSurcharge {
   key: string;
   name: string;
@@ -129,16 +151,41 @@ const Checkout = () => {
   const upsell = (storeInfo as unknown as { upsell?: Record<string, boolean> })?.upsell;
   const showBumps = upsell?.checkoutOrderBumpEnabled !== false;
 
-  // Unique list of country codes across all configured regions
+  // Fetch shipping destinations (countries the store actually ships to)
+  const [shippingCountries, setShippingCountries] = useState<string[]>([]);
+  const [shippingWorldwide, setShippingWorldwide] = useState(false);
+  useEffect(() => {
+    client
+      .getShippingDestinations()
+      .then((dest) => {
+        setShippingWorldwide(!!dest?.worldwide);
+        const codes = (dest?.countries ?? [])
+          .map((c) => (c as { code?: string }).code)
+          .filter((c): c is string => !!c);
+        setShippingCountries(codes);
+      })
+      .catch(() => {
+        setShippingCountries([]);
+        setShippingWorldwide(false);
+      });
+  }, []);
+
+  // Build the final country list: prefer shipping destinations, then regions,
+  // then (worldwide / nothing configured) fall back to all ISO countries.
   const availableCountries = useMemo(() => {
     const set = new Set<string>();
-    regions.forEach((r) => r.countries?.forEach((c) => set.add(c)));
+    shippingCountries.forEach((c) => set.add(c));
+    if (set.size === 0) regions.forEach((r) => r.countries?.forEach((c) => set.add(c)));
+    if (set.size === 0 && (shippingWorldwide || regions.length === 0)) {
+      // Full ISO-3166-1 alpha-2 list (common countries)
+      ALL_COUNTRY_CODES.forEach((c) => set.add(c));
+    }
     const list = Array.from(set);
     list.sort((a, b) =>
       getCountryName(a, i18n.language).localeCompare(getCountryName(b, i18n.language)),
     );
     return list;
-  }, [regions, i18n.language]);
+  }, [shippingCountries, shippingWorldwide, regions, i18n.language]);
 
   const defaultCountry =
     region?.countries?.[0] || availableCountries[0] || "";
