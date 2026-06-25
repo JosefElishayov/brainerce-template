@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { User, Menu, X, Search, Globe } from "lucide-react";
+import { User, Menu, X, Search, Globe, MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,7 @@ import { CartIcon } from "@/components/CartIcon";
 import { SearchDialog } from "@/components/SearchDialog";
 import { useStore } from "@/contexts/StoreContext";
 import { useLocale } from "@/contexts/LocaleContext";
+import { useRegion } from "@/contexts/RegionContext";
 import { client } from "@/lib/brainerce";
 import {
   NavigationMenu,
@@ -34,6 +35,7 @@ export const Header = () => {
   const { t } = useTranslation();
   const { storeInfo, loggedIn } = useStore();
   const { locale, supportedLocales, setLocale } = useLocale();
+  const { regions, regionId, region, currency, setRegion } = useRegion();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [categories, setCategories] = useState<CategoryItem[]>([]);
