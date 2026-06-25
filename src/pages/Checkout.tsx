@@ -156,6 +156,16 @@ const Checkout = () => {
     phone: "",
   });
 
+  // Once regions load (or change), fill country if still empty / not allowed
+  useEffect(() => {
+    if (!availableCountries.length) return;
+    setForm((f) =>
+      !f.country || !availableCountries.includes(f.country)
+        ? { ...f, country: defaultCountry }
+        : f,
+    );
+  }, [availableCountries, defaultCountry]);
+
   const [step, setStep] = useState<"address" | "custom-fields" | "payment">("address");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
