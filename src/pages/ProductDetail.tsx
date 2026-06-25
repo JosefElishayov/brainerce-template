@@ -14,6 +14,7 @@ import { SEO } from "@/components/SEO";
 import { QuantitySelector } from "@/components/QuantitySelector";
 import { RecommendationSection } from "@/components/upsell/RecommendationSection";
 import { ProductReviews } from "@/components/ProductReviews";
+import { TaxNote } from "@/components/TaxNote";
 import {
   ProductCustomizationFields,
   type CustomizationValues,
@@ -348,7 +349,7 @@ const ProductDetail = () => {
                 </a>
               )}
 
-              <div className="flex items-baseline gap-3 mb-8">
+              <div className="flex items-baseline gap-3 mb-2">
                 <p className="text-2xl font-serif text-foreground">{formatPrice(displayPrice, { currency })}</p>
                 {priceInfo.isOnSale && !selectedVariant && (
                   <p className="text-base text-muted-foreground line-through">
@@ -356,6 +357,11 @@ const ProductDetail = () => {
                   </p>
                 )}
               </div>
+              {(product as unknown as { taxStatus?: string }).taxStatus === "NOT_TAXABLE" ? (
+                <p className="text-xs text-muted-foreground mb-8">{t("tax.exempt")}</p>
+              ) : (
+                <TaxNote className="text-xs text-muted-foreground mb-8" />
+              )}
 
               {stockStatus && (
                 <p className="text-sm text-muted-foreground mb-6">{stockStatus}</p>

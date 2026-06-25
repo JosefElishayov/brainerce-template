@@ -243,6 +243,18 @@ const he: Resources = {
     failedToSave: "נכשל לשמור את הבחירות",
     paymentNotConfigured: "תשלום אינו מוגדר בחנות זו עדיין.",
     trackingDisabled: "מעקב קופה אינו מאופשר בחנות זו. הפעילו אותו בלוח הניהול של Brainerce.",
+    tax: "מע״מ",
+    taxCalculated: "מחושב בקופה",
+    taxIncluded: "כולל מע״מ",
+  },
+  tax: {
+    includedVat: "המחיר כולל מע״מ",
+    excludedVat: "המחיר אינו כולל מע״מ — מחושב בקופה",
+    exempt: "פטור ממע״מ — לא מתווסף מס",
+    label: "מע״מ",
+    calculatedAtCheckout: "מחושב בקופה",
+    enterAddress: "הזן/י כתובת לחישוב",
+    breakdownTitle: "פירוט מיסים",
   },
   orderConfirmation: {
     confirming: "מאשר את ההזמנה שלך…",

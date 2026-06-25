@@ -16,6 +16,7 @@ import {
   getCartItemImage,
   type ShippingRate,
   type CheckoutCustomFieldDefinition,
+  type Checkout as LiveCheckout,
 } from "brainerce";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
@@ -134,6 +135,7 @@ const Checkout = () => {
   const [rates, setRates] = useState<ShippingRate[]>([]);
   const [selectedRateId, setSelectedRateId] = useState<string | null>(null);
   const [payment, setPayment] = useState<PaymentData | null>(null);
+  const [liveCheckout, setLiveCheckout] = useState<LiveCheckout | null>(null);
   const [stripePromise, setStripePromise] =
     useState<ReturnType<typeof loadStripe> | null>(null);
   const [bumps, setBumps] = useState<Array<Parameters<typeof OrderBumpCard>[0]["bump"]>>([]);
@@ -217,7 +219,7 @@ const Checkout = () => {
       }
 
       // 3. Set shipping address (returns shipping rates)
-      const { rates: shippingRates } = await client.setShippingAddress(
+      const { rates: shippingRates, checkout: updatedCheckout } = await client.setShippingAddress(
         checkoutId,
         {
           email: form.email,
@@ -232,6 +234,7 @@ const Checkout = () => {
           phone: form.phone || undefined,
         },
       );
+      setLiveCheckout(updatedCheckout ?? null);
 
       const rateList = shippingRates ?? [];
       setRates(rateList);
@@ -441,7 +444,8 @@ const Checkout = () => {
                                 checked={selectedRateId === r.id}
                                 onChange={async () => {
                                   setSelectedRateId(r.id);
-                                  await client.selectShippingMethod(payment.checkoutId, r.id);
+                                  const co = await client.selectShippingMethod(payment.checkoutId, r.id);
+                                  setLiveCheckout(co);
                                 }}
                               />
                               <span>
@@ -539,6 +543,13 @@ const Checkout = () => {
                       {(() => {
                         const selectedRate = rates.find((r) => r.id === selectedRateId);
                         const shippingPrice = selectedRate ? parseFloat(String(selectedRate.price)) || 0 : 0;
+                        const taxAmt = liveCheckout ? parseFloat(liveCheckout.taxAmount || "0") : 0;
+                        const breakdown = liveCheckout?.taxBreakdown;
+                        const pricesIncludeTax = !!breakdown?.pricesIncludeTax;
+                        const includedTax = breakdown?.totalTax ?? 0;
+                        const liveTotal = liveCheckout
+                          ? parseFloat(liveCheckout.total || "0") + (surchargeAmount || 0)
+                          : (totals.total ?? 0) + (surchargeAmount || 0) + shippingPrice;
                         return (
                           <>
                             <div className="flex justify-between text-sm">
@@ -549,6 +560,28 @@ const Checkout = () => {
                                   : <span className="text-muted-foreground">{t("checkout.selectMethod")}</span>}
                               </span>
                             </div>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-muted-foreground">{t("tax.label")}</span>
+                              <span>
+                                {liveCheckout
+                                  ? pricesIncludeTax
+                                    ? <span className="text-muted-foreground">
+                                        {t("tax.includedVat")} ({formatPrice(String(includedTax), { currency })})
+                                      </span>
+                                    : formatPrice(String(taxAmt), { currency })
+                                  : <span className="text-muted-foreground">{t("tax.enterAddress")}</span>}
+                              </span>
+                            </div>
+                            {breakdown && breakdown.breakdown?.length > 0 && (
+                              <div className="text-[11px] text-muted-foreground/80 pl-4 space-y-0.5">
+                                {breakdown.breakdown.map((tx, i) => (
+                                  <div key={i} className="flex justify-between">
+                                    <span>{tx.name} ({(tx.rate * 100).toFixed(1)}%)</span>
+                                    <span>{formatPrice(String(tx.amount), { currency })}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
                             {appliedSurcharges.map((s) => (
                               <div key={s.key} className="flex justify-between text-sm text-muted-foreground">
                                 <span>{s.name}</span>
@@ -557,12 +590,7 @@ const Checkout = () => {
                             ))}
                             <div className="flex justify-between font-serif text-xl border-t border-border pt-4">
                               <span>{t("checkout.total")}</span>
-                              <span>
-                                {formatPrice(
-                                  String((totals.total ?? 0) + (surchargeAmount || 0) + shippingPrice),
-                                  { currency },
-                                )}
-                              </span>
+                              <span>{formatPrice(String(liveTotal), { currency })}</span>
                             </div>
                           </>
                         );
