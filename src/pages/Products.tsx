@@ -11,6 +11,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { client } from "@/lib/brainerce";
+import { useRegion } from "@/contexts/RegionContext";
 import { cn } from "@/lib/utils";
 
 interface Category { id: string; name: string; image?: string | null }
@@ -37,6 +38,8 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const { regionId } = useRegion();
+
   useEffect(() => {
     client.getCategories().then(r => setCategories((r?.categories || []) as Category[])).catch(() => {});
   }, []);
@@ -52,11 +55,12 @@ const Products = () => {
     if (activeSort === "price-desc") { params.sortBy = "price"; params.sortOrder = "desc"; }
     if (activeSort === "name-asc") { params.sortBy = "name"; params.sortOrder = "asc"; }
     if (activeSort === "newest") { params.sortBy = "createdAt"; params.sortOrder = "desc"; }
+    if (regionId) params.regionId = regionId;
     client.getProducts(params)
       .then(r => setProducts(r.data))
       .catch(e => setError(e instanceof Error ? e.message : "Failed to load products"))
       .finally(() => setLoading(false));
-  }, [activeCategory, activeSort, saleOnly, searchQuery]);
+  }, [activeCategory, activeSort, saleOnly, searchQuery, regionId]);
 
   const currentCategory = useMemo(
     () => (activeCategory !== "all" ? categories.find(c => c.id === activeCategory) : null),

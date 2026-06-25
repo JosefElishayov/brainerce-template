@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { User, Menu, X, Search, Globe } from "lucide-react";
+import { User, Menu, X, Search, Globe, MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,7 @@ import { CartIcon } from "@/components/CartIcon";
 import { SearchDialog } from "@/components/SearchDialog";
 import { useStore } from "@/contexts/StoreContext";
 import { useLocale } from "@/contexts/LocaleContext";
+import { useRegion } from "@/contexts/RegionContext";
 import { client } from "@/lib/brainerce";
 import {
   NavigationMenu,
@@ -34,6 +35,7 @@ export const Header = () => {
   const { t } = useTranslation();
   const { storeInfo, loggedIn } = useStore();
   const { locale, supportedLocales, setLocale } = useLocale();
+  const { regions, regionId, region, currency, setRegion } = useRegion();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [categories, setCategories] = useState<CategoryItem[]>([]);
@@ -172,6 +174,36 @@ export const Header = () => {
                       )}
                     >
                       {l}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            {regions.length > 1 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    aria-label={t("header.changeRegion", { defaultValue: "Change region" })}
+                    className="p-2 hover:bg-accent transition-colors duration-300 group flex items-center gap-1"
+                  >
+                    <MapPin className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
+                    <span className="text-[10px] font-medium tracking-[0.15em] uppercase hidden sm:inline">
+                      {region?.name ? `${region.name} · ${currency}` : currency}
+                    </span>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-[12rem]">
+                  {regions.map((r) => (
+                    <DropdownMenuItem
+                      key={r.id}
+                      onSelect={() => setRegion(r.id)}
+                      className={cn(
+                        "text-xs tracking-[0.1em] uppercase cursor-pointer flex items-center justify-between gap-3",
+                        r.id === regionId && "font-semibold",
+                      )}
+                    >
+                      <span>{r.name}</span>
+                      <span className="text-muted-foreground">{r.currency}</span>
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>

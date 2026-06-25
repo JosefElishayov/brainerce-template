@@ -3,8 +3,9 @@ import { Heart } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import type { Product } from "brainerce";
-import { formatPrice, getProductPriceInfo } from "brainerce";
+import { formatPrice } from "brainerce";
 import { useStore } from "@/contexts/StoreContext";
+import { getDisplayPriceInfo, getDisplayVariantPrice } from "@/lib/price";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
@@ -15,27 +16,23 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product, index = 0, variant = "default" }: ProductCardProps) => {
-  const { currency, addToCart } = useStore();
+  const { currency: storeCurrency, addToCart } = useStore();
   const { toast } = useToast();
   const [adding, setAdding] = useState(false);
 
   const images = product.images || [];
   const primary = images[0]?.url || "/placeholder.svg";
   const secondary = images[1]?.url;
-  const priceInfo = getProductPriceInfo(product);
+  const priceInfo = getDisplayPriceInfo(product, storeCurrency);
+  const currency = priceInfo.currency;
   const collectionName = product.categories?.[0]?.name;
   const isVariable = product.type === "VARIABLE";
-  const variantEffectivePrices = isVariable
+  const variantPriceData = isVariable
     ? (product.variants || [])
-        .map((v) => {
-          const sale = v.salePrice ? Number(v.salePrice) : NaN;
-          const base = v.price ? Number(v.price) : NaN;
-          if (!isNaN(sale) && sale > 0) return sale;
-          if (!isNaN(base) && base > 0) return base;
-          return NaN;
-        })
-        .filter((n) => !isNaN(n) && n > 0)
+        .map((v) => getDisplayVariantPrice(v, currency))
+        .filter((d) => d.price > 0)
     : [];
+  const variantEffectivePrices = variantPriceData.map((d) => d.price);
   const minVariantPrice = variantEffectivePrices.length ? Math.min(...variantEffectivePrices) : null;
   const maxVariantPrice = variantEffectivePrices.length ? Math.max(...variantEffectivePrices) : null;
   const variantPriceVaries = minVariantPrice !== null && maxVariantPrice !== null && minVariantPrice !== maxVariantPrice;
@@ -131,9 +128,7 @@ export const ProductCard = ({ product, index = 0, variant = "default" }: Product
           <div className="flex items-center gap-3 pt-1">
             {isVariable && minVariantPrice !== null ? (
               (() => {
-                const regularPrices = (product.variants || [])
-                  .map((v) => (v.price ? Number(v.price) : NaN))
-                  .filter((n) => !isNaN(n) && n > 0);
+                const regularPrices = variantPriceData.map((d) => d.originalPrice).filter((n) => n > 0);
                 const minRegular = regularPrices.length ? Math.min(...regularPrices) : minVariantPrice;
                 const onSale = minRegular > minVariantPrice;
                 return (
