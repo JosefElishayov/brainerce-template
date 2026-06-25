@@ -241,6 +241,18 @@ const en = {
     failedToSave: "Failed to save selections",
     paymentNotConfigured: "Payment is not configured for this store yet.",
     trackingDisabled: "Checkout tracking is not enabled on this store. Enable it in Brainerce admin.",
+    tax: "Tax",
+    taxCalculated: "Calculated at checkout",
+    taxIncluded: "VAT included",
+  },
+  tax: {
+    includedVat: "Price includes VAT",
+    excludedVat: "Price excludes tax — calculated at checkout",
+    exempt: "Tax-exempt — no VAT applied",
+    label: "Tax",
+    calculatedAtCheckout: "Calculated at checkout",
+    enterAddress: "Enter address to calculate",
+    breakdownTitle: "Tax breakdown",
   },
   orderConfirmation: {
     confirming: "Confirming your order…",
