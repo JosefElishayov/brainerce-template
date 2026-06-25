@@ -37,10 +37,9 @@ import { Star } from "lucide-react";
 const ProductDetail = () => {
   const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
-  const { currency: storeCurrency, addToCart } = useStore();
+  const { currency, addToCart } = useStore();
   const { locale } = useLocale();
-  const { regionId, currency: regionCurrency } = useRegion();
-  const currency = regionCurrency || storeCurrency;
+  const { regionId } = useRegion();
   const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
