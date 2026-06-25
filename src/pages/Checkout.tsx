@@ -219,7 +219,7 @@ const Checkout = () => {
       }
 
       // 3. Set shipping address (returns shipping rates)
-      const { rates: shippingRates } = await client.setShippingAddress(
+      const { rates: shippingRates, checkout: updatedCheckout } = await client.setShippingAddress(
         checkoutId,
         {
           email: form.email,
@@ -234,6 +234,7 @@ const Checkout = () => {
           phone: form.phone || undefined,
         },
       );
+      setLiveCheckout(updatedCheckout ?? null);
 
       const rateList = shippingRates ?? [];
       setRates(rateList);
@@ -443,7 +444,8 @@ const Checkout = () => {
                                 checked={selectedRateId === r.id}
                                 onChange={async () => {
                                   setSelectedRateId(r.id);
-                                  await client.selectShippingMethod(payment.checkoutId, r.id);
+                                  const co = await client.selectShippingMethod(payment.checkoutId, r.id);
+                                  setLiveCheckout(co);
                                 }}
                               />
                               <span>
