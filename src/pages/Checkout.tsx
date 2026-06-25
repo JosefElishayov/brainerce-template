@@ -431,7 +431,20 @@ const Checkout = () => {
                       <Input name="postalCode" required placeholder={t("checkout.postalCode")} value={form.postalCode} onChange={onField} className="rounded-none h-12" />
                     </div>
                     <div className="grid sm:grid-cols-2 gap-4 mt-4">
-                      <Input name="country" required placeholder={t("checkout.country")} value={form.country} onChange={onField} className="rounded-none h-12" />
+                      <select
+                        name="country"
+                        required
+                        value={form.country}
+                        onChange={onField}
+                        className="rounded-none h-12 border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                      >
+                        {!form.country && <option value="">{t("checkout.country")}</option>}
+                        {availableCountries.map((c) => (
+                          <option key={c} value={c}>
+                            {getCountryName(c, i18n.language)}
+                          </option>
+                        ))}
+                      </select>
                       <Input name="phone" placeholder={t("checkout.phone")} value={form.phone} onChange={onField} className="rounded-none h-12" />
                     </div>
                   </div>
