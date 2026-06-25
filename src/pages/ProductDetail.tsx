@@ -30,14 +30,17 @@ import { useToast } from "@/hooks/use-toast";
 import { client } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
 import { useLocale } from "@/contexts/LocaleContext";
+import { useRegion } from "@/contexts/RegionContext";
 import { cn } from "@/lib/utils";
 import { Star } from "lucide-react";
 
 const ProductDetail = () => {
   const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
-  const { currency, addToCart } = useStore();
+  const { currency: storeCurrency, addToCart } = useStore();
   const { locale } = useLocale();
+  const { regionId, currency: regionCurrency } = useRegion();
+  const currency = regionCurrency || storeCurrency;
   const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -54,7 +57,7 @@ const ProductDetail = () => {
     const decodedSlug = decodeURIComponent(slug);
     setLoading(true);
     setError(null);
-    client.getProductBySlug(decodedSlug, { locale })
+    client.getProductBySlug(decodedSlug, { locale, ...(regionId ? { regionId } : {}) })
 
       .then((p) => {
         setProduct(p);
