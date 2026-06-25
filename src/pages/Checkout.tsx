@@ -124,8 +124,24 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { cart, currency, storeInfo } = useStore();
+  const { regions, region } = useRegion();
+  const { i18n } = useTranslation();
   const upsell = (storeInfo as unknown as { upsell?: Record<string, boolean> })?.upsell;
   const showBumps = upsell?.checkoutOrderBumpEnabled !== false;
+
+  // Unique list of country codes across all configured regions
+  const availableCountries = useMemo(() => {
+    const set = new Set<string>();
+    regions.forEach((r) => r.countries?.forEach((c) => set.add(c)));
+    const list = Array.from(set);
+    list.sort((a, b) =>
+      getCountryName(a, i18n.language).localeCompare(getCountryName(b, i18n.language)),
+    );
+    return list;
+  }, [regions, i18n.language]);
+
+  const defaultCountry =
+    region?.countries?.[0] || availableCountries[0] || "";
 
   const [form, setForm] = useState({
     email: "",
@@ -136,7 +152,7 @@ const Checkout = () => {
     city: "",
     region: "",
     postalCode: "",
-    country: "US",
+    country: defaultCountry,
     phone: "",
   });
 
