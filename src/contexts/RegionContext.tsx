@@ -1,5 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useState, ReactNode } from "react";
-import type { PublicRegion } from "brainerce";
+interface PublicRegion {
+  id: string;
+  name: string;
+  slug: string;
+  currency: string;
+  countries: string[];
+  taxInclusive: boolean;
+  isDefault: boolean;
+}
 import { client } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
 
