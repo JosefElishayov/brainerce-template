@@ -230,7 +230,7 @@ const Checkout = () => {
     );
   }
 
-  const onField = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const onField = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
   async function startBrainerceCheckout(e: React.FormEvent) {
