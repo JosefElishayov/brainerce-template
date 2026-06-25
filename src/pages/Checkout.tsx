@@ -16,6 +16,7 @@ import {
   getCartItemImage,
   type ShippingRate,
   type CheckoutCustomFieldDefinition,
+  type Checkout as LiveCheckout,
 } from "brainerce";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
@@ -134,6 +135,7 @@ const Checkout = () => {
   const [rates, setRates] = useState<ShippingRate[]>([]);
   const [selectedRateId, setSelectedRateId] = useState<string | null>(null);
   const [payment, setPayment] = useState<PaymentData | null>(null);
+  const [liveCheckout, setLiveCheckout] = useState<LiveCheckout | null>(null);
   const [stripePromise, setStripePromise] =
     useState<ReturnType<typeof loadStripe> | null>(null);
   const [bumps, setBumps] = useState<Array<Parameters<typeof OrderBumpCard>[0]["bump"]>>([]);
