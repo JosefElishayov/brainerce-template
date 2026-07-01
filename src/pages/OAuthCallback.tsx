@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { Loader2 } from "lucide-react";
-import { setCustomerToken } from "@/lib/brainerce";
+import { client, setCustomerToken } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
 
 const OAuthCallback = () => {
@@ -13,20 +13,42 @@ const OAuthCallback = () => {
 
   useEffect(() => {
     (async () => {
-      if (params.get("oauth_success") === "true") {
-        const token = params.get("token");
-        if (token) {
+      try {
+        if (params.get("oauth_error")) {
+          setError(params.get("oauth_error"));
+          return;
+        }
+        if (params.get("oauth_success") !== "true") {
+          setError("Unknown OAuth response");
+          return;
+        }
+
+        // New SDK flow: exchange one-time auth_code for a customer token
+        const authCode = params.get("auth_code");
+        const legacyToken = params.get("token");
+
+        if (authCode) {
+          const result = await client.exchangeOAuthCode(authCode);
+          const token = result?.token;
+          if (!token) throw new Error("No token returned from OAuth exchange");
           setCustomerToken(token);
           setLoggedIn(true);
           await refreshCart();
           navigate("/account");
           return;
         }
-        setError("Missing token in callback");
-      } else if (params.get("oauth_error")) {
-        setError(params.get("oauth_error"));
-      } else {
-        setError("Unknown OAuth response");
+
+        if (legacyToken) {
+          setCustomerToken(legacyToken);
+          setLoggedIn(true);
+          await refreshCart();
+          navigate("/account");
+          return;
+        }
+
+        setError("Missing auth_code in callback");
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "OAuth sign-in failed");
       }
     })();
   }, [params, navigate, setLoggedIn, refreshCart]);
