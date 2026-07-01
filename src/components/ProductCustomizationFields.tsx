@@ -156,11 +156,15 @@ function FieldRenderer({
             className="w-full h-12 border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <option value="">— Select —</option>
-            {(field.enumValues ?? []).map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
+            {(field.enumValues ?? []).map((opt) => {
+              const val = typeof opt === "string" ? opt : opt.value;
+              const lbl = typeof opt === "string" ? opt : opt.label;
+              return (
+                <option key={val} value={val}>
+                  {lbl}
+                </option>
+              );
+            })}
           </select>
           {help}
         </div>
@@ -173,21 +177,23 @@ function FieldRenderer({
           {label}
           <div className="space-y-2">
             {(field.enumValues ?? []).map((opt) => {
-              const checked = arr.includes(opt);
+              const val = typeof opt === "string" ? opt : opt.value;
+              const lbl = typeof opt === "string" ? opt : opt.label;
+              const checked = arr.includes(val);
               return (
-                <label key={opt} className="flex items-center gap-2 text-sm">
+                <label key={val} className="flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"
                     checked={checked}
                     onChange={(e) =>
                       onChange(
                         e.target.checked
-                          ? [...arr, opt]
-                          : arr.filter((v) => v !== opt),
+                          ? [...arr, val]
+                          : arr.filter((v) => v !== val),
                       )
                     }
                   />
-                  {opt}
+                  {lbl}
                 </label>
               );
             })}
