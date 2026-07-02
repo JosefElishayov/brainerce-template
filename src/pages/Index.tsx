@@ -58,6 +58,10 @@ const Index = () => {
           <img
             src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1920&q=80"
             alt="Curated home lifestyle"
+            width={1920}
+            height={1080}
+            fetchPriority="high"
+            decoding="async"
             className="w-full h-[120%] object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-charcoal/30 via-charcoal/10 to-charcoal/50" />

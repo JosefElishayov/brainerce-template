@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import { Loader2 } from "lucide-react";
 import { client, setCustomerToken } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
@@ -55,6 +56,7 @@ const OAuthCallback = () => {
 
   return (
     <Layout>
+      <SEO title="Signing You In — Maison" description="Completing your secure sign-in to Maison. You'll be redirected in a moment." path="/auth/callback" noIndex />
       <section className="py-28">
         <div className="max-w-md mx-auto px-6 text-center">
           {error ? (

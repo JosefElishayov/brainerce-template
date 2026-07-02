@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Loader2, AlertCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { client, setCustomerToken } from "@/lib/brainerce";
@@ -63,6 +64,7 @@ const Login = () => {
 
   return (
     <Layout>
+      <SEO title="Sign In — Maison" description="Sign in to your Maison account to view orders, manage your wishlist, and check out faster." path="/login" noIndex />
       <section className="py-20">
         <div className="max-w-md mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>

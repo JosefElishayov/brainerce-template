@@ -239,7 +239,7 @@ export const Header = () => {
               <div className="py-8 space-y-6">
                 {categories.length > 0 && (
                   <div className="space-y-1">
-                    <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-muted-foreground/50 px-2 mb-3">
+                    <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-muted-foreground px-2 mb-3">
                       {t("header.collections")}
                     </p>
                     {categories.slice(0, 6).map((c) => (

@@ -6,6 +6,16 @@ import { useTranslation } from "react-i18next";
 import type { CustomerProfile, Order } from "brainerce";
 import { formatPrice } from "brainerce";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
+
+const ACCOUNT_SEO = (
+  <SEO
+    title="Your Account — Maison"
+    description="Manage your Maison profile, view past orders, and update your delivery details in one place."
+    path="/account"
+    noIndex
+  />
+);
 import { Button } from "@/components/ui/button";
 import { client, setCustomerToken } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
@@ -50,6 +60,7 @@ const Account = () => {
   if (loading) {
     return (
       <Layout>
+        {ACCOUNT_SEO}
         <div className="py-28 flex justify-center">
           <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
         </div>
@@ -59,6 +70,7 @@ const Account = () => {
 
   return (
     <Layout>
+      {ACCOUNT_SEO}
       <section className="py-12 md:py-20">
         <div className="container-full">
           <motion.div

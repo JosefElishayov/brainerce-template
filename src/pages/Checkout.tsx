@@ -19,6 +19,16 @@ import {
   type Checkout as LiveCheckout,
 } from "brainerce";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
+
+const CHECKOUT_SEO = (
+  <SEO
+    title="Checkout — Maison"
+    description="Complete your Maison order securely. Enter delivery and payment details to finish checkout."
+    path="/checkout"
+    noIndex
+  />
+);
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useStore } from "@/contexts/StoreContext";
@@ -261,6 +271,7 @@ const Checkout = () => {
   if (!cart || cart.items.length === 0) {
     return (
       <Layout>
+        {CHECKOUT_SEO}
         <div className="container-narrow py-28 text-center">
           <h1 className="font-serif text-4xl mb-4">{t("checkout.noItemsTitle")}</h1>
           <p className="text-muted-foreground mb-8">{t("checkout.noItemsHint")}</p>
@@ -421,6 +432,7 @@ const Checkout = () => {
 
   return (
     <Layout>
+      {CHECKOUT_SEO}
       <div className="container-full py-6 border-b border-border">
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           <Link to="/cart" className="hover:text-foreground">

@@ -13,6 +13,16 @@ import { CartUpgradeBanner } from "@/components/upsell/CartUpgradeBanner";
 import { CartBundleOfferCard } from "@/components/upsell/CartBundleOfferCard";
 import { RecommendationSection } from "@/components/upsell/RecommendationSection";
 import { TaxNote } from "@/components/TaxNote";
+import { SEO } from "@/components/SEO";
+
+const CART_SEO = (
+  <SEO
+    title="Your Bag — Maison"
+    description="Review the items in your Maison shopping bag, adjust quantities, and continue to secure checkout."
+    path="/cart"
+    noIndex
+  />
+);
 
 const Cart = () => {
   const { t } = useTranslation();
@@ -22,6 +32,7 @@ const Cart = () => {
   if (!cart || cart.items.length === 0) {
     return (
       <Layout>
+        {CART_SEO}
         <div className="container-narrow py-28 text-center">
           <ShoppingBag className="w-16 h-16 mx-auto mb-6 text-muted-foreground/30" />
           <h1 className="font-serif text-4xl mb-4">{t("cart.emptyTitle")}</h1>
@@ -46,6 +57,7 @@ const Cart = () => {
 
   return (
     <Layout>
+      {CART_SEO}
       <div className="container-full py-6 border-b border-border">
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           <Link to="/products" className="hover:text-foreground">{t("cart.shop")}</Link>

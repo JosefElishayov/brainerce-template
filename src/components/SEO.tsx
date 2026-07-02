@@ -21,6 +21,8 @@ interface SEOProps {
    * its language prefix (e.g. "/he/product/foo"). Include `x-default` when possible.
    */
   alternates?: HrefLangAlternate[];
+  /** Emit robots noindex,nofollow — use for cart/checkout/account/auth utility routes. */
+  noIndex?: boolean;
 }
 
 function toAbsolute(url: string): string {
@@ -29,7 +31,7 @@ function toAbsolute(url: string): string {
   return `${SITE_URL}${url.startsWith("/") ? "" : "/"}${url}`;
 }
 
-export const SEO = ({ title, description, path, image, type = "website", jsonLd, alternates }: SEOProps) => {
+export const SEO = ({ title, description, path, image, type = "website", jsonLd, alternates, noIndex }: SEOProps) => {
   const { locale } = useLocale();
   const lds = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
   // Prepend locale prefix so canonical/og:url match the actual URL
@@ -40,6 +42,7 @@ export const SEO = ({ title, description, path, image, type = "website", jsonLd,
       <html lang={locale} />
       <title>{title}</title>
       <meta name="description" content={description} />
+      {noIndex && <meta name="robots" content="noindex,nofollow" />}
       <link rel="canonical" href={canonical} />
       {alternates?.map((a) => (
         <link key={a.hrefLang} rel="alternate" hrefLang={a.hrefLang} href={toAbsolute(a.href)} />
@@ -58,3 +61,4 @@ export const SEO = ({ title, description, path, image, type = "website", jsonLd,
     </Helmet>
   );
 };
+

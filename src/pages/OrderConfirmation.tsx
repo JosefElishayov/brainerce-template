@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { client } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
@@ -46,6 +47,7 @@ const OrderConfirmation = () => {
 
   return (
     <Layout>
+      <SEO title="Order Confirmed — Maison" description="Thank you for your Maison order. View your confirmation details and next steps for delivery." path="/order-confirmation" noIndex />
       <div className="container-narrow py-28 text-center">
         {status === "loading" && (
           <>

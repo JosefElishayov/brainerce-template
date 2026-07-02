@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, AlertCircle } from "lucide-react";
@@ -63,6 +64,7 @@ const VerifyEmail = () => {
 
   return (
     <Layout>
+      <SEO title="Verify Email — Maison" description="Enter the verification code we sent to confirm your Maison account email address." path="/verify-email" noIndex />
       <section className="py-20">
         <div className="max-w-md mx-auto px-6">
           <h1 className="font-serif text-4xl mb-2 text-center">Verify Your Email</h1>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, AlertCircle } from "lucide-react";
@@ -34,6 +35,7 @@ const ResetPassword = () => {
 
   return (
     <Layout>
+      <SEO title="Reset Password — Maison" description="Choose a new password for your Maison account to regain secure access to your orders." path="/reset-password" noIndex />
       <section className="py-20">
         <div className="max-w-md mx-auto px-6">
           <h1 className="font-serif text-4xl mb-2 text-center">Reset Password</h1>
