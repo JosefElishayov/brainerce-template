@@ -19,6 +19,16 @@ import {
   type Checkout as LiveCheckout,
 } from "brainerce";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
+
+const CHECKOUT_SEO = (
+  <SEO
+    title="Checkout — Maison"
+    description="Complete your Maison order securely. Enter delivery and payment details to finish checkout."
+    path="/checkout"
+    noIndex
+  />
+);
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useStore } from "@/contexts/StoreContext";
