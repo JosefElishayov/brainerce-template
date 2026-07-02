@@ -6,6 +6,16 @@ import { useTranslation } from "react-i18next";
 import type { CustomerProfile, Order } from "brainerce";
 import { formatPrice } from "brainerce";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
+
+const ACCOUNT_SEO = (
+  <SEO
+    title="Your Account — Maison"
+    description="Manage your Maison profile, view past orders, and update your delivery details in one place."
+    path="/account"
+    noIndex
+  />
+);
 import { Button } from "@/components/ui/button";
 import { client, setCustomerToken } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
