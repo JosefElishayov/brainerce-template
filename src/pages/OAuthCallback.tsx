@@ -56,6 +56,7 @@ const OAuthCallback = () => {
 
   return (
     <Layout>
+      <SEO title="Signing You In — Maison" description="Completing your secure sign-in to Maison. You'll be redirected in a moment." path="/auth/callback" noIndex />
       <section className="py-28">
         <div className="max-w-md mx-auto px-6 text-center">
           {error ? (
