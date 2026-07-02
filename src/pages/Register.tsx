@@ -46,6 +46,7 @@ const Register = () => {
 
   return (
     <Layout>
+      <SEO title="Create Account — Maison" description="Create a Maison account to save favourites, track orders, and enjoy a faster checkout experience." path="/register" noIndex />
       <section className="py-20">
         <div className="max-w-md mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
