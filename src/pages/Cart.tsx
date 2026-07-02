@@ -13,6 +13,16 @@ import { CartUpgradeBanner } from "@/components/upsell/CartUpgradeBanner";
 import { CartBundleOfferCard } from "@/components/upsell/CartBundleOfferCard";
 import { RecommendationSection } from "@/components/upsell/RecommendationSection";
 import { TaxNote } from "@/components/TaxNote";
+import { SEO } from "@/components/SEO";
+
+const CART_SEO = (
+  <SEO
+    title="Your Bag — Maison"
+    description="Review the items in your Maison shopping bag, adjust quantities, and continue to secure checkout."
+    path="/cart"
+    noIndex
+  />
+);
 
 const Cart = () => {
   const { t } = useTranslation();
