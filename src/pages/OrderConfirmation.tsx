@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { client } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
