@@ -70,6 +70,7 @@ const Account = () => {
 
   return (
     <Layout>
+      {ACCOUNT_SEO}
       <section className="py-12 md:py-20">
         <div className="container-full">
           <motion.div
