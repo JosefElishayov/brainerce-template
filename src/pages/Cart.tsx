@@ -32,6 +32,7 @@ const Cart = () => {
   if (!cart || cart.items.length === 0) {
     return (
       <Layout>
+        {CART_SEO}
         <div className="container-narrow py-28 text-center">
           <ShoppingBag className="w-16 h-16 mx-auto mb-6 text-muted-foreground/30" />
           <h1 className="font-serif text-4xl mb-4">{t("cart.emptyTitle")}</h1>
