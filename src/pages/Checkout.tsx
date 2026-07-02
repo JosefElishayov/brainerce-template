@@ -271,6 +271,7 @@ const Checkout = () => {
   if (!cart || cart.items.length === 0) {
     return (
       <Layout>
+        {CHECKOUT_SEO}
         <div className="container-narrow py-28 text-center">
           <h1 className="font-serif text-4xl mb-4">{t("checkout.noItemsTitle")}</h1>
           <p className="text-muted-foreground mb-8">{t("checkout.noItemsHint")}</p>
