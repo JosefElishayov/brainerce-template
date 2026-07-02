@@ -47,6 +47,7 @@ const OrderConfirmation = () => {
 
   return (
     <Layout>
+      <SEO title="Order Confirmed — Maison" description="Thank you for your Maison order. View your confirmation details and next steps for delivery." path="/order-confirmation" noIndex />
       <div className="container-narrow py-28 text-center">
         {status === "loading" && (
           <>
