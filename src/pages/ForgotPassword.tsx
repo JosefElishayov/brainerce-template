@@ -27,6 +27,7 @@ const ForgotPassword = () => {
 
   return (
     <Layout>
+      <SEO title="Forgot Password — Maison" description="Reset your Maison account password. Enter your email and we'll send a secure reset link." path="/forgot-password" noIndex />
       <section className="py-20">
         <div className="max-w-md mx-auto px-6">
           <h1 className="font-serif text-4xl mb-2 text-center">Forgot Password</h1>
