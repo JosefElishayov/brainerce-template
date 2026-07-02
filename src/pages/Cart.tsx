@@ -57,6 +57,7 @@ const Cart = () => {
 
   return (
     <Layout>
+      {CART_SEO}
       <div className="container-full py-6 border-b border-border">
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           <Link to="/products" className="hover:text-foreground">{t("cart.shop")}</Link>
