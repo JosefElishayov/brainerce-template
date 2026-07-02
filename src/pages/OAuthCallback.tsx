@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import { Loader2 } from "lucide-react";
 import { client, setCustomerToken } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
