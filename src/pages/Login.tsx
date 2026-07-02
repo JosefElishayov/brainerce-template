@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Loader2, AlertCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { client, setCustomerToken } from "@/lib/brainerce";
