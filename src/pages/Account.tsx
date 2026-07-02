@@ -60,6 +60,7 @@ const Account = () => {
   if (loading) {
     return (
       <Layout>
+        {ACCOUNT_SEO}
         <div className="py-28 flex justify-center">
           <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
         </div>
