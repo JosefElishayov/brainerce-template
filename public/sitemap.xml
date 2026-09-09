@@ -64,4 +64,52 @@
     <xhtml:link rel="alternate" hreflang="he" href="https://brainerce-template.lovable.app/he/contact"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/contact"/>
   </url>
+  <url>
+    <loc>https://brainerce-template.lovable.app/en/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/blog"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://brainerce-template.lovable.app/he/blog"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/blog"/>
+  </url>
+  <url>
+    <loc>https://brainerce-template.lovable.app/he/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/blog"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://brainerce-template.lovable.app/he/blog"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/blog"/>
+  </url>
+  <url>
+    <loc>https://brainerce-template.lovable.app/en/faq</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/faq"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://brainerce-template.lovable.app/he/faq"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/faq"/>
+  </url>
+  <url>
+    <loc>https://brainerce-template.lovable.app/he/faq</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/faq"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://brainerce-template.lovable.app/he/faq"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/faq"/>
+  </url>
+  <url>
+    <loc>https://brainerce-template.lovable.app/en/donate</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/donate"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://brainerce-template.lovable.app/he/donate"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/donate"/>
+  </url>
+  <url>
+    <loc>https://brainerce-template.lovable.app/he/donate</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brainerce-template.lovable.app/en/donate"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://brainerce-template.lovable.app/he/donate"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brainerce-template.lovable.app/en/donate"/>
+  </url>
 </urlset>

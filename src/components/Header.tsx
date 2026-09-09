@@ -129,6 +129,12 @@ export const Header = () => {
               {t("header.sale")}
             </Link>
             <Link
+              to="/blog"
+              className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline"
+            >
+              {t("blog.title")}
+            </Link>
+            <Link
               to="/about"
               className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline"
             >
@@ -258,7 +264,9 @@ export const Header = () => {
                   {[
                     { to: "/products", label: t("header.shopAll") },
                     { to: "/products?sale=true", label: t("header.sale") },
+                    { to: "/blog", label: t("blog.title") },
                     { to: "/about", label: t("header.about") },
+                    { to: "/faq", label: t("footer.faq") },
                     { to: "/contact", label: t("header.contact") },
                     { to: "/cart", label: t("common.shoppingBag") },
                     { to: loggedIn ? "/account" : "/login", label: loggedIn ? t("common.myAccount") : t("common.signIn") },

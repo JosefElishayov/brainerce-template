@@ -22,5 +22,6 @@ Disallow: /forgot-password
 Disallow: /reset-password
 Disallow: /auth/
 Disallow: /account
+Disallow: /donate/thank-you
 
 Sitemap: /sitemap.xml

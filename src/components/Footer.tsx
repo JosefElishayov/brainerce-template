@@ -4,6 +4,9 @@ import { ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useStore } from "@/contexts/StoreContext";
 import { client } from "@/lib/brainerce";
+import { useLocale } from "@/contexts/LocaleContext";
+import { NewsletterSignup } from "./NewsletterSignup";
+import type { FooterColumn, FooterSocialLink } from "brainerce";
 
 interface CategoryItem {
   id: string;
@@ -15,6 +18,10 @@ export const Footer = () => {
   const { storeInfo } = useStore();
   const brandName = storeInfo?.name || "Lumeno";
   const [categories, setCategories] = useState<CategoryItem[]>([]);
+  const { locale } = useLocale();
+  const [managedColumns, setManagedColumns] = useState<FooterColumn[]>([]);
+  const [social, setSocial] = useState<FooterSocialLink[]>([]);
+  const [copyright, setCopyright] = useState<string | null>(null);
 
   useEffect(() => {
     client
@@ -24,6 +31,17 @@ export const Footer = () => {
       })
       .catch(() => setCategories([]));
   }, []);
+
+  useEffect(() => {
+    client.content.footer
+      .get(undefined, locale)
+      .then((c) => {
+        setManagedColumns(c?.data?.columns || []);
+        setSocial(c?.data?.social || []);
+        setCopyright(c?.data?.copyright || null);
+      })
+      .catch(() => setManagedColumns([]));
+  }, [locale]);
 
   return (
     <footer className="bg-foreground text-background">
@@ -38,16 +56,11 @@ export const Footer = () => {
                 {t("footer.tagline")}
               </p>
             </div>
-            <div className="max-w-sm w-full">
-              <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-background/40 mb-3">
-                {t("footer.stayConnected")}
-              </p>
-              <p className="text-sm text-background/60 leading-relaxed mb-4">
-                {t("footer.contactPrompt")}
-              </p>
+            <div className="max-w-sm w-full space-y-5">
+              <NewsletterSignup />
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-3 h-12 px-5 text-xs font-medium tracking-[0.2em] uppercase bg-background text-foreground hover:bg-background/90 transition-colors"
+                className="inline-flex items-center gap-3 text-xs font-medium tracking-[0.2em] uppercase text-background/60 hover:text-background transition-colors"
               >
                 {t("footer.getInTouch")}
                 <ArrowRight className="w-4 h-4" />
@@ -88,6 +101,8 @@ export const Footer = () => {
               <li><Link to="/products" className="text-sm text-background/60 hover:text-background transition-colors">{t("footer.shopAll")}</Link></li>
               <li><Link to="/about" className="text-sm text-background/60 hover:text-background transition-colors">{t("footer.ourStory")}</Link></li>
               <li><Link to="/contact" className="text-sm text-background/60 hover:text-background transition-colors">{t("footer.contact")}</Link></li>
+              <li><Link to="/blog" className="text-sm text-background/60 hover:text-background transition-colors">{t("blog.title")}</Link></li>
+              <li><Link to="/donate" className="text-sm text-background/60 hover:text-background transition-colors">{t("donate.title")}</Link></li>
               <li><Link to="/cart" className="text-sm text-background/60 hover:text-background transition-colors">{t("footer.shoppingBag")}</Link></li>
             </ul>
           </div>
@@ -106,9 +121,24 @@ export const Footer = () => {
               {t("footer.help")}
             </h4>
             <ul className="space-y-3">
-              <li className="text-sm text-background/60">{t("footer.shippingReturns")}</li>
-              <li className="text-sm text-background/60">{t("footer.careGuide")}</li>
-              <li className="text-sm text-background/60">{t("footer.faq")}</li>
+              <li>
+                <Link to="/faq" className="text-sm text-background/60 hover:text-background transition-colors">
+                  {t("footer.faq")}
+                </Link>
+              </li>
+              {managedColumns
+                .flatMap((col) => col.links || [])
+                .slice(0, 6)
+                .map((link) => (
+                  <li key={link.url + link.label}>
+                    <Link
+                      to={link.url}
+                      className="text-sm text-background/60 hover:text-background transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
             </ul>
           </div>
         </div>
@@ -117,9 +147,20 @@ export const Footer = () => {
       <div className="border-t border-background/10">
         <div className="container-full py-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-background/30">
-            © {new Date().getFullYear()} {brandName}. {t("footer.rightsReserved")}
+            {copyright || `© ${new Date().getFullYear()} ${brandName}. ${t("footer.rightsReserved")}`}
           </p>
-          <div className="flex gap-8">
+          <div className="flex items-center gap-6">
+            {social.map((s2) => (
+              <a
+                key={s2.url}
+                href={s2.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-background/40 hover:text-background transition-colors capitalize"
+              >
+                {s2.platform}
+              </a>
+            ))}
             <span className="text-xs text-background/30">{t("footer.poweredBy")}</span>
           </div>
         </div>

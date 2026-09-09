@@ -41,7 +41,59 @@ const staticEntries: SitemapEntry[] = [
   ...staticEntriesFor("/products", { changefreq: "daily", priority: "0.9" }),
   ...staticEntriesFor("/about", { changefreq: "monthly", priority: "0.6" }),
   ...staticEntriesFor("/contact", { changefreq: "monthly", priority: "0.5" }),
+  ...staticEntriesFor("/blog", { changefreq: "weekly", priority: "0.7" }),
+  ...staticEntriesFor("/faq", { changefreq: "monthly", priority: "0.6" }),
+  ...staticEntriesFor("/donate", { changefreq: "monthly", priority: "0.5" }),
 ];
+
+async function fetchBlogEntries(client: BrainerceClient): Promise<SitemapEntry[]> {
+  const entries: SitemapEntry[] = [];
+  let page = 1;
+  const limit = 100;
+  while (true) {
+    const res = await client.blog.getPosts({ page, limit });
+    const items = res?.data ?? [];
+    for (const post of items) {
+      if (!post?.slug) continue;
+      const route = `/blog/${post.slug}`;
+      const alts: Alternate[] = [
+        ...LOCALES.map((l) => ({ hreflang: l, path: `/${l}${route}` })),
+        { hreflang: "x-default", path: `/${DEFAULT_LOCALE}${route}` },
+      ];
+      for (const l of LOCALES) {
+        entries.push({
+          path: `/${l}${route}`,
+          lastmod: post.updatedAt || post.publishedAt || undefined,
+          changefreq: "monthly",
+          priority: "0.6",
+          alternates: alts,
+        });
+      }
+    }
+    const total = res?.pagination?.total ?? items.length;
+    if (page * limit >= total || items.length === 0) break;
+    page += 1;
+  }
+  return entries;
+}
+
+async function fetchContentPageEntries(client: BrainerceClient): Promise<SitemapEntry[]> {
+  const entries: SitemapEntry[] = [];
+  const pages = await client.content.page.list();
+  for (const page of pages ?? []) {
+    const slug = page?.data?.slug;
+    if (!slug) continue;
+    const route = `/p/${slug}`;
+    const alts: Alternate[] = [
+      ...LOCALES.map((l) => ({ hreflang: l, path: `/${l}${route}` })),
+      { hreflang: "x-default", path: `/${DEFAULT_LOCALE}${route}` },
+    ];
+    for (const l of LOCALES) {
+      entries.push({ path: `/${l}${route}`, changefreq: "monthly", priority: "0.5", alternates: alts });
+    }
+  }
+  return entries;
+}
 
 async function fetchProductEntries(): Promise<SitemapEntry[]> {
   const client = new BrainerceClient({ salesChannelId: SALES_CHANNEL_ID });
@@ -119,9 +171,24 @@ async function main() {
   } catch (err) {
     console.warn("[sitemap] Failed to fetch products, writing static-only sitemap:", err);
   }
-  const all = [...staticEntries, ...productEntries];
+  const client = new BrainerceClient({ salesChannelId: SALES_CHANNEL_ID });
+  let blogEntries: SitemapEntry[] = [];
+  let pageEntries: SitemapEntry[] = [];
+  try {
+    blogEntries = await fetchBlogEntries(client);
+  } catch (err) {
+    console.warn("[sitemap] Failed to fetch blog posts:", err);
+  }
+  try {
+    pageEntries = await fetchContentPageEntries(client);
+  } catch (err) {
+    console.warn("[sitemap] Failed to fetch content pages:", err);
+  }
+  const all = [...staticEntries, ...productEntries, ...blogEntries, ...pageEntries];
   writeFileSync(resolve("public/sitemap.xml"), generateSitemap(all));
-  console.log(`sitemap.xml written (${all.length} entries: ${staticEntries.length} static + ${productEntries.length} products)`);
+  console.log(
+    `sitemap.xml written (${all.length} entries: ${staticEntries.length} static + ${productEntries.length} products + ${blogEntries.length} blog + ${pageEntries.length} pages)`,
+  );
 }
 
 main();

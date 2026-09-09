@@ -35,6 +35,7 @@ import { useStore } from "@/contexts/StoreContext";
 import { client } from "@/lib/brainerce";
 import { useToast } from "@/hooks/use-toast";
 import { OrderBumpCard } from "@/components/upsell/OrderBumpCard";
+import { GiftCardInput } from "@/components/GiftCardInput";
 import { CustomFieldsStep } from "@/components/CustomFieldsStep";
 import { useTranslation } from "react-i18next";
 import { useRegion } from "@/contexts/RegionContext";
@@ -155,7 +156,7 @@ const Checkout = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { cart, currency, storeInfo } = useStore();
+  const { cart, currency, storeInfo, capabilities } = useStore();
   const { regions, region } = useRegion();
   const { i18n } = useTranslation();
   const upsell = (storeInfo as unknown as { upsell?: Record<string, boolean> })?.upsell;
