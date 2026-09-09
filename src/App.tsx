@@ -23,6 +23,12 @@ import ResetPassword from "./pages/ResetPassword";
 import OAuthCallback from "./pages/OAuthCallback";
 import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import Faq from "./pages/Faq";
+import ContentPage from "./pages/ContentPage";
+import Donate from "./pages/Donate";
+import DonateThankYou from "./pages/DonateThankYou";
 import { BrainerceBotWidget } from "./components/BrainerceBotWidget";
 
 const queryClient = new QueryClient();
