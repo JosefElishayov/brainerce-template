@@ -78,13 +78,10 @@ const BlogPostPage = () => {
             path: `/${locale}${path}`,
             organizationName: storeInfo?.name,
           }),
-          buildBreadcrumbJsonLd(
-            [
-              { name: t("blog.title"), url: `${SITE_URL}/${locale}/blog` },
-              { name: post.title, url: `${SITE_URL}/${locale}${path}` },
-            ],
-            { siteUrl: SITE_URL },
-          ),
+          buildBreadcrumbJsonLd([
+            { name: t("blog.title"), url: `${SITE_URL}/${locale}/blog` },
+            { name: post.title, url: `${SITE_URL}/${locale}${path}` },
+          ]),
         ]}
       />
 
