@@ -3,7 +3,6 @@ import { Link, useSearchParams } from "react-router-dom";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { formatPrice } from "brainerce";
-import type { DonationIntent } from "brainerce";
 import { Layout } from "@/components/Layout";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,8 @@ const DonateThankYou = () => {
   const { t } = useTranslation();
   const [params] = useSearchParams();
   const donationId = params.get("donationId") || params.get("donation_id");
-  const [donation, setDonation] = useState<DonationIntent | null>(null);
+  type Donation = Awaited<ReturnType<typeof client.getDonation>>;
+  const [donation, setDonation] = useState<Donation | null>(null);
   const [loading, setLoading] = useState(!!donationId);
 
   useEffect(() => {
