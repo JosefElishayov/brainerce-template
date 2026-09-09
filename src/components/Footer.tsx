@@ -130,9 +130,9 @@ export const Footer = () => {
                 .flatMap((col) => col.links || [])
                 .slice(0, 6)
                 .map((link) => (
-                  <li key={link.href + link.label}>
+                  <li key={link.url + link.label}>
                     <Link
-                      to={link.href}
+                      to={link.url}
                       className="text-sm text-background/60 hover:text-background transition-colors"
                     >
                       {link.label}
