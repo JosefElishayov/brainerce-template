@@ -35,6 +35,7 @@ import { useStore } from "@/contexts/StoreContext";
 import { client } from "@/lib/brainerce";
 import { useToast } from "@/hooks/use-toast";
 import { OrderBumpCard } from "@/components/upsell/OrderBumpCard";
+import { GiftCardInput } from "@/components/GiftCardInput";
 import { CustomFieldsStep } from "@/components/CustomFieldsStep";
 import { useTranslation } from "react-i18next";
 import { useRegion } from "@/contexts/RegionContext";
