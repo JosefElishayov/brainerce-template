@@ -10,7 +10,9 @@ import {
   getDescriptionContent, getStockStatus, getProductSwatches,
 } from "brainerce";
 import { Layout } from "@/components/Layout";
-import { SEO } from "@/components/SEO";
+import { SEO, SITE_URL } from "@/components/SEO";
+import { StockAlertForm } from "@/components/StockAlertForm";
+import { buildProductJsonLd, buildProductFaqJsonLd, buildBreadcrumbJsonLd } from "brainerce";
 import { QuantitySelector } from "@/components/QuantitySelector";
 import { RecommendationSection } from "@/components/upsell/RecommendationSection";
 import { ProductReviews } from "@/components/ProductReviews";
@@ -38,7 +40,7 @@ import { Star } from "lucide-react";
 const ProductDetail = () => {
   const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
-  const { currency, addToCart } = useStore();
+  const { currency, addToCart, storeInfo, capabilities, track } = useStore();
   const { locale } = useLocale();
   const { regionId } = useRegion();
   const { toast } = useToast();
@@ -240,30 +242,20 @@ const ProductDetail = () => {
             type="product"
             image={images[0]}
             alternates={alternates}
-            jsonLd={{
-              "@context": "https://schema.org",
-              "@type": "Product",
-              name: product.name,
-              description: metaDesc,
-              image: images,
-              sku: product.id,
-              offers: {
-                "@type": "Offer",
-                price: String(displayPrice),
-                priceCurrency: currency,
-                availability: canPurchase ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-                url: `/${locale}/product/${product.slug}`,
-              },
-              ...(product.avgRating && product.reviewCount
-                ? {
-                    aggregateRating: {
-                      "@type": "AggregateRating",
-                      ratingValue: product.avgRating,
-                      reviewCount: product.reviewCount,
-                    },
-                  }
-                : {}),
-            }}
+            jsonLd={[
+              buildProductJsonLd(product, {
+                siteUrl: SITE_URL,
+                path: `/${locale}/product/${product.slug}`,
+                currency,
+                brandName: storeInfo?.name,
+                shipping: storeInfo?.shipping,
+              }),
+              buildBreadcrumbJsonLd([
+                { name: t("productDetail.breadcrumbShop"), url: `${SITE_URL}/${locale}/products` },
+                { name: product.name, url: `${SITE_URL}/${locale}/product/${product.slug}` },
+              ]),
+              ...(buildProductFaqJsonLd(product as never) ? [buildProductFaqJsonLd(product as never)!] : []),
+            ]}
           />
         );
       })()}
