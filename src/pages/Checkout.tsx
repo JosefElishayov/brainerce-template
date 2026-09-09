@@ -155,7 +155,7 @@ const Checkout = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { cart, currency, storeInfo } = useStore();
+  const { cart, currency, storeInfo, capabilities } = useStore();
   const { regions, region } = useRegion();
   const { i18n } = useTranslation();
   const upsell = (storeInfo as unknown as { upsell?: Record<string, boolean> })?.upsell;
