@@ -82,10 +82,15 @@ const ProductDetail = () => {
           }
         }
         setModifierSelections(modInit);
+        track("view_item", {
+          currency,
+          value: Number(p.basePrice ?? 0),
+          items: [{ itemId: p.id, itemName: p.name, price: Number(p.basePrice ?? 0), quantity: 1 }],
+        });
       })
       .catch(e => setError(e instanceof Error ? e.message : "Failed to load product"))
       .finally(() => setLoading(false));
-  }, [slug, locale, regionId]);
+  }, [slug, locale, regionId, track, currency]);
 
   const recs = useMemo(
     () => (product as unknown as { recommendations?: ProductRecommendationsResponse } | null)?.recommendations,
