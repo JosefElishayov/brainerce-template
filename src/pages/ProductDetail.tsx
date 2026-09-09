@@ -474,6 +474,10 @@ const ProductDetail = () => {
                 <ShoppingBag className="w-4 h-4 mr-3" />
                 {!canPurchase ? t("productDetail.soldOut") : adding ? t("productDetail.adding") : t("productDetail.addToBag")}
               </Button>
+
+              {!canPurchase && capabilities?.connection?.stockAlertsEnabled !== false && (
+                <StockAlertForm productId={product.id} variantId={selectedVariant?.id} />
+              )}
             </motion.div>
           </div>
         </div>
