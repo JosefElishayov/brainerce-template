@@ -80,6 +80,12 @@ const App = () => (
                 <Route path="/product/:slug" element={<ProductDetail />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+                <Route path="/faq" element={<Faq />} />
+                <Route path="/p/:slug" element={<ContentPage />} />
+                <Route path="/donate" element={<Donate />} />
+                <Route path="/donate/thank-you" element={<DonateThankYou />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/order-confirmation" element={<OrderConfirmation />} />
