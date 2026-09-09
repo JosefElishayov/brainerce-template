@@ -8,6 +8,9 @@
 - [Shop](/products): Browse all products and collections.
 - [About](/about): Our story and craft philosophy.
 - [Contact](/contact): Get in touch with the studio.
+- [Journal](/blog): Stories on craft, materials, and considered living.
+- [FAQ](/faq): Shipping, returns, care, and ordering answers.
+- [Donate](/donate): Support the studio and the makers we work with.
 
 ## Optional
 
