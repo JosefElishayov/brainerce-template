@@ -40,7 +40,7 @@ const DonateThankYou = () => {
               {donation && (
                 <p className="text-sm mb-8">
                   {t("donate.thanksAmount", {
-                    amount: formatPrice(donation.chargeAmount, { currency: donation.currency }),
+                    amount: formatPrice(donation.amount, { currency: donation.currency }),
                   })}
                 </p>
               )}
