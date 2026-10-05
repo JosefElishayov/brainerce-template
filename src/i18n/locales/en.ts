@@ -436,6 +436,11 @@ const en = {
     thanksSubtitle: "Your donation means a great deal to us and to our makers.",
     thanksAmount: "Donation received: {{amount}}",
   },
+  consent: {
+    message: "We use cookies for analytics and personalized ads. You can accept or decline.",
+    accept: "Accept",
+    reject: "Decline",
+  },
   notFound: {
     title: "Page Not Found",
     hint: "The page you're looking for doesn't exist or has been moved.",
