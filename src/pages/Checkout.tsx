@@ -18,6 +18,7 @@ import {
   type CheckoutCustomFieldDefinition,
   type Checkout as LiveCheckout,
 } from "brainerce";
+import { resolveRenderType } from "brainerce";
 import { Layout } from "@/components/Layout";
 import { SEO } from "@/components/SEO";
 
@@ -398,7 +399,7 @@ const Checkout = () => {
       provider: intent.provider,
       providerName: providerInfo?.name,
       checkoutId,
-      renderType: intent.clientSdk?.renderType,
+      renderType: intent.clientSdk ? resolveRenderType(intent.clientSdk) : undefined,
       scriptUrl: intent.clientSdk?.scriptUrl,
       containerId: intent.clientSdk?.containerId,
     });
