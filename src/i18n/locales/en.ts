@@ -91,6 +91,13 @@ const en = {
     piecePlural: "pieces",
   notFound: "No pieces found",
     viewAllPieces: "View All Pieces",
+    viewDetails: "View Details",
+    quickAdd: "Quick Add",
+    adding: "Adding…",
+    from: "From",
+    addedToBag: "Added to bag",
+    couldNotAdd: "Could not add to bag",
+    pleaseTryAgain: "Please try again",
     sortOptions: {
       featured: "Featured",
       newest: "Newest",

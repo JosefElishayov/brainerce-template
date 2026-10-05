@@ -93,6 +93,13 @@ const he: Resources = {
     piecePlural: "פריטים",
   notFound: "לא נמצאו פריטים",
     viewAllPieces: "לכל הפריטים",
+    viewDetails: "לפרטים",
+    quickAdd: "הוספה מהירה",
+    adding: "מוסיף…",
+    from: "החל מ",
+    addedToBag: "נוסף לתיק",
+    couldNotAdd: "לא הצלחנו להוסיף לתיק",
+    pleaseTryAgain: "אנא נסו שוב",
     sortOptions: {
       featured: "מומלצים",
       newest: "החדשים ביותר",
