@@ -6,7 +6,7 @@ import { resolve } from "path";
 import { BrainerceClient } from "brainerce";
 
 const BASE_URL = "https://brainerce-template.lovable.app";
-const SALES_CHANNEL_ID = "vc_QLZzLkJhqa1wsjPwy93VO";
+const SALES_CHANNEL_ID = "vc_su5FenWxSdv4wFLJ7y307";
 const LOCALES = ["en", "he"] as const;
 const DEFAULT_LOCALE: (typeof LOCALES)[number] = "en";
 
