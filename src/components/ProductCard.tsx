@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import type { Product } from "brainerce";
@@ -18,6 +19,7 @@ interface ProductCardProps {
 export const ProductCard = ({ product, index = 0, variant = "default" }: ProductCardProps) => {
   const { currency: storeCurrency, addToCart } = useStore();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [adding, setAdding] = useState(false);
 
   const images = product.images || [];
