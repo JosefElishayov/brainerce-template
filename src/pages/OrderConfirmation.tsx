@@ -266,7 +266,7 @@ const OrderConfirmation = () => {
           </div>
         )}
       </div>
-      {checkoutId && order && <GoogleReviewsSurvey checkoutId={checkoutId} />}
+      {checkoutId && orderNumber && <GoogleReviewsSurvey checkoutId={checkoutId} />}
     </Layout>
   );
 };
