@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import type { Product } from "brainerce";
@@ -18,6 +19,7 @@ interface ProductCardProps {
 export const ProductCard = ({ product, index = 0, variant = "default" }: ProductCardProps) => {
   const { currency: storeCurrency, addToCart } = useStore();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [adding, setAdding] = useState(false);
 
   const images = product.images || [];
@@ -48,11 +50,11 @@ export const ProductCard = ({ product, index = 0, variant = "default" }: Product
     try {
       setAdding(true);
       await addToCart(product, { quantity: 1 });
-      toast({ title: "Added to bag", description: product.name });
+      toast({ title: t("products.addedToBag"), description: product.name });
     } catch (err) {
       toast({
-        title: "Could not add to bag",
-        description: err instanceof Error ? err.message : "Please try again",
+        title: t("products.couldNotAdd"),
+        description: err instanceof Error ? err.message : t("products.pleaseTryAgain"),
         variant: "destructive",
       });
     } finally {
@@ -111,7 +113,7 @@ export const ProductCard = ({ product, index = 0, variant = "default" }: Product
             )}
           >
             <span className="px-6 py-2.5 text-xs font-medium tracking-[0.15em] uppercase bg-background/95 backdrop-blur-md text-foreground shadow-lg">
-              {adding ? "Adding…" : (product.type === "VARIABLE" || (product.modifierGroups?.length ?? 0) > 0) ? "View Details" : "Quick Add"}
+              {adding ? t("products.adding") : (product.type === "VARIABLE" || (product.modifierGroups?.length ?? 0) > 0) ? t("products.viewDetails") : t("products.quickAdd")}
             </span>
           </button>
         </div>
@@ -134,7 +136,7 @@ export const ProductCard = ({ product, index = 0, variant = "default" }: Product
                 return (
                   <>
                     <p className={cn("text-base font-medium", onSale ? "text-primary" : "text-foreground")}>
-                      {variantPriceVaries ? "From " : ""}{formatPrice(String(minVariantPrice), { currency })}
+                      {variantPriceVaries ? `${t("products.from")} ` : ""}{formatPrice(String(minVariantPrice), { currency })}
                     </p>
                     {onSale && (
                       <p className="text-sm text-muted-foreground line-through">

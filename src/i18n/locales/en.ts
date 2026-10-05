@@ -89,9 +89,15 @@ const en = {
     sortBy: "Sort by",
     pieceSingular: "piece",
     piecePlural: "pieces",
-    consent: { message: "We use cookies for analytics and personalized ads. You can accept or decline.", accept: "Accept", reject: "Decline" },
   notFound: "No pieces found",
     viewAllPieces: "View All Pieces",
+    viewDetails: "View Details",
+    quickAdd: "Quick Add",
+    adding: "Adding…",
+    from: "From",
+    addedToBag: "Added to bag",
+    couldNotAdd: "Could not add to bag",
+    pleaseTryAgain: "Please try again",
     sortOptions: {
       featured: "Featured",
       newest: "Newest",
@@ -436,6 +442,11 @@ const en = {
     thanksTitle: "Thank you",
     thanksSubtitle: "Your donation means a great deal to us and to our makers.",
     thanksAmount: "Donation received: {{amount}}",
+  },
+  consent: {
+    message: "We use cookies for analytics and personalized ads. You can accept or decline.",
+    accept: "Accept",
+    reject: "Decline",
   },
   notFound: {
     title: "Page Not Found",

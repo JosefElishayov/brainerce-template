@@ -91,9 +91,15 @@ const he: Resources = {
     sortBy: "מיון לפי",
     pieceSingular: "פריט",
     piecePlural: "פריטים",
-    consent: { message: "אנו משתמשים בעוגיות לניתוח נתונים ולפרסום מותאם אישית. ניתן לאשר או לסרב.", accept: "אישור", reject: "סירוב" },
   notFound: "לא נמצאו פריטים",
     viewAllPieces: "לכל הפריטים",
+    viewDetails: "לפרטים",
+    quickAdd: "הוספה מהירה",
+    adding: "מוסיף…",
+    from: "החל מ",
+    addedToBag: "נוסף לתיק",
+    couldNotAdd: "לא הצלחנו להוסיף לתיק",
+    pleaseTryAgain: "אנא נסו שוב",
     sortOptions: {
       featured: "מומלצים",
       newest: "החדשים ביותר",
@@ -438,6 +444,11 @@ const he: Resources = {
     thanksTitle: "תודה רבה",
     thanksSubtitle: "התרומה שלכם חשובה לנו וליוצרים שלנו.",
     thanksAmount: "התקבלה תרומה: {{amount}}",
+  },
+  consent: {
+    message: "אנו משתמשים בעוגיות לניתוח נתונים ולפרסום מותאם אישית. ניתן לאשר או לסרב.",
+    accept: "אישור",
+    reject: "סירוב",
   },
   notFound: {
     title: "הדף לא נמצא",
