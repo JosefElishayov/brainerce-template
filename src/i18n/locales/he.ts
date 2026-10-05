@@ -91,7 +91,6 @@ const he: Resources = {
     sortBy: "מיון לפי",
     pieceSingular: "פריט",
     piecePlural: "פריטים",
-    consent: { message: "אנו משתמשים בעוגיות לניתוח נתונים ולפרסום מותאם אישית. ניתן לאשר או לסרב.", accept: "אישור", reject: "סירוב" },
   notFound: "לא נמצאו פריטים",
     viewAllPieces: "לכל הפריטים",
     sortOptions: {
