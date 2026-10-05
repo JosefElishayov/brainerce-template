@@ -89,7 +89,8 @@ const en = {
     sortBy: "Sort by",
     pieceSingular: "piece",
     piecePlural: "pieces",
-    notFound: "No pieces found",
+    consent: { message: "We use cookies for analytics and personalized ads. You can accept or decline.", accept: "Accept", reject: "Decline" },
+  notFound: "No pieces found",
     viewAllPieces: "View All Pieces",
     sortOptions: {
       featured: "Featured",

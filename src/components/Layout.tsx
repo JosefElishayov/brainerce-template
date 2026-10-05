@@ -4,6 +4,7 @@ import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { DiscountBanners } from "./DiscountBanners";
 import { AnnouncementBar } from "./AnnouncementBar";
+import { ConsentBanner } from "./ConsentBanner";
 
 interface LayoutProps {
   children: ReactNode;
@@ -44,6 +45,7 @@ export const Layout = ({ children }: LayoutProps) => {
         {children}
       </motion.main>
       <Footer />
+      <ConsentBanner />
     </div>
   );
 };

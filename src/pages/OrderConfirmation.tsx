@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { formatPrice, type Checkout, type CheckoutLineItem } from "brainerce";
 import { Layout } from "@/components/Layout";
 import { SEO } from "@/components/SEO";
+import { GoogleReviewsSurvey } from "@/components/GoogleReviewsSurvey";
 import { Button } from "@/components/ui/button";
 import { client } from "@/lib/brainerce";
 import { useStore } from "@/contexts/StoreContext";
@@ -265,6 +266,7 @@ const OrderConfirmation = () => {
           </div>
         )}
       </div>
+      {checkoutId && orderNumber && <GoogleReviewsSurvey checkoutId={checkoutId} />}
     </Layout>
   );
 };
